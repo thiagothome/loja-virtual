@@ -23,13 +23,38 @@
                         <h2>@item.Nome</h2>
                         <p>Preço: @item.Preco.ToString("C")</p>
                         <p>Quantidade: @item.Quantidade</p>
+
+                        <div class="controles-quantidade">
+                            <form method="post">
+                                <input type="hidden" name="id" value="@item.ProdutoId" />
+                                <input type="hidden" name="acao" value="diminuir" />
+                                <button type="submit" asp-page-handler="AtualizarQuantidade" class="btn-controle">-</button>
+                            </form>
+
+                            <form method="post">
+                                <input type="hidden" name="id" value="@item.ProdutoId" />
+                                <input type="hidden" name="acao" value="aumentar" />
+                                <button type="submit" asp-page-handler="AtualizarQuantidade" class="btn-controle">+</button>
+                            </form>
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" name="id" value="@item.ProdutoId" />
+                            <button type="submit" asp-page-handler="RemoverItem" class="btn-remover">Remover</button>
+                        </form>
                     </div>
                 </li>
             }
+
         </ul>
 
         <div class="total">
             <strong>Total:</strong> @Model.Total.ToString("C")
+        </div>
+        <div class="acoes-carrinho">
+            <form method="post" asp-page-handler="FinalizarCompra">
+                <button type="submit" class="btn-finalizar">Finalizar Compra</button>
+            </form>
         </div>
     }
     else

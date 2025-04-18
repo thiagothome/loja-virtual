@@ -1,3 +1,5 @@
+using SiteAspas.Models;
+
 namespace SiteAspas.Services;
 
 public class ProdutoService

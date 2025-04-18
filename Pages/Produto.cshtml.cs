@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas;
+using SiteAspas.Models;
 using SiteAspas.Services;
 
     public class ProdutoModel : PageModel

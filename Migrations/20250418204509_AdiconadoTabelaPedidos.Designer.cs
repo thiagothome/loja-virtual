@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SiteAspas.Data;
 
@@ -11,9 +12,11 @@ using SiteAspas.Data;
 namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    partial class SiteAspasContextModelSnapshot : ModelSnapshot
+    [Migration("20250418204509_AdiconadoTabelaPedidos")]
+    partial class AdiconadoTabelaPedidos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +24,6 @@ namespace SiteAspas.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("SiteAspas.Models.CarrinhoItem", b =>
-                {
-                    b.Property<string>("ImagemUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Preco")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.ToTable("CarrinhoItems");
-                });
 
             modelBuilder.Entity("SiteAspas.Models.Pedido", b =>
                 {
@@ -65,7 +45,6 @@ namespace SiteAspas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Total")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -85,11 +64,10 @@ namespace SiteAspas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PedidoId")
+                    b.Property<int?>("PedidoId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PrecoUnitario")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProdutoId")
@@ -102,12 +80,10 @@ namespace SiteAspas.Migrations
 
                     b.HasIndex("PedidoId");
 
-                    b.HasIndex("ProdutoId");
-
                     b.ToTable("PedidoItems");
                 });
 
-            modelBuilder.Entity("SiteAspas.Models.Produto", b =>
+            modelBuilder.Entity("SiteAspas.Produto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +104,6 @@ namespace SiteAspas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Preco")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -138,21 +113,9 @@ namespace SiteAspas.Migrations
 
             modelBuilder.Entity("SiteAspas.Models.PedidoItem", b =>
                 {
-                    b.HasOne("SiteAspas.Models.Pedido", "Pedido")
+                    b.HasOne("SiteAspas.Models.Pedido", null)
                         .WithMany("Itens")
-                        .HasForeignKey("PedidoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SiteAspas.Models.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
-
-                    b.Navigation("Produto");
+                        .HasForeignKey("PedidoId");
                 });
 
             modelBuilder.Entity("SiteAspas.Models.Pedido", b =>

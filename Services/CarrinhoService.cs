@@ -1,4 +1,5 @@
 using SiteAspas;
+using SiteAspas.Models;
 using System.Text.Json;
 
 public class CarrinhoService
@@ -62,5 +63,26 @@ public class CarrinhoService
         }
 
         session.SetString(CarrinhoKey, JsonSerializer.Serialize(carrinho));
+    }
+
+    public void SalvarCarrinho(List<CarrinhoItem> carrinho)
+    {
+        var session = _httpContextAccessor.HttpContext?.Session;
+        if (session == null)
+        {
+            throw new InvalidOperationException("Session não está disponível");
+        }
+
+        session.SetString(CarrinhoKey, JsonSerializer.Serialize(carrinho));
+    }
+    
+    public Task LimparCarrinho() 
+    {
+        var session = _httpContextAccessor.HttpContext?.Session;
+        if (session == null)
+        {
+            throw new InvalidOperationException("Session não está disponível");
+        }
+        return Task.CompletedTask;
     }
 }

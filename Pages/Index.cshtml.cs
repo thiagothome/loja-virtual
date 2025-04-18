@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SiteAspas.Models;
 using SiteAspas.Services;
 
 namespace SiteAspas.Pages;

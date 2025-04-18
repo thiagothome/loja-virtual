@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 public class EntrarModel : PageModel
 {
     [BindProperty]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 
     [BindProperty]
-    public string Senha { get; set; }
+    public required string Senha { get; set; }
 
     [BindProperty]
     public bool LembrarMe { get; set; }

@@ -2,6 +2,7 @@ using SiteAspas.Data;
 using Microsoft.EntityFrameworkCore;
 using SiteAspas;
 using SiteAspas.Services;
+using SiteAspas.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddRazorPages(); // Habilita Razor Pages
 builder.Services.AddSingleton<ProdutoService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<CarrinhoService>();
+builder.Services.AddScoped<IPedidoService, PedidoService>();
 
 builder.Services.AddSession(options =>
 {

@@ -1,0 +1,28 @@
+@page
+@model CompraFinalizadaModel
+@{
+    ViewData["Title"] = "Compra Finalizada";
+}
+
+<div class="confirmacao-container">
+    <h1>Pedido #@Model.Pedido.Id Confirmado!</h1>
+    <p>Status: @Model.Pedido.Status</p>
+    
+    <div class="itens-pedido">
+        <h2>Itens do Pedido</h2>
+        <ul>
+            @foreach (var item in Model.Pedido.Itens)
+            {
+                <li>
+                    @item.Quantidade x @item.Nome - 
+                    @((item.Quantidade * item.PrecoUnitario).ToString("C"))
+                </li>
+            }
+        </ul>
+        <div class="total">
+            Total: @Model.Pedido.Total.ToString("C")
+        </div>
+    </div>
+    
+    <a href="/" class="btn-voltar">Voltar à Loja</a>
+</div>
