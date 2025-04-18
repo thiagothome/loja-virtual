@@ -1,0 +1,39 @@
+@page
+@model CarrinhoModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Carrinho de Compras";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="/css/pages/carrinho.css" />
+}
+
+<div class="carrinho-container">
+    <h1>Carrinho de Compras</h1>
+
+    @if (Model.Itens.Any())
+    {
+        <ul class="lista-itens">
+            @foreach (var item in Model.Itens)
+            {
+                <li class="item">
+                    <img src="@item.ImagemUrl" alt="@item.Nome" />
+                    <div class="detalhes">
+                        <h2>@item.Nome</h2>
+                        <p>Preço: @item.Preco.ToString("C")</p>
+                        <p>Quantidade: @item.Quantidade</p>
+                    </div>
+                </li>
+            }
+        </ul>
+
+        <div class="total">
+            <strong>Total:</strong> @Model.Total.ToString("C")
+        </div>
+    }
+    else
+    {
+        <p>Seu carrinho está vazio.</p>
+    }
+</div>

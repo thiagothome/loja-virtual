@@ -11,7 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); // Habilita Razor Pages
 
 builder.Services.AddSingleton<ProdutoService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<CarrinhoService>();
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -25,22 +33,11 @@ app.MapPost("/produtos", async (Produto produto, SiteAspasContext db) =>
     return Results.Created($"/produtos/{produto.Id}", produto);
 });
 
-app.MapPost("/carrinho", (ItemCarrinho item) =>
-{
-    CarrinhoFake.Itens.Add(item);
-    return Results.Ok(CarrinhoFake.Itens);
-});
-
-app.MapGet("/carrinho", () =>
-{
-    return Results.Ok(CarrinhoFake.Itens);
-});
-
-
 app.MapGet("/Index", () => "Index");
 
 app.UseStaticFiles();             // Habilita wwwroot
 app.UseRouting();                 // Roteamento padrão
+app.UseSession(); // <- AQUI é obrigatório
 app.MapRazorPages();   
 
 app.Run();
