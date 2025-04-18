@@ -1,3 +1,11 @@
+@{
+    bool hideHeader = false;
+    if (ViewData.TryGetValue("HideHeader", out var headerValue) && headerValue is bool)
+    {
+        hideHeader = (bool)headerValue;
+    }
+}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,47 +14,74 @@
     <title>@ViewData["Title"] - ASPAS Brechó Pet</title>
     <link rel="stylesheet" href="/css/site.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @RenderSection("Styles", required: false)
+
+    <!-- Carrega o CSS de autenticação apenas nas páginas de login/cadastro -->
+    @if (!hideHeader)   
+    {
+        <link rel="stylesheet" href="/css/autenticacao.css" />
+    }
 </head>
 <body class="min-h-screen flex flex-col">
-    <!-- Cabeçalho fixo -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="header-container">
-            <div class="header-content">
-                <!-- Logo - 1 coluna -->
-                <div class="logo-col">
-                    <h1 class="text-3xl font-bold text-purple-800">
-                        <a href="/">ASPAS</a>
-                    </h1>
-                    <p class="text-sm text-gray-600">Brechó Pet</p>
-                </div>
-                
-                <!-- Busca - 3 colunas -->
-                <div class="search-col">
-                    <form action="/busca" method="get">
-                        <input type="text" name="termo" placeholder="Buscar produtos..." 
-                               class="search-input" />
-                    </form>
+@if (!hideHeader)
+    {
+        <header class="bg-white shadow-sm sticky top-0 z-50 header-bg">
+            <div class="top-menu bg-gray-100 py-2 px-4">
+                <div class="max-w-1000px mx-auto flex justify-between items-center">
+                    <div class="siga-nos flex items-center">
+                        <span class="text-sm mr-2">Siga-nos:</span>
+                        <a href="https://instagram.com" target="_blank" class="text-pink-600 hover:text-pink-800">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                    <div class="menu-links flex space-x-4">
+                        <a asp-page="/Cadastrar" class="text-sm hover:text-purple-800">Cadastrar</a>
+                        <span class="text-gray-400">|</span>
+                        <a asp-page="/Entrar" class="text-sm hover:text-purple-800">Entrar</a>
+                        <span class="text-gray-400">|</span>
+                        <a asp-page="/Carrinho" class="text-sm hover:text-purple-800">Carrinho</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
+            
+            <div class="header-container">
+                <div class="header-content">
+                    <div class="logo-col">
+                        <h1 class="text-3xl font-bold text-purple-800">
+                            <a href="/" style="color: #7b00ff;">ASPA</a>
+                        </h1>
+                        <p class="text-sm text-gray-600" style="color: #fe0369;">Brechó Pet</p>
+                    </div>
+                    
+                    <div class="search-col">
+                        <form action="/busca" method="get">
+                            <input type="text" name="termo" placeholder="Buscar produtos..." 
+                                   class="search-input" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+    }
 
-    <!-- Conteúdo principal -->
     <main class="flex-grow">
         @RenderBody()
     </main>
 
-    <!-- Rodapé -->
-    <footer class="bg-gray-100 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-gray-600">
-            <p>© @DateTime.Now.Year ONG ASPAS - Todos os direitos reservados</p>
-            <div class="mt-2 space-x-4">
-                <a href="/sobre" class="hover:text-purple-800">Sobre Nós</a>
-                <a href="/contato" class="hover:text-purple-800">Contato</a>
-                <a href="/doacoes" class="hover:text-purple-800">Doações</a>
+@if (!hideHeader)
+    {
+        <footer class="bg-gray-100 py-6 mt-12">
+            <div class="max-w-7xl mx-auto px-4 text-center text-gray-600">
+                <p>© @DateTime.Now.Year ONG ASPAS - Todos os direitos reservados</p>
+                <div class="mt-2 space-x-4">
+                    <a asp-page="/Sobre" class="hover:text-purple-800">Sobre Nós</a>
+                    <a asp-page="/Contato" class="hover:text-purple-800">Contato</a>
+                    <a asp-page="/Doacoes" class="hover:text-purple-800">Doações</a>
+                </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    }
 
     <script src="/js/site.js"></script>
 </body>

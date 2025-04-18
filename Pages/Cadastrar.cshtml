@@ -1,0 +1,75 @@
+@page
+@model CadastrarModel
+@{
+    Layout = "_Layout";
+    ViewData["HideHeader"] = true;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/cadastrar.css">
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Criar nova conta</h2>
+            <p class="auth-subtitle">Preencha seus dados para se cadastrar</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            <div class="form-group">
+                <label for="Nome" class="form-label">Nome Completo</label>
+                <input asp-for="Nome" type="text" class="form-input" placeholder="Seu nome completo" required />
+                <span asp-validation-for="Nome" class="form-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Email" class="form-label">E-mail</label>
+                <input asp-for="Email" type="email" class="form-input" placeholder="seu@email.com" required />
+                <span asp-validation-for="Email" class="form-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Senha" class="form-label">Senha</label>
+                <div class="password-input">
+                    <input asp-for="Senha" type="password" class="form-input" placeholder="••••••••" required />
+                    <button type="button" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Senha" class="form-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="ConfirmarSenha" class="form-label">Confirmar Senha</label>
+                <div class="password-input">
+                    <input asp-for="ConfirmarSenha" type="password" class="form-input" placeholder="••••••••" required />
+                    <button type="button" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="ConfirmarSenha" class="form-error"></span>
+            </div>
+
+            <button type="submit" class="auth-button">
+                <span class="button-text">Cadastrar</span>
+                <span class="button-loader">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+
+            <div class="auth-divider">
+                <span>ou</span>
+            </div>
+
+            <button type="button" class="social-button google-button">
+                <i class="fab fa-google"></i>
+                Continuar com Google
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Já tem uma conta? <a asp-page="/Entrar" class="auth-link">Entrar agora</a></p>
+        </div>
+    </div>
+</div>
