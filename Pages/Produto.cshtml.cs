@@ -17,9 +17,9 @@ using SiteAspas.Services;
 
         public Produto Produto { get; set; }
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            Produto = _produtoService.ObterPorId(id);
+            Produto = await _produtoService.ObterPorId(id);
 
             if (Produto == null)
             {
@@ -29,9 +29,9 @@ using SiteAspas.Services;
             return Page();
         }
 
-        public IActionResult OnPostAdicionarAoCarrinho(int id)
+        public async Task<IActionResult> OnPostAdicionarAoCarrinhoAsync(int id)
         {
-            var produto = _produtoService.ObterPorId(id);
+            var produto = await _produtoService.ObterPorId(id);
             if (produto == null) return NotFound();
 
             var item = new CarrinhoItem
@@ -43,9 +43,8 @@ using SiteAspas.Services;
                 Quantidade = 1
             };
 
-            _carrinhoService.AdicionarItem(item);
+            _carrinhoService.AdicionarItem(item); // Supondo que ainda seja um método síncrono
 
             return RedirectToPage("/Carrinho");
         }
-
     }

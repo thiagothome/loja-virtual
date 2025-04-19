@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SiteAspas.Data;
 
@@ -11,9 +12,11 @@ using SiteAspas.Data;
 namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    partial class SiteAspasContextModelSnapshot : ModelSnapshot
+    [Migration("20250419191943_AjsuteEndereco2")]
+    partial class AjsuteEndereco2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,9 +229,6 @@ namespace SiteAspas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsAtivo")
-                        .HasColumnType("bit");
-
                     b.Property<string>("NomeCompleto")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -239,24 +239,13 @@ namespace SiteAspas.Migrations
                     b.Property<string>("Telefone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Tipo")
-                        .HasColumnType("int");
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DataCadastro = new DateTime(2025, 4, 19, 21, 41, 14, 300, DateTimeKind.Utc).AddTicks(3860),
-                            Email = "admin@admin.com",
-                            IsAtivo = true,
-                            NomeCompleto = "Administrador do Sistema",
-                            Senha = "Admin123",
-                            Tipo = 1
-                        });
                 });
 
             modelBuilder.Entity("SiteAspas.Models.CarrinhoItem", b =>

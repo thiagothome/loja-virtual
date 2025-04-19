@@ -15,8 +15,8 @@ public class IndexModel : PageModel
         _produtoService = produtoService;
     }
 
-    public void OnGet()
+      public async Task OnGetAsync()
     {
-        ProdutosDestaque = _produtoService.ObterDestaques();
+        ProdutosDestaque = await _produtoService.ObterDestaques();
     }
 }

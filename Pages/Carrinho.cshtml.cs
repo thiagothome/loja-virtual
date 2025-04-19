@@ -84,7 +84,7 @@ public class CarrinhoModel : PageModel
         string clienteId = httpContext.Request.Cookies["cliente_temp"] 
                         ?? Guid.NewGuid().ToString();
 
-        var pedidoId = await _pedidoService.CriarPedido(clienteId, Itens);
+        var pedidoId = await _pedidoService.CriarPedido(Convert.ToInt32(clienteId), Itens);
         await _carrinhoService.LimparCarrinho(); // Adicione await aqui
         
         if (!httpContext.Request.Cookies.ContainsKey("cliente_temp"))

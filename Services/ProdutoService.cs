@@ -1,89 +1,64 @@
 using SiteAspas.Models;
+using SiteAspas.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SiteAspas.Services;
 
 public class ProdutoService
 {
-    public List<Produto> ObterDestaques()
-    {
-        return new List<Produto>
-        {
-            new Produto { 
-                Id = 1, 
-                Nome = "Blusa Estampada", 
-                ImagemUrl = "/img/blusa.jpg", 
-                Preco = 39.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
+    private readonly SiteAspasContext _context;
 
-            },
-            new Produto { 
-                Id = 2, 
-                Nome = "Vestido Floral", 
-                ImagemUrl = "/img/vestido.jpg", 
-                Preco = 49.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 3, 
-                Nome = "Colar Artesanal", 
-                ImagemUrl = "/img/colar.jpg", 
-                Preco = 19.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 4, 
-                Nome = "Colar Artesanal", 
-                ImagemUrl = "/img/colar.jpg", 
-                Preco = 19.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 5, 
-                Nome = "Colar Artesanal", 
-                ImagemUrl = "/img/colar.jpg", 
-                Preco = 19.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 6, 
-                Nome = "Blusa Estampada", 
-                ImagemUrl = "/img/blusa.jpg", 
-                Preco = 39.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 7, 
-                Nome = "Vestido Floral", 
-                ImagemUrl = "/img/vestido.jpg", 
-                Preco = 49.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 8, 
-                Nome = "Colar Artesanal", 
-                ImagemUrl = "/img/colar.jpg", 
-                Preco = 19.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 9, 
-                Nome = "Colar Artesanal", 
-                ImagemUrl = "/img/colar.jpg", 
-                Preco = 19.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            },
-            new Produto { 
-                Id = 10, 
-                Nome = "Colar Artesanal", 
-                ImagemUrl = "/img/colar.jpg", 
-                Preco = 19.90m,
-                Descricao = "Blusa com estampa floral, tecido leve e confortável."
-            }
-        };
+    // Injeta o contexto do banco de dados
+    public ProdutoService(SiteAspasContext context)
+    {
+        _context = context;
     }
 
-    public Produto? ObterPorId(int id)
+    // Obtém produtos do banco de dados (não mais da lista fixa)
+    public async Task<List<Produto>> ObterDestaques()
     {
-        return ObterDestaques().FirstOrDefault(p => p.Id == id);
+        return await _context.Produtos
+            .OrderByDescending(p => p.Id) // Ordena por mais recentes
+            .Take(10) // Pega os 10 mais recentes
+            .ToListAsync();
+    }
+
+    // Obtém um produto por ID do banco de dados
+    public async Task<Produto?> ObterPorId(int id)
+    {
+        return await _context.Produtos.FindAsync(id);
+    }
+
+    // Novo método para adicionar um produto
+    public async Task AdicionarProduto(Produto produto)
+    {
+        _context.Produtos.Add(produto);
+        await _context.SaveChangesAsync();
+    }
+
+    // Novo método para atualizar um produto
+    public async Task AtualizarProduto(Produto produto)
+    {
+        _context.Produtos.Update(produto);
+        await _context.SaveChangesAsync();
+    }
+
+    // Novo método para remover um produto
+    public async Task RemoverProduto(int id)
+    {
+        var produto = await _context.Produtos.FindAsync(id);
+        if (produto != null)
+        {
+            _context.Produtos.Remove(produto);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    // Novo método para obter produtos de um usuário específico
+    public async Task<List<Produto>> ObterProdutosPorUsuario(int usuarioId)
+    {
+        return await _context.Produtos
+            .Where(p => p.UsuarioId == usuarioId)
+            .ToListAsync();
     }
 }

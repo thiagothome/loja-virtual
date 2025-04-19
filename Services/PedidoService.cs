@@ -12,11 +12,11 @@ public class PedidoService : IPedidoService
         _context = context;
     }
     
-    public async Task<int> CriarPedido(string clienteId, List<CarrinhoItem> itens)
+    public async Task<int> CriarPedido(int clienteId, List<CarrinhoItem> itens)
 {
     var pedido = new Pedido
     {
-        ClienteId = clienteId,
+        UsuarioId = clienteId,
         DataPedido = DateTime.Now,
         Total = itens.Sum(i => i.Preco * i.Quantidade),
         Status = "Processando",
