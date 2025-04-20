@@ -65,16 +65,16 @@ a {
     margin-top: 12px;
     display: block;
     width: 100%;
-    background-color: #2e7d32;
-    color: white;
+    background-color: #fec200;
+    color: black;
     border: none;
     padding: 8px;
     border-radius: 6px;
     cursor: pointer;
 }
-.card-button:hover {
-    background-color: #1b5e20;
-}
+    .card-button:hover {
+        background-color: #e0ad00;
+    }
 
 
 

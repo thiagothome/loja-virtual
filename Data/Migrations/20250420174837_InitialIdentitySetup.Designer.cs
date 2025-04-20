@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SiteAspas.Data;
 
 #nullable disable
 
-namespace SiteAspas.Migrations
+namespace SiteAspas.Data.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    partial class SiteAspasContextModelSnapshot : ModelSnapshot
+    [Migration("20250420174837_InitialIdentitySetup")]
+    partial class InitialIdentitySetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace SiteAspas.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -133,7 +136,7 @@ namespace SiteAspas.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UsuarioRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -255,7 +258,6 @@ namespace SiteAspas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Total")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UsuarioId")
@@ -433,15 +435,15 @@ namespace SiteAspas.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9dc4ee75-d11c-4d5a-a1da-a207d9024c8b",
-                            DataCadastro = new DateTime(2025, 4, 20, 18, 10, 3, 470, DateTimeKind.Utc).AddTicks(8154),
+                            ConcurrencyStamp = "1dd68c4b-1d65-4be3-8c58-9b661a4c1596",
+                            DataCadastro = new DateTime(2025, 4, 20, 17, 48, 36, 730, DateTimeKind.Utc).AddTicks(749),
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             IsAtivo = true,
@@ -449,9 +451,9 @@ namespace SiteAspas.Migrations
                             NomeCompleto = "Administrador do Sistema",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENHFX3MmD8dYVTqHYZm6EuPk8SEFY/ejGbQp2PtPQfMJn8TrNXSpCtdRUJcsIzBjxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHK7ENkbxl4A6PO7IwInJGFIi6myKSSvLOChsqHipB6MtaWWXLx6KPuC+sJtGlWwhg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e8bc761f-9b6b-453a-a535-412665d32207",
+                            SecurityStamp = "fa82b865-efc8-41a1-9761-1cfc52c141a8",
                             Tipo = 1,
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"

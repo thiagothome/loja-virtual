@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 using SiteAspas.Models;
 using SiteAspas.Models.Enums;
 
 namespace SiteAspas.Data;
 
-public class SiteAspasContext : DbContext
+public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, int>
 {
     public SiteAspasContext(DbContextOptions<SiteAspasContext> options) : base(options) { }
 
@@ -18,34 +19,43 @@ public class SiteAspasContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder); // Isso é CRUCIAL para o Identity
 
+        modelBuilder.Entity<Pedido>().Property(p => p.Total).HasPrecision(18, 2);
+        modelBuilder.Entity<PedidoItem>().Property(p => p.PrecoUnitario).HasPrecision(18, 2);
+        modelBuilder.Entity<Produto>().Property(p => p.Preco).HasPrecision(18, 2);
+        modelBuilder.Entity<CarrinhoItem>().Property(c => c.Preco).HasPrecision(18, 2);
+        modelBuilder.Entity<Usuario>().ToTable("Usuarios");
+        modelBuilder.Entity<IdentityRole<int>>().ToTable("Roles");
+        modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UsuarioRoles");
+        // Configuração do usuário admin
+        var hasher = new PasswordHasher<Usuario>();
         modelBuilder.Entity<Usuario>().HasData(new Usuario
         {
             Id = 1,
-            NomeCompleto = "Administrador do Sistema",
+            UserName = "admin@admin.com",
+            NormalizedUserName = "ADMIN@ADMIN.COM",
             Email = "admin@admin.com",
-            Senha = "Admin123",
+            NormalizedEmail = "ADMIN@ADMIN.COM",
+            EmailConfirmed = true,
+            PasswordHash = hasher.HashPassword(null, "Admin@123"),
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            NomeCompleto = "Administrador do Sistema",
             IsAtivo = true,
             DataCadastro = DateTime.UtcNow,
-            Tipo = TipoUsuario.Administrador
+            Tipo = TipoUsuario.Administrador,
+            EmailConfirmationToken = null, // Ou um valor padrão
+            TokenExpiration = null
         });
 
-        // Configuraï¿½ï¿½o de Produto
         modelBuilder.Entity<Produto>(e =>
         {
             e.Property(p => p.Preco).HasPrecision(18, 2);
             e.Property(p => p.Nome).IsRequired();
             e.HasIndex(p => p.Nome);
-
-            e.HasOne(p => p.Usuario)
-            .WithMany() // ou .WithMany(u => u.Produtos) se quiser navegar do usuÃ¡rio para os produtos
-            .HasForeignKey(p => p.UsuarioId)
-            .OnDelete(DeleteBehavior.SetNull);
         });
 
-
-        // Configuraï¿½ï¿½o de Pedido
         modelBuilder.Entity<Pedido>(e =>
         {
             e.HasOne(p => p.Usuario)
@@ -54,7 +64,6 @@ public class SiteAspasContext : DbContext
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Configuraï¿½ï¿½o de PedidoItem
         modelBuilder.Entity<PedidoItem>(e =>
         {
             e.Property(p => p.PrecoUnitario).HasPrecision(18, 2);
@@ -64,7 +73,6 @@ public class SiteAspasContext : DbContext
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Configuraï¿½ï¿½o de CarrinhoItem
         modelBuilder.Entity<CarrinhoItem>(e =>
         {
             e.HasKey(c => c.Id);
@@ -75,7 +83,5 @@ public class SiteAspasContext : DbContext
              .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(c => c.ClienteId);
         });
-
-       
     }
 }

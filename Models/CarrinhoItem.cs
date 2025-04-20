@@ -9,7 +9,7 @@ namespace SiteAspas.Models
         public string ImagemUrl { get; set; } = string.Empty;
         public decimal Preco { get; set; }
         public int Quantidade { get; set; }
-        public string ClienteId { get; set; } = string.Empty;
+        public int ClienteId { get; set; }
         public DateTime DataAdicao { get; set; } = DateTime.UtcNow; // Opcional
     }
 }

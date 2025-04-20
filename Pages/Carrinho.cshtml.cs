@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using SiteAspas;
 using SiteAspas.Data;
 using SiteAspas.Models;
@@ -70,29 +71,49 @@ public class CarrinhoModel : PageModel
         return RedirectToPage();
     }
 
-   public async Task<IActionResult> OnPostFinalizarCompraAsync()
+    public async Task<IActionResult> OnPostFinalizarCompraAsync()
     {
-        Itens = _carrinhoService.ObterCarrinho();
-        
-        if (!Itens.Any())
+        int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+        if (usuarioId == null)
+            return RedirectToPage("/Entrar");
+
+        // Busca o carrinho da sessão
+        var carrinho = _carrinhoService.ObterCarrinho();
+
+        if (!carrinho.Any())
         {
-            return RedirectToPage("/Carrinho");
+            ModelState.AddModelError(string.Empty, "Seu carrinho está vazio.");
+            return Page();
         }
 
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext não disponível");
-        
-        string clienteId = httpContext.Request.Cookies["cliente_temp"] 
-                        ?? Guid.NewGuid().ToString();
+        // Buscar os produtos no banco para obter o nome atualizado
+        var produtoIds = carrinho.Select(c => c.ProdutoId).ToList();
+        var produtos = await _context.Produtos
+            .Where(p => produtoIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id);
 
-        var pedidoId = await _pedidoService.CriarPedido(Convert.ToInt32(clienteId), Itens);
-        await _carrinhoService.LimparCarrinho(); // Adicione await aqui
-        
-        if (!httpContext.Request.Cookies.ContainsKey("cliente_temp"))
+        var pedido = new Pedido
         {
-            httpContext.Response.Cookies.Append("cliente_temp", clienteId, 
-                new CookieOptions { Expires = DateTime.Now.AddDays(30) });
-        }
-        
-        return RedirectToPage("/CompraFinalizada", new { id = pedidoId });
+            UsuarioId = usuarioId.Value,
+            DataPedido = DateTime.Now,
+            Status = "Processando",
+            Total = carrinho.Sum(item => item.Preco * item.Quantidade),
+            Itens = carrinho.Select(item => new PedidoItem
+            {
+                ProdutoId = item.ProdutoId,
+                Nome = produtos.ContainsKey(item.ProdutoId) ? produtos[item.ProdutoId].Nome : "Produto",
+                PrecoUnitario = item.Preco,
+                Quantidade = item.Quantidade
+            }).ToList()
+        };
+
+        _context.Pedidos.Add(pedido);
+        await _context.SaveChangesAsync();
+
+        // Limpar carrinho da sessão
+        _carrinhoService.LimparCarrinho();
+
+        return RedirectToPage("/CompraFinalizada", new { id = pedido.Id });
     }
 }

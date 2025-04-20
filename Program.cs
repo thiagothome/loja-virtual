@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SiteAspas;
 using SiteAspas.Services;
 using SiteAspas.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<CarrinhoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddIdentity<Usuario, IdentityRole<int>>()
+    .AddEntityFrameworkStores<SiteAspasContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddSession(options =>
 {
