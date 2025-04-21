@@ -5,6 +5,7 @@ using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient<MercadoPagoService>();
 
 builder.Services.AddDbContext<SiteAspasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

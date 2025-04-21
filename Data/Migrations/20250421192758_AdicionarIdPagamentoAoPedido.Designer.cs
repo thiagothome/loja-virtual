@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SiteAspas.Data;
 
 #nullable disable
 
-namespace SiteAspas.Migrations
+namespace SiteAspas.Data.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    partial class SiteAspasContextModelSnapshot : ModelSnapshot
+    [Migration("20250421192758_AdicionarIdPagamentoAoPedido")]
+    partial class AdicionarIdPagamentoAoPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

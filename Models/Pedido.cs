@@ -11,5 +11,7 @@
         public string Status { get; set; } = "Processando";
         public string? MetodoPagamento { get; set; }
         public DateTime? DataPagamento { get; set; }
+        public string? IdPagamento { get; set; }
+
     }
 }
