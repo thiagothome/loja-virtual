@@ -73,7 +73,7 @@ namespace SiteAspas.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -97,7 +97,7 @@ namespace SiteAspas.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UsuarioClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -118,7 +118,7 @@ namespace SiteAspas.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UsuarioLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -152,7 +152,7 @@ namespace SiteAspas.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UsuarioTokens", (string)null);
                 });
 
             modelBuilder.Entity("SiteAspas.Models.CarrinhoItem", b =>
@@ -354,6 +354,7 @@ namespace SiteAspas.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataCadastro")
@@ -388,10 +389,12 @@ namespace SiteAspas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -405,6 +408,7 @@ namespace SiteAspas.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefone")
@@ -430,8 +434,7 @@ namespace SiteAspas.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("Usuarios", (string)null);
 
@@ -440,19 +443,21 @@ namespace SiteAspas.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9dc4ee75-d11c-4d5a-a1da-a207d9024c8b",
-                            DataCadastro = new DateTime(2025, 4, 20, 18, 10, 3, 470, DateTimeKind.Utc).AddTicks(8154),
+                            ConcurrencyStamp = "6841c723-b6bf-41db-9928-75e4b8eb10da",
+                            DataCadastro = new DateTime(2025, 4, 20, 22, 17, 13, 951, DateTimeKind.Utc).AddTicks(7500),
                             Email = "admin@admin.com",
+                            EmailConfirmationToken = "SEED-TOKEN",
                             EmailConfirmed = true,
                             IsAtivo = true,
-                            LockoutEnabled = false,
+                            LockoutEnabled = true,
                             NomeCompleto = "Administrador do Sistema",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENHFX3MmD8dYVTqHYZm6EuPk8SEFY/ejGbQp2PtPQfMJn8TrNXSpCtdRUJcsIzBjxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL49jYh6EoS0veyyPFrAAtHjKhMRj11TBxwNkDWbTx5HlDKeQB9iPSLHBBgT3ASuTg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e8bc761f-9b6b-453a-a535-412665d32207",
+                            SecurityStamp = "ccc20859-cc03-4efe-92dd-6818a7c5082a",
                             Tipo = 1,
+                            TokenExpiration = new DateTime(2026, 4, 20, 22, 17, 13, 951, DateTimeKind.Utc).AddTicks(7510),
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         });

@@ -5,21 +5,19 @@
     ViewData["Title"] = "SiteAspas - Brechó Pet";
 }
 
-
 <div class="carrossel-container mb-10"> 
-    <h2 class="text-2xl font-bold mb-5 text-center">🐾 Pets para adoção</h2>
+    <h2 class="text-2xl font-bold mb-5 text-center">Velas aromáticas</h2>
     <div class="carrossel-wrapper">
         <div class="carrossel">
-            <img src="/img/dog1.jpg" alt="Item 1" class="carrossel-img" />
-            <img src="/img/dog2.jpg" alt="Item 2" class="carrossel-img" />
-            <img src="/img/dog3.jpg" alt="Item 3" class="carrossel-img" />
-            <img src="/img/cat1.jpg" alt="Item 4" class="carrossel-img" />
-            <img src="/img/cat.jpg"  alt="Item 5" class="carrossel-img" />
-            <img src="/img/cat3.jpg" alt="Item 6" class="carrossel-img" />
+            <img src="/img/v1.jpg" alt="Item 1" class="carrossel-img" />
+            <img src="/img/v2.jpg" alt="Item 2" class="carrossel-img" />
+            <img src="/img/v3.jpg" alt="Item 3" class="carrossel-img" />
+            <img src="/img/v4.jpg" alt="Item 4" class="carrossel-img" />
+            <img src="/img/v5.jpg"  alt="Item 5" class="carrossel-img" />
+            <img src="/img/v6.jpg" alt="Item 6" class="carrossel-img" />
         </div>
     </div>
 </div>
-
     
     <div class="produtos-container">
         @foreach (var produto in Model.ProdutosDestaque)
@@ -33,14 +31,4 @@
                 </div>
             </div>
         }
-    </div>
-
-    
-    <div class="mt-12 text-center">
-        <h3 class="text-xl font-semibold mb-2">Categorias</h3>
-        <div class="space-x-4">
-            <a href="/categoria/Roupas" class="text-blue-600 hover:underline">Roupas</a>
-            <a href="/categoria/Acessorios" class="text-blue-600 hover:underline">Acessórios</a>
-            <a href="/categoria/Decoracao" class="text-blue-600 hover:underline">Decoração</a>
-        </div>
     </div>

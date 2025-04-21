@@ -1,26 +1,28 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using SiteAspas;
 using SiteAspas.Data;
 using SiteAspas.Models;
 
+[Authorize]
 public class CarrinhoModel : PageModel
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly CarrinhoService _carrinhoService;
     private readonly SiteAspasContext _context;
-    private readonly IPedidoService _pedidoService; 
+    private readonly IPedidoService _pedidoService;
+    private readonly UserManager<Usuario> _userManager;
 
-    public CarrinhoModel(CarrinhoService carrinhoService,
-                       IHttpContextAccessor httpContextAccessor,
-                       SiteAspasContext context,
-                       IPedidoService pedidoService) 
+    public CarrinhoModel(
+        CarrinhoService carrinhoService,
+        SiteAspasContext context,
+        IPedidoService pedidoService,
+        UserManager<Usuario> userManager)
     {
         _carrinhoService = carrinhoService;
-        _httpContextAccessor = httpContextAccessor;
         _context = context;
-        _pedidoService = pedidoService; 
+        _pedidoService = pedidoService;
+        _userManager = userManager;
     }
 
     public List<CarrinhoItem> Itens { get; set; } = new();
@@ -53,7 +55,6 @@ public class CarrinhoModel : PageModel
 
             _carrinhoService.SalvarCarrinho(carrinho);
         }
-
         return RedirectToPage();
     }
 
@@ -67,18 +68,18 @@ public class CarrinhoModel : PageModel
             carrinho.Remove(item);
             _carrinhoService.SalvarCarrinho(carrinho);
         }
-
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostFinalizarCompraAsync()
     {
-        int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        var user = await _userManager.GetUserAsync(User);
 
-        if (usuarioId == null)
+        if (user == null)
+        {
             return RedirectToPage("/Entrar");
+        }
 
-        // Busca o carrinho da sessão
         var carrinho = _carrinhoService.ObterCarrinho();
 
         if (!carrinho.Any())
@@ -87,33 +88,64 @@ public class CarrinhoModel : PageModel
             return Page();
         }
 
-        // Buscar os produtos no banco para obter o nome atualizado
-        var produtoIds = carrinho.Select(c => c.ProdutoId).ToList();
-        var produtos = await _context.Produtos
-            .Where(p => produtoIds.Contains(p.Id))
-            .ToDictionaryAsync(p => p.Id);
+        // Verifica estoque antes de finalizar (exemplo básico)
+       /* foreach (var item in carrinho)
+        {
+            var produto = await _context.Produtos.FindAsync(item.ProdutoId);
+            if (produto == null || produto.QuantidadeEstoque < item.Quantidade)
+            {
+                ModelState.AddModelError(string.Empty,
+                    $"Produto {produto?.Nome ?? "não encontrado"} sem estoque suficiente");
+                return Page();
+            }
+        }*/
 
         var pedido = new Pedido
         {
-            UsuarioId = usuarioId.Value,
+            UsuarioId = user.Id,
             DataPedido = DateTime.Now,
             Status = "Processando",
             Total = carrinho.Sum(item => item.Preco * item.Quantidade),
-            Itens = carrinho.Select(item => new PedidoItem
-            {
-                ProdutoId = item.ProdutoId,
-                Nome = produtos.ContainsKey(item.ProdutoId) ? produtos[item.ProdutoId].Nome : "Produto",
-                PrecoUnitario = item.Preco,
-                Quantidade = item.Quantidade
-            }).ToList()
+            Itens = new List<PedidoItem>()
         };
 
-        _context.Pedidos.Add(pedido);
-        await _context.SaveChangesAsync();
+        foreach (var item in carrinho)
+        {
+            var produto = await _context.Produtos.FindAsync(item.ProdutoId);
 
-        // Limpar carrinho da sessão
-        _carrinhoService.LimparCarrinho();
+            pedido.Itens.Add(new PedidoItem
+            {
+                ProdutoId = item.ProdutoId,
+                Nome = produto?.Nome ?? "Produto não encontrado",
+                PrecoUnitario = item.Preco,
+                Quantidade = item.Quantidade
+            });
 
-        return RedirectToPage("/CompraFinalizada", new { id = pedido.Id });
+           /* // Atualiza estoque
+            if (produto != null)
+            {
+                produto.QuantidadeEstoque -= item.Quantidade;
+            }*/
+        }
+
+        using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                _context.Pedidos.Add(pedido);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                _carrinhoService.LimparCarrinho();
+
+                return RedirectToPage("/CompraFinalizada", new { id = pedido.Id });
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                ModelState.AddModelError(string.Empty, "Ocorreu um erro ao processar seu pedido.");
+                return Page();
+            }
+        }
     }
 }

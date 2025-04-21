@@ -1,4 +1,3 @@
-using SiteAspas;
 using SiteAspas.Data;
 using SiteAspas.Models;
 using Microsoft.EntityFrameworkCore; 
@@ -39,7 +38,6 @@ public class PedidoService : IPedidoService
     {
         return await _context.Pedidos
             .Include(p => p.Itens)
-            
             .ThenInclude(i => i.ProdutoId) 
             .FirstOrDefaultAsync(p => p.Id == id);
     }

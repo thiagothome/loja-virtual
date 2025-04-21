@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas.Models;
 
 namespace SiteAspas.Pages
 {
+    [Authorize]
     public class CadastrarUsuarioCompleto : PageModel
     {
         [BindProperty]
@@ -26,8 +28,7 @@ namespace SiteAspas.Pages
 
         [BindProperty]
         public string ConfirmarSenha { get; set; }
-
-        // Dados de Endereço
+        
         [BindProperty]
         public string CEP { get; set; }
 
@@ -63,8 +64,6 @@ namespace SiteAspas.Pages
                 return Page();
             }
 
-            // Lógica para salvar no banco de dados
-            // Exemplo:
             var usuario = new Usuario
             {
                 NomeCompleto = NomeCompleto,
@@ -88,10 +87,7 @@ namespace SiteAspas.Pages
                     }
                 }
             };
-
-            // Aqui você salvaria no banco usando Entity Framework ou outro método
-
-            return RedirectToPage("/Sucesso"); // Redireciona após cadastro
+            return RedirectToPage("/Sucesso"); 
         }
     }
 }

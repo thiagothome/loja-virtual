@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using SiteAspas.Data;
 using SiteAspas.Models;
 using System.ComponentModel.DataAnnotations;
 
 public class EntrarModel : PageModel
 {
-    private readonly SiteAspasContext _context;
+    private readonly SignInManager<Usuario> _signInManager;
+    private readonly UserManager<Usuario> _userManager;
 
-    public EntrarModel(SiteAspasContext context)
+    public EntrarModel(
+        SignInManager<Usuario> signInManager,
+        UserManager<Usuario> userManager)
     {
-        _context = context;
+        _signInManager = signInManager;
+        _userManager = userManager;
     }
 
     [BindProperty]
@@ -22,6 +24,7 @@ public class EntrarModel : PageModel
 
     [BindProperty]
     [Required(ErrorMessage = "A senha é obrigatória")]
+    [DataType(DataType.Password)]
     public string Senha { get; set; }
 
     [BindProperty]
@@ -34,29 +37,17 @@ public class EntrarModel : PageModel
             return Page();
         }
 
-        var usuario = await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Email == Email);
+        var result = await _signInManager.PasswordSignInAsync(
+            Email,
+            Senha,
+            LembrarMe,
+            lockoutOnFailure: false);
 
-        if (usuario == null)
+        if (!result.Succeeded)
         {
             ModelState.AddModelError(string.Empty, "Email ou senha inválidos");
             return Page();
         }
-
-        var hasher = new PasswordHasher<Usuario>();
-        var result = hasher.VerifyHashedPassword(usuario, usuario.Senha, Senha);
-
-        if (result != PasswordVerificationResult.Success)
-        {
-            ModelState.AddModelError(string.Empty, "Email ou senha inválidos");
-            return Page();
-        }
-
-        // Cria a sessão do usuário
-        HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
-        HttpContext.Session.SetString("UsuarioNome", usuario.NomeCompleto);
-        HttpContext.Session.SetString("UsuarioEmail", usuario.Email);
-        HttpContext.Session.SetString("UsuarioTipo", usuario.Tipo.ToString());
 
         return RedirectToPage("/Index");
     }

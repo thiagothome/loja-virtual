@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SiteAspas;
 using SiteAspas.Models;
 using SiteAspas.Services;
 
-    public class ProdutoModel : PageModel
+[Authorize]
+public class ProdutoModel : PageModel
     {
         private readonly CarrinhoService _carrinhoService;
         private readonly ProdutoService _produtoService;
@@ -43,7 +44,7 @@ using SiteAspas.Services;
                 Quantidade = 1
             };
 
-            _carrinhoService.AdicionarItem(item); // Supondo que ainda seja um método síncrono
+            _carrinhoService.AdicionarItem(item); 
 
             return RedirectToPage("/Carrinho");
         }

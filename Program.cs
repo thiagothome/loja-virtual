@@ -1,41 +1,74 @@
 using SiteAspas.Data;
 using Microsoft.EntityFrameworkCore;
-using SiteAspas;
 using SiteAspas.Services;
 using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddDbContext<SiteAspasContext>(options =>
+builder.Services.AddDbContext<SiteAspasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddRazorPages(); 
+builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
+{
+    options.User.RequireUniqueEmail = true; 
+    options.SignIn.RequireConfirmedAccount = false; 
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+})
+.AddEntityFrameworkStores<SiteAspasContext>()
+.AddDefaultTokenProviders();
 
-builder.Services.AddScoped<ProdutoService>(); 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<CarrinhoService>();
-builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddIdentity<Usuario, IdentityRole<int>>()
-    .AddEntityFrameworkStores<SiteAspasContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Entrar";
+    options.AccessDeniedPath = "/Entrar"; 
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = ".SiteAspas.Session"; 
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
+builder.Services.AddScoped<ProdutoService>();
+builder.Services.AddScoped<CarrinhoService>();
+builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/"); 
+    options.Conventions.AllowAnonymousToPage("/Index"); 
+    options.Conventions.AllowAnonymousToPage("/Entrar");
+    options.Conventions.AllowAnonymousToPage("/CadastrarUsuario");
 });
 
 var app = builder.Build();
 
-app.MapGet("/Index", () => "Index");
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
 
-app.UseStaticFiles();             
-app.UseRouting();                 
-app.UseSession(); 
-app.MapRazorPages();   
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseSession();
 
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapRazorPages();
 app.Run();

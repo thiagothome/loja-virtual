@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using SiteAspas.Data;
 using SiteAspas.Models;
 using SiteAspas.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -64,10 +61,12 @@ public class CadastrarUsuarioModel : PageModel
     {
         if (!ModelState.IsValid)
         {
+            ViewData["Senha"] = Senha;
+            ViewData["ConfirmarSenha"] = ConfirmarSenha;
             return Page();
         }
 
-        // Verifica se e-mail já existe
+
         var usuarioExistente = await _userManager.FindByEmailAsync(Email);
         if (usuarioExistente != null)
         {
@@ -79,15 +78,16 @@ public class CadastrarUsuarioModel : PageModel
         {
             UserName = Email,
             Email = Email,
+            NormalizedEmail = _userManager.NormalizeEmail(Email), 
             NomeCompleto = NomeCompleto,
             Telefone = Telefone,
             Tipo = TipoUsuario.Cliente,
-            IsAtivo = false, // Requer confirmação por e-mail
+            IsAtivo = false, 
             EmailConfirmationToken = GenerateToken(),
             TokenExpiration = DateTime.UtcNow.AddHours(24)
         };
 
-        // Cria usuário com Identity
+        
         var result = await _userManager.CreateAsync(usuario, Senha);
 
         if (!result.Succeeded)
@@ -99,17 +99,17 @@ public class CadastrarUsuarioModel : PageModel
             return Page();
         }
 
-        // Envia e-mail de confirmação
+        
         await _emailService.EnviarEmailConfirmacaoAsync(
             usuario.Email,
             usuario.NomeCompleto,
             usuario.EmailConfirmationToken);
 
-        // Gera JWT para confirmação (opcional)
+        
         var token = GenerateJwtToken(usuario);
 
-        // Redireciona para página de confirmação
-        return RedirectToPage("/ConfirmarEmail", new { email = usuario.Email });
+        
+        return RedirectToPage("/EmailConfirmacao", new { email = usuario.Email });
     }
 
     private string GenerateToken()

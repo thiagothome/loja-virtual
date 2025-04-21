@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SiteAspas.Pages
 {
+    [Authorize]
     public class CadastrarProdutoModel : PageModel
     {
         private readonly SiteAspasContext _context;
@@ -34,7 +35,7 @@ namespace SiteAspas.Pages
                 return Page();
             }
 
-            // Processar upload da imagem
+            
             if (ImagemProduto != null && ImagemProduto.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "img", "produtos");

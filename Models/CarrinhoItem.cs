@@ -10,6 +10,6 @@ namespace SiteAspas.Models
         public decimal Preco { get; set; }
         public int Quantidade { get; set; }
         public int ClienteId { get; set; }
-        public DateTime DataAdicao { get; set; } = DateTime.UtcNow; // Opcional
+        public DateTime DataAdicao { get; set; } = DateTime.UtcNow; 
     }
 }

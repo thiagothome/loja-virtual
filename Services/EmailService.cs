@@ -14,8 +14,15 @@ namespace SiteAspas.Services
 
         public async Task EnviarEmailConfirmacaoAsync(string email, string nome, string token)
         {
+            var appUrl = _configuration["AppUrl"]?.TrimEnd('/');
+
+            if (string.IsNullOrEmpty(appUrl))
+            {
+                throw new ArgumentException("AppUrl não configurada");
+            }
+
             string assunto = "Confirme seu cadastro";
-            string linkConfirmacao = $"{_configuration["AppUrl"]}/AtivarConta?token={WebUtility.UrlEncode(token)}&email={WebUtility.UrlEncode(email)}";
+            string linkConfirmacao = $"{appUrl}/AtivarConta?token={WebUtility.UrlEncode(token)}&email={WebUtility.UrlEncode(email)}";
 
             string corpoHtml = $@"
                 <html>

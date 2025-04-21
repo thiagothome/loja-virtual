@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using SiteAspas.Data;
 using SiteAspas.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class CompraFinalizadaModel : PageModel
 {
     private readonly SiteAspasContext _context;

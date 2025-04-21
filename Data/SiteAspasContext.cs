@@ -15,49 +15,26 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
     public DbSet<PedidoItem> PedidoItems { get; set; }
     public DbSet<CarrinhoItem> CarrinhoItems { get; set; }
     public DbSet<Endereco> Enderecos { get; set; }
-    public DbSet<Usuario> Usuarios { get; set; }
+
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder); // Isso é CRUCIAL para o Identity
+        base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Pedido>().Property(p => p.Total).HasPrecision(18, 2);
-        modelBuilder.Entity<PedidoItem>().Property(p => p.PrecoUnitario).HasPrecision(18, 2);
-        modelBuilder.Entity<Produto>().Property(p => p.Preco).HasPrecision(18, 2);
-        modelBuilder.Entity<CarrinhoItem>().Property(c => c.Preco).HasPrecision(18, 2);
+        
         modelBuilder.Entity<Usuario>().ToTable("Usuarios");
         modelBuilder.Entity<IdentityRole<int>>().ToTable("Roles");
         modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UsuarioRoles");
-        // Configuração do usuário admin
-        var hasher = new PasswordHasher<Usuario>();
-        modelBuilder.Entity<Usuario>().HasData(new Usuario
-        {
-            Id = 1,
-            UserName = "admin@admin.com",
-            NormalizedUserName = "ADMIN@ADMIN.COM",
-            Email = "admin@admin.com",
-            NormalizedEmail = "ADMIN@ADMIN.COM",
-            EmailConfirmed = true,
-            PasswordHash = hasher.HashPassword(null, "Admin@123"),
-            SecurityStamp = Guid.NewGuid().ToString(),
-            ConcurrencyStamp = Guid.NewGuid().ToString(),
-            NomeCompleto = "Administrador do Sistema",
-            IsAtivo = true,
-            DataCadastro = DateTime.UtcNow,
-            Tipo = TipoUsuario.Administrador,
-            EmailConfirmationToken = null, // Ou um valor padrão
-            TokenExpiration = null
-        });
+        modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("UsuarioClaims");
+        modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UsuarioLogins");
+        modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UsuarioTokens");
+        modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
 
-        modelBuilder.Entity<Produto>(e =>
-        {
-            e.Property(p => p.Preco).HasPrecision(18, 2);
-            e.Property(p => p.Nome).IsRequired();
-            e.HasIndex(p => p.Nome);
-        });
-
+        
         modelBuilder.Entity<Pedido>(e =>
         {
+            e.Property(p => p.Total).HasPrecision(18, 2);
             e.HasOne(p => p.Usuario)
              .WithMany(u => u.Pedidos)
              .HasForeignKey(p => p.UsuarioId)
@@ -73,6 +50,13 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
              .OnDelete(DeleteBehavior.Restrict);
         });
 
+        modelBuilder.Entity<Produto>(e =>
+        {
+            e.Property(p => p.Preco).HasPrecision(18, 2);
+            e.Property(p => p.Nome).IsRequired();
+            e.HasIndex(p => p.Nome);
+        });
+
         modelBuilder.Entity<CarrinhoItem>(e =>
         {
             e.HasKey(c => c.Id);
@@ -82,6 +66,41 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
              .HasForeignKey(c => c.ProdutoId)
              .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(c => c.ClienteId);
+        });
+
+        
+        var hasher = new PasswordHasher<Usuario>();
+        modelBuilder.Entity<Usuario>().HasData(
+            new Usuario
+            {
+                Id = 1,
+                UserName = "admin@admin.com",
+                NormalizedUserName = "ADMIN@ADMIN.COM",
+                Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM", 
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "Admin@123"),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                NomeCompleto = "Administrador do Sistema",
+                IsAtivo = true,
+                Tipo = TipoUsuario.Administrador,
+                DataCadastro = DateTime.UtcNow,
+                EmailConfirmationToken = "SEED-TOKEN", 
+                TokenExpiration = DateTime.UtcNow.AddYears(1) 
+            });
+
+        
+        modelBuilder.Entity<Usuario>(e =>
+        {
+            e.Property(u => u.NormalizedEmail).IsRequired();
+            e.Property(u => u.NormalizedUserName).IsRequired();
+            e.Property(u => u.ConcurrencyStamp).IsRequired();
+            e.Property(u => u.SecurityStamp).IsRequired();
         });
     }
 }
