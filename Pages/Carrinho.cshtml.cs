@@ -88,7 +88,6 @@ public class CarrinhoModel : PageModel
             return Page();
         }
 
-        // Verifica estoque antes de finalizar (exemplo básico)
        /* foreach (var item in carrinho)
         {
             var produto = await _context.Produtos.FindAsync(item.ProdutoId);
@@ -121,7 +120,7 @@ public class CarrinhoModel : PageModel
                 Quantidade = item.Quantidade
             });
 
-           /* // Atualiza estoque
+           /* 
             if (produto != null)
             {
                 produto.QuantidadeEstoque -= item.Quantidade;
@@ -136,9 +135,11 @@ public class CarrinhoModel : PageModel
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
+                var result = RedirectToPage("/Pagamento", new { pedidoId = pedido.Id });
+
                 _carrinhoService.LimparCarrinho();
 
-                return RedirectToPage("/CompraFinalizada", new { id = pedido.Id });
+                return result;
             }
             catch
             {

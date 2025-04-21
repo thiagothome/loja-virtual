@@ -18,19 +18,21 @@ public class ProdutoModel : PageModel
 
         public Produto Produto { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
-            Produto = await _produtoService.ObterPorId(id);
 
-            if (Produto == null)
-            {
-                return NotFound();
-            }
+        if (id == null)
+            return RedirectToPage("/Entrar");
 
-            return Page();
-        }
+        Produto = await _produtoService.ObterPorId(id.Value);
 
-        public async Task<IActionResult> OnPostAdicionarAoCarrinhoAsync(int id)
+        if (Produto == null)
+            return NotFound();
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAdicionarAoCarrinhoAsync(int id)
         {
             var produto = await _produtoService.ObterPorId(id);
             if (produto == null) return NotFound();

@@ -25,7 +25,7 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Entrar";
-    options.AccessDeniedPath = "/Entrar"; 
+    options.AccessDeniedPath = "/Erro"; 
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.Cookie.HttpOnly = true;
@@ -53,6 +53,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Index"); 
     options.Conventions.AllowAnonymousToPage("/Entrar");
     options.Conventions.AllowAnonymousToPage("/CadastrarUsuario");
+    options.Conventions.AllowAnonymousToPage("/Erro");
 });
 
 var app = builder.Build();
@@ -61,6 +62,16 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
 }
+
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == 404)
+    {
+        response.Redirect("/Erro");
+    }
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
