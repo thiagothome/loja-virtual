@@ -9,11 +9,11 @@ using SiteAspas.Data;
 
 #nullable disable
 
-namespace SiteAspas.Data.Migrations
+namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    [Migration("20250420181003_ConfiguracaoInicial")]
-    partial class ConfiguracaoInicial
+    [Migration("20250422011114_MigracaoInicial")]
+    partial class MigracaoInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +76,7 @@ namespace SiteAspas.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -100,7 +100,7 @@ namespace SiteAspas.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UsuarioClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -121,7 +121,7 @@ namespace SiteAspas.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UsuarioLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -155,7 +155,7 @@ namespace SiteAspas.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UsuarioTokens", (string)null);
                 });
 
             modelBuilder.Entity("SiteAspas.Models.CarrinhoItem", b =>
@@ -250,8 +250,17 @@ namespace SiteAspas.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("DataPagamento")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("IdPagamento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetodoPagamento")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -357,6 +366,7 @@ namespace SiteAspas.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataCadastro")
@@ -391,10 +401,12 @@ namespace SiteAspas.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -408,6 +420,7 @@ namespace SiteAspas.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefone")
@@ -433,8 +446,7 @@ namespace SiteAspas.Data.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("Usuarios", (string)null);
 
@@ -443,19 +455,21 @@ namespace SiteAspas.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9dc4ee75-d11c-4d5a-a1da-a207d9024c8b",
-                            DataCadastro = new DateTime(2025, 4, 20, 18, 10, 3, 470, DateTimeKind.Utc).AddTicks(8154),
+                            ConcurrencyStamp = "aa87e1b9-e1c1-4a9b-91c9-ae0000000000",
+                            DataCadastro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@admin.com",
+                            EmailConfirmationToken = "SEED-TOKEN",
                             EmailConfirmed = true,
                             IsAtivo = true,
-                            LockoutEnabled = false,
+                            LockoutEnabled = true,
                             NomeCompleto = "Administrador do Sistema",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENHFX3MmD8dYVTqHYZm6EuPk8SEFY/ejGbQp2PtPQfMJn8TrNXSpCtdRUJcsIzBjxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE79zlwOqw4NCdC2LZT+06FCYSO/r5wBVPgWj3KB6du/VXPzp7EDGVVl5Wtvcq+MjQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e8bc761f-9b6b-453a-a535-412665d32207",
+                            SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Tipo = 1,
+                            TokenExpiration = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         });

@@ -44,13 +44,18 @@ public class MercadoPagoService
         using var jsonDoc = JsonDocument.Parse(content);
         var results = jsonDoc.RootElement.GetProperty("results");
 
-        if (results.GetArrayLength() == 0)
+        foreach (var result in results.EnumerateArray())
         {
-            throw new Exception("Bandeira do cartão não encontrada.");
+            var paymentTypeId = result.GetProperty("payment_type_id").GetString();
+            if (paymentTypeId == "credit_card")
+            {
+                return result.GetProperty("id").GetString();
+            }
         }
 
-        return results[0].GetProperty("id").GetString();
+        throw new Exception("Bandeira do cartão não encontrada.");
     }
+
 
     public async Task<PaymentResult> ProcessarPagamentoCartaoAsync(
     Pedido pedido,

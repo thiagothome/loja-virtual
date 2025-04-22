@@ -68,33 +68,33 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
             e.HasIndex(c => c.ClienteId);
         });
 
-        
         var hasher = new PasswordHasher<Usuario>();
-        modelBuilder.Entity<Usuario>().HasData(
-            new Usuario
-            {
-                Id = 1,
-                UserName = "admin@admin.com",
-                NormalizedUserName = "ADMIN@ADMIN.COM",
-                Email = "admin@admin.com",
-                NormalizedEmail = "ADMIN@ADMIN.COM", 
-                EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null, "Admin@123"),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                PhoneNumberConfirmed = false,
-                TwoFactorEnabled = false,
-                LockoutEnabled = true,
-                AccessFailedCount = 0,
-                NomeCompleto = "Administrador do Sistema",
-                IsAtivo = true,
-                Tipo = TipoUsuario.Administrador,
-                DataCadastro = DateTime.UtcNow,
-                EmailConfirmationToken = "SEED-TOKEN", 
-                TokenExpiration = DateTime.UtcNow.AddYears(1) 
-            });
+        var adminUser = new Usuario
+        {
+            Id = 1,
+            UserName = "admin@admin.com",
+            NormalizedUserName = "ADMIN@ADMIN.COM",
+            Email = "admin@admin.com",
+            NormalizedEmail = "ADMIN@ADMIN.COM",
+            EmailConfirmed = true,
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false,
+            LockoutEnabled = true,
+            AccessFailedCount = 0,
+            NomeCompleto = "Administrador do Sistema",
+            IsAtivo = true,
+            Tipo = TipoUsuario.Administrador,
+            DataCadastro = new DateTime(2024, 1, 1),
+            EmailConfirmationToken = "SEED-TOKEN",
+            TokenExpiration = new DateTime(2030, 1, 1),
+            SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
+            ConcurrencyStamp = "aa87e1b9-e1c1-4a9b-91c9-ae0000000000"
+        };
 
-        
+        adminUser.PasswordHash = hasher.HashPassword(adminUser, "Admin@123");
+
+        modelBuilder.Entity<Usuario>().HasData(adminUser);
+
         modelBuilder.Entity<Usuario>(e =>
         {
             e.Property(u => u.NormalizedEmail).IsRequired();

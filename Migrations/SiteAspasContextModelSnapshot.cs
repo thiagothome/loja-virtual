@@ -452,8 +452,8 @@ namespace SiteAspas.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "69e0b220-7a46-41fa-a517-fe24fa5b0282",
-                            DataCadastro = new DateTime(2025, 4, 21, 19, 27, 58, 396, DateTimeKind.Utc).AddTicks(4734),
+                            ConcurrencyStamp = "aa87e1b9-e1c1-4a9b-91c9-ae0000000000",
+                            DataCadastro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@admin.com",
                             EmailConfirmationToken = "SEED-TOKEN",
                             EmailConfirmed = true,
@@ -462,11 +462,11 @@ namespace SiteAspas.Migrations
                             NomeCompleto = "Administrador do Sistema",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEK6pXmXUrzLo6Im067WTXxQE7svO3MH9Zmlgf6wpXUbs2cdypfPCrchxh9oInHuINA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE79zlwOqw4NCdC2LZT+06FCYSO/r5wBVPgWj3KB6du/VXPzp7EDGVVl5Wtvcq+MjQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b0cc4493-c643-462e-8362-9c5084ea767e",
+                            SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Tipo = 1,
-                            TokenExpiration = new DateTime(2026, 4, 21, 19, 27, 58, 396, DateTimeKind.Utc).AddTicks(4741),
+                            TokenExpiration = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         });
