@@ -2,59 +2,90 @@
 @model PagamentoPixModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Pagamento PIX - Modo Teste";
+    ViewData["Title"] = "Pagamento via PIX";
 }
 
-<div class="container mt-4">
-    <div class="card border-primary">
-        <div class="card-header bg-primary text-white">
-            <h4><i class="fas fa-qrcode"></i> PAGAMENTO PIX (MODO TESTE)</h4>
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/pagamentoPix.css">
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Pagamento via PIX</h2>
+            <p class="auth-subtitle">Escaneie o QR Code ou copie o código para pagar</p>
         </div>
 
-        <div class="card-body">
-            <div class="alert alert-warning">
-                <h5 class="alert-heading">AMBIENTE DE TESTE</h5>
-                <p>Esta é uma simulação do fluxo de pagamento PIX.</p>
-            </div>
-
-            <div class="pix-payment-info p-3 mb-4 border rounded">
-                <h5 class="text-center">Pedido #@Model.PedidoId</h5>
-                <h3 class="text-center text-success">@Model.Valor.ToString("C")</h3>
-                <div class="text-center mt-3">
-                    <div class="mock-qr-code bg-light p-4 d-inline-block">
-                        <i class="fas fa-qrcode fa-5x text-muted"></i>
-                        <p class="mt-2 mb-0">QR Code de teste</p>
-                    </div>
+        <div class="pix-content">
+            <div class="pix-summary">
+                <div class="pix-amount">
+                    <span class="amount-label">Valor total:</span>
+                    <span class="amount-value">@Model.Valor.ToString("C")</span>
                 </div>
-                <p class="text-center mt-3">
-                    <small>Código de teste: <code>@Model.CodigoTeste</code></small>
-                </p>
+                <div class="pix-order">
+                    <span class="order-label">Pedido:</span>
+                    <span class="order-value">#@Model.PedidoId</span>
+                </div>
             </div>
 
-            <div class="text-center">
-                <form method="post" class="d-inline-block">
-                    <button type="submit" asp-page-handler="SimularPagamento"
-                            class="btn btn-success btn-lg mr-2">
-                        <i class="fas fa-check-circle"></i> Simular Pagamento
-                    </button>
+            <div class="pix-qrcode-container">
+                <div class="pix-qrcode">
+                    <img src="data:image/png;base64,@Model.QrCodeBase64" 
+                         alt="QR Code PIX" class="qrcode-image" />
+                </div>
+                <button class="pix-copy-btn" onclick="copiarCodigoPix()">
+                    <i class="fas fa-copy"></i> Copiar Código PIX
+                </button>
+                <input type="hidden" id="codigoPix" value="@Model.QrCode" />
+            </div>
 
-                    <button type="submit" asp-page-handler="Cancelar"
-                            class="btn btn-outline-danger btn-lg">
-                        <i class="fas fa-times-circle"></i> Cancelar
+            <div class="pix-instructions">
+                <h3 class="instructions-title">Como pagar:</h3>
+                <ol class="instructions-steps">
+                    <li>Abra o app do seu banco</li>
+                    <li>Selecione a opção PIX</li>
+                    <li>Escolha "Pagar com QR Code"</li>
+                    <li>Aponte a câmera para o QR Code acima</li>
+                    <li>Confirme o pagamento</li>
+                </ol>
+            </div>
+
+            <div class="pix-status-info">
+                <i class="fas fa-info-circle"></i>
+                <p>O pedido será confirmado automaticamente assim que o pagamento for aprovado.</p>
+            </div>
+
+            <div class="pix-actions">
+                <form method="post" id="verificarForm" asp-page-handler="VerificarPagamento">
+                    <button type="submit" class="auth-button">
+                        <span class="button-text">Verificar Pagamento</span>
+                        <span class="button-loader">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+
+                <form method="post" asp-page-handler="Cancelar" class="cancel-form">
+                    <button type="submit" class="cancel-button">
+                        Cancelar Pedido
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .mock-qr-code {
-        border: 2px dashed #ccc;
-        border-radius: 8px;
-    }
-
-    .pix-payment-info {
-        background-color: #f8f9fa;
-    }
-</style>
+@section Scripts {
+    <script>
+        function copiarCodigoPix() {
+            const codigo = document.getElementById('codigoPix').value;
+            navigator.clipboard.writeText(codigo).then(() => {
+                alert('Código PIX copiado! Cole no seu app de pagamentos.');
+            });
+        }
+        
+        // Verifica automaticamente a cada 30 segundos
+        setInterval(() => {
+            document.getElementById('verificarForm').submit();
+        }, 30000);
+    </script>
+}

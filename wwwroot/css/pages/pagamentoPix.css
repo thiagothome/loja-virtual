@@ -1,0 +1,152 @@
+
+.pix-content {
+    padding: 0 32px 32px;
+}
+
+.pix-summary {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.pix-amount, .pix-order {
+    display: flex;
+    flex-direction: column;
+}
+
+.amount-label, .order-label {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.amount-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.order-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.pix-qrcode-container {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.pix-qrcode {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.qrcode-image {
+    width: 200px;
+    height: 200px;
+}
+
+.pix-copy-btn {
+    background: none;
+    border: 1px solid #7b00ff;
+    color: #7b00ff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pix-copy-btn:hover {
+    background-color: #f5f3ff;
+}
+
+.pix-copy-btn i {
+    margin-right: 8px;
+}
+
+.pix-instructions {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.instructions-title {
+    font-size: 16px;
+    color: #1e293b;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.instructions-steps {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.instructions-steps li {
+    margin-bottom: 8px;
+    color: #475569;
+}
+
+.pix-status-info {
+    background-color: #f0f9ff;
+    border: 1px solid #e0f2fe;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.pix-status-info i {
+    color: #0369a1;
+    margin-right: 12px;
+    margin-top: 2px;
+}
+
+.pix-status-info p {
+    margin: 0;
+    color: #475569;
+    font-size: 14px;
+}
+
+.pix-actions {
+    text-align: center;
+}
+
+.cancel-form {
+    margin-top: 16px;
+}
+
+.cancel-button {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s;
+    text-decoration: underline;
+}
+
+.cancel-button:hover {
+    color: #475569;
+}
+
+@media (max-width: 480px) {
+    .pix-content {
+        padding: 0 24px 24px;
+    }
+    
+    .qrcode-image {
+        width: 180px;
+        height: 180px;
+    }
+}

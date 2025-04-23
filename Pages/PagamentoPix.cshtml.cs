@@ -5,11 +5,16 @@ using SiteAspas.Data;
 public class PagamentoPixModel : PageModel
 {
     private readonly SiteAspasContext _context;
+    private readonly MercadoPagoService _mercadoPagoService;
     private readonly ILogger<PagamentoPixModel> _logger;
 
-    public PagamentoPixModel(SiteAspasContext context, ILogger<PagamentoPixModel> logger)
+    public PagamentoPixModel(
+        SiteAspasContext context,
+        MercadoPagoService mercadoPagoService,
+        ILogger<PagamentoPixModel> logger)
     {
         _context = context;
+        _mercadoPagoService = mercadoPagoService;
         _logger = logger;
     }
 
@@ -17,44 +22,53 @@ public class PagamentoPixModel : PageModel
     public int PedidoId { get; set; }
 
     public decimal Valor { get; set; }
-    public string CodigoTeste { get; set; } 
+    public string QrCode { get; set; }
+    public string QrCodeBase64 { get; set; }
+    public string CodigoPix { get; set; }
 
-    public async Task OnGetAsync()
+    public async Task OnGetAsync(string qrCode, string qrCodeBase64, decimal valor)
     {
-        
-        Valor = decimal.Parse(TempData["ValorPix"]?.ToString() ?? "100.00");
-        CodigoTeste = $"PIXTEST{DateTime.Now:HHmmss}";
+        var pedido = await _context.Pedidos.FindAsync(PedidoId);
+        if (pedido == null)
+        {
+            RedirectToPage("/Carrinho");
+            return;
+        }
 
-        
-        TempData.Keep("ValorPix");
-        TempData.Keep("PedidoId");
+        Valor = valor;
+        QrCode = qrCode;
+        QrCodeBase64 = qrCodeBase64;
+        CodigoPix = QrCode;
     }
 
-    public async Task<IActionResult> OnPostSimularPagamentoAsync()
+    public async Task<IActionResult> OnPostVerificarPagamentoAsync()
     {
         try
         {
             var pedido = await _context.Pedidos.FindAsync(PedidoId);
             if (pedido == null)
             {
-                ModelState.AddModelError(string.Empty, "Pedido não encontrado");
-                return Page();
+                return NotFound();
             }
 
-            
-            pedido.Status = "Aprovado";
-            pedido.MetodoPagamento = "PIX";
-            pedido.DataPagamento = DateTime.Now;
+            var status = await _mercadoPagoService.ObterStatusPagamentoAsync(pedido.IdPagamento);
 
-            await _context.SaveChangesAsync();
+            if (status == "approved")
+            {
+                pedido.Status = "Aprovado";
+                pedido.DataPagamento = DateTime.Now;
+                await _context.SaveChangesAsync();
+                return RedirectToPage("/CompraFinalizada", new { id = PedidoId });
+            }
 
-            return RedirectToPage("/CompraFinalizada", new { id = PedidoId });
+            TempData["Mensagem"] = $"Pagamento ainda não confirmado. Status: {status}";
+            return RedirectToPage(new { pedidoId = PedidoId });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao simular pagamento PIX");
-            ModelState.AddModelError(string.Empty, "Erro ao processar pagamento");
-            return Page();
+            _logger.LogError(ex, "Erro ao verificar pagamento PIX");
+            TempData["Erro"] = "Erro ao verificar pagamento";
+            return RedirectToPage(new { pedidoId = PedidoId });
         }
     }
 

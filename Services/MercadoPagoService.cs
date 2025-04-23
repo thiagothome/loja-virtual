@@ -157,50 +157,43 @@ public class MercadoPagoService
     }
 
     public async Task<string> CriarPagamentoPixAsync(Pedido pedido)
+{
+    var body = new
     {
-        var body = new
+        transaction_amount = pedido.Total,
+        description = $"Pedido #{pedido.Id} - SiteAspas",
+        payment_method_id = "pix",
+        payer = new
         {
-            transaction_amount = pedido.Total,
-            description = "Pagamento via PIX - SiteAspas",
-            payment_method_id = "pix",
-            payer = new
+            email = pedido.Usuario.Email,
+            first_name = pedido.Usuario.NomeCompleto.Split(' ')[0],
+            last_name = pedido.Usuario.NomeCompleto.Split(' ').Last(),
+            identification = new
             {
-                email = pedido.Usuario.Email,
-                first_name = pedido.Usuario.NomeCompleto,
-                identification = new
-                {
-                    type = "CPF",
-                    number = "35656398811"
-                }
+                type = "CPF",
+                number = "12345678909" // Em produção, use o CPF real do usuário
             }
-        };
-
-        var json = JsonSerializer.Serialize(body);
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://api.mercadopago.com/v1/payments")
-        {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
-        };
-
-        request.Headers.Add("Authorization", $"Bearer {_accessToken}");
-        request.Headers.Add("X-Idempotency-Key", Guid.NewGuid().ToString());
-
-        try
-        {
-            var response = await _httpClient.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Erro ao gerar pagamento PIX no Mercado Pago: {content}");
-            }
-
-            return await response.Content.ReadAsStringAsync();
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao gerar pagamento PIX");
-            throw;
-        }
+    };
+
+    var json = JsonSerializer.Serialize(body);
+    var request = new HttpRequestMessage(HttpMethod.Post, "https://api.mercadopago.com/v1/payments")
+    {
+        Content = new StringContent(json, Encoding.UTF8, "application/json")
+    };
+
+    request.Headers.Add("X-Idempotency-Key", Guid.NewGuid().ToString());
+
+    var response = await _httpClient.SendAsync(request);
+    if (!response.IsSuccessStatusCode)
+    {
+        var errorContent = await response.Content.ReadAsStringAsync();
+        _logger.LogError("Erro ao criar pagamento PIX: {Error}", errorContent);
+        throw new Exception($"Erro ao criar pagamento PIX: {errorContent}");
     }
+
+    return await response.Content.ReadAsStringAsync();
+}
 
     public async Task<string> ObterStatusPagamentoAsync(string paymentId)
     {

@@ -52,28 +52,60 @@ public class PagamentoModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostProcessarPagamentoAsync(
+  public async Task<IActionResult> OnPostProcessarPagamentoAsync(
     string metodo,
     [FromForm] string numeroCartao,
     [FromForm] string validade,
     [FromForm] string cvv,
     [FromForm] string nomeTitular,
     [FromForm] int parcelas)
+{
+    var user = await _userManager.GetUserAsync(User);
+    if (user == null) return RedirectToPage("/Entrar");
+
+    var pedido = await _context.Pedidos
+        .FirstOrDefaultAsync(p => p.Id == PedidoId && p.UsuarioId == user.Id);
+    if (pedido == null) return NotFound();
+
+    if (metodo == "pix")
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null) return RedirectToPage("/Entrar");
-
-        var pedido = await _context.Pedidos
-            .FirstOrDefaultAsync(p => p.Id == PedidoId && p.UsuarioId == user.Id);
-        if (pedido == null) return NotFound();
-
-        if (metodo == "pix")
+        try
         {
+            var pixResponse = await _mercadoPagoService.CriarPagamentoPixAsync(pedido);
             
-            TempData["PedidoId"] = pedido.Id.ToString();
-            TempData["ValorPix"] = pedido.Total.ToString();
-            return RedirectToPage("/PagamentoPix", new { pedidoId = pedido.Id });
+            using var jsonDoc = JsonDocument.Parse(pixResponse);
+            var root = jsonDoc.RootElement;
+            
+            pedido.Status = "Aguardando Pagamento";
+            pedido.MetodoPagamento = "PIX";
+            pedido.IdPagamento = root.GetProperty("id").ToString();
+            
+            var qrCode = root.GetProperty("point_of_interaction")
+                             .GetProperty("transaction_data")
+                             .GetProperty("qr_code").GetString();
+            
+            var qrCodeBase64 = root.GetProperty("point_of_interaction")
+                                  .GetProperty("transaction_data")
+                                  .GetProperty("qr_code_base64").GetString();
+            
+            await _context.SaveChangesAsync();
+            
+            return RedirectToPage("/PagamentoPix", new { 
+                pedidoId = pedido.Id,
+                qrCode = qrCode,
+                qrCodeBase64 = qrCodeBase64,
+                valor = pedido.Total
+            });
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao processar pagamento PIX");
+            ModelState.AddModelError(string.Empty, "Erro ao processar pagamento PIX");
+            Pedido = pedido;
+            Total = pedido.Total;
+            return Page();
+        }
+    }
         else if (metodo == "cartao")
         {
             try
