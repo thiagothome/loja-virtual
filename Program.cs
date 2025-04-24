@@ -50,11 +50,12 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/"); 
+    //options.Conventions.AuthorizeFolder("/"); 
     options.Conventions.AllowAnonymousToPage("/Index"); 
     options.Conventions.AllowAnonymousToPage("/Entrar");
     options.Conventions.AllowAnonymousToPage("/CadastrarUsuario");
     options.Conventions.AllowAnonymousToPage("/Erro");
+    options.Conventions.AllowAnonymousToPage("/AtivarConta");
 });
 
 var app = builder.Build();
@@ -77,10 +78,20 @@ app.UseStatusCodePages(async context =>
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
+app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == 404)
+    {
+        context.Request.Path = "/Erro";
+        await next();
+    }
+});
 app.Run();

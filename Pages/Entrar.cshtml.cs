@@ -18,12 +18,12 @@ public class EntrarModel : PageModel
     }
 
     [BindProperty]
-    [Required(ErrorMessage = "O email é obrigatório")]
-    [EmailAddress(ErrorMessage = "Email inválido")]
+    [Required(ErrorMessage = "O email ï¿½ obrigatï¿½rio")]
+    [EmailAddress(ErrorMessage = "Email invï¿½lido")]
     public string Email { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "A senha é obrigatória")]
+    [Required(ErrorMessage = "A senha ï¿½ obrigatï¿½ria")]
     [DataType(DataType.Password)]
     public string Senha { get; set; }
 
@@ -31,24 +31,43 @@ public class EntrarModel : PageModel
     public bool LembrarMe { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
+{
+    if (!ModelState.IsValid)
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
-        var result = await _signInManager.PasswordSignInAsync(
-            Email,
-            Senha,
-            LembrarMe,
-            lockoutOnFailure: false);
-
-        if (!result.Succeeded)
-        {
-            ModelState.AddModelError(string.Empty, "Email ou senha inválidos");
-            return Page();
-        }
-
-        return RedirectToPage("/Index");
+        return Page();
     }
+
+    var usuario = await _userManager.FindByEmailAsync(Email);
+    if (usuario == null)
+    {
+        ModelState.AddModelError(string.Empty, "Email ou senha invÃ¡lidos.");
+        return Page();
+    }
+
+    if (!await _userManager.IsEmailConfirmedAsync(usuario))
+    {
+        ModelState.AddModelError(string.Empty, "VocÃª precisa confirmar seu e-mail antes de fazer login.");
+        return Page();
+    }
+
+    if (!usuario.IsAtivo)
+    {
+        ModelState.AddModelError(string.Empty, "Sua conta ainda nÃ£o estÃ¡ ativa.");
+        return Page();
+    }
+
+    var result = await _signInManager.PasswordSignInAsync(
+        Email,
+        Senha,
+        LembrarMe,
+        lockoutOnFailure: false);
+
+    if (!result.Succeeded)
+    {
+        ModelState.AddModelError(string.Empty, "Email ou senha invÃ¡lidos.");
+        return Page();
+    }
+
+    return RedirectToPage("/Index");
+}
 }

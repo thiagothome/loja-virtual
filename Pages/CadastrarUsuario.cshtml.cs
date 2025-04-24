@@ -5,10 +5,6 @@ using SiteAspas.Data;
 using SiteAspas.Models;
 using SiteAspas.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using SiteAspas.Services;
 
 public class CadastrarUsuarioModel : PageModel
@@ -66,7 +62,6 @@ public class CadastrarUsuarioModel : PageModel
             return Page();
         }
 
-
         var usuarioExistente = await _userManager.FindByEmailAsync(Email);
         if (usuarioExistente != null)
         {
@@ -87,7 +82,6 @@ public class CadastrarUsuarioModel : PageModel
             TokenExpiration = DateTime.UtcNow.AddHours(24)
         };
 
-        
         var result = await _userManager.CreateAsync(usuario, Senha);
 
         if (!result.Succeeded)
@@ -99,16 +93,12 @@ public class CadastrarUsuarioModel : PageModel
             return Page();
         }
 
-        
         await _emailService.EnviarEmailConfirmacaoAsync(
+            usuario.Id.ToString(),
             usuario.Email,
             usuario.NomeCompleto,
             usuario.EmailConfirmationToken);
 
-        
-        var token = GenerateJwtToken(usuario);
-
-        
         return RedirectToPage("/EmailConfirmacao", new { email = usuario.Email });
     }
 
@@ -116,31 +106,5 @@ public class CadastrarUsuarioModel : PageModel
     {
         return Guid.NewGuid().ToString("N") +
                Guid.NewGuid().ToString("N").Substring(0, 16);
-    }
-
-    private string GenerateJwtToken(Usuario usuario)
-    {
-        var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
-        var credentials = new SigningCredentials(
-            securityKey, SecurityAlgorithms.HmacSha256);
-
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, usuario.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new Claim(ClaimTypes.Role, usuario.Tipo.ToString())
-        };
-
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: credentials);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

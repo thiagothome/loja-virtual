@@ -12,9 +12,10 @@ namespace SiteAspas.Services
             _configuration = configuration;
         }
 
-        public async Task EnviarEmailConfirmacaoAsync(string email, string nome, string token)
+        public async Task EnviarEmailConfirmacaoAsync(string userId, string email, string nome, string token)
         {
             var appUrl = _configuration["AppUrl"]?.TrimEnd('/');
+            appUrl = appUrl.Replace("https://", "http://");
 
             if (string.IsNullOrEmpty(appUrl))
             {
@@ -22,7 +23,8 @@ namespace SiteAspas.Services
             }
 
             string assunto = "Confirme seu cadastro";
-            string linkConfirmacao = $"{appUrl}/AtivarConta?token={WebUtility.UrlEncode(token)}&email={WebUtility.UrlEncode(email)}";
+            //string linkConfirmacao = $"{appUrl}/ConfirmarEmail?token={WebUtility.UrlEncode(token)}&email={WebUtility.UrlEncode(email)}";
+            string linkConfirmacao = $"{appUrl}/ConfirmarEmail?userId={WebUtility.UrlEncode(userId)}&code={WebUtility.UrlEncode(token)}";
 
             string corpoHtml = $@"
                 <html>
