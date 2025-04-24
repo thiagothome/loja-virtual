@@ -57,6 +57,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Erro");
     options.Conventions.AllowAnonymousToPage("/AtivarConta");
     options.Conventions.AllowAnonymousToPage("/EmailConfirmacao");
+    options.Conventions.AllowAnonymousToPage("/ConfirmarEmail");
 });
 
 var app = builder.Build();
