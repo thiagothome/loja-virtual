@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Identity;
 using SiteAspas.Models;
 using SiteAspas.Services;
+using System;
 
 namespace SiteAspas.Pages
 {
@@ -15,7 +15,9 @@ namespace SiteAspas.Pages
         [BindProperty(SupportsGet = true)]
         public string Email { get; set; }
 
-        public EmailConfirmacaoModel(IEmailService emailService, UserManager<Usuario> userManager)
+        public EmailConfirmacaoModel(
+            IEmailService emailService,
+            UserManager<Usuario> userManager)
         {
             _emailService = emailService;
             _userManager = userManager;
@@ -26,33 +28,30 @@ namespace SiteAspas.Pages
         }
 
         public async Task<IActionResult> OnPostAsync()
-{
-    if (!string.IsNullOrEmpty(Email))
-    {
-        // Verificando se o usuário está autenticado
-        if (User.Identity.IsAuthenticated)
         {
-            var novoToken = Guid.NewGuid().ToString();
-
-            // Verificando se o 'User' contém o nome do usuário
-            string userName = User.Identity.Name;
-            string userId = _userManager.GetUserId(User);
-
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(Email))
             {
-                // Log para verificar se o 'userId' está sendo obtido corretamente
-                Console.WriteLine($"UserId: {userId}, UserName: {userName}");
+                return RedirectToPage("/Entrar");
             }
 
-            await _emailService.EnviarEmailConfirmacaoAsync(userId, Email, "Usuário", novoToken);
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.EmailConfirmationToken = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N").Substring(0, 16);
+            user.TokenExpiration = DateTime.UtcNow.AddHours(24); 
+
+            await _userManager.UpdateAsync(user);
+
+            await _emailService.EnviarEmailConfirmacaoAsync(
+                user.Id.ToString(),
+                user.Email,
+                user.NomeCompleto,
+                user.EmailConfirmationToken);
+
+            return Page();
         }
-        else
-        {
-            // Redirecionar para a página de login, por exemplo
-            return RedirectToPage("/Login");
-        }
-    }
-    return Page();
-}
     }
 }

@@ -25,8 +25,17 @@ namespace SiteAspas.Pages
             if (user == null)
                 return NotFound();
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            Sucesso = result.Succeeded;
+            if (user.EmailConfirmationToken == code && user.TokenExpiration > DateTime.UtcNow)
+            {
+                user.IsAtivo = true;
+                user.EmailConfirmed = true;
+                await _userManager.UpdateAsync(user);
+                Sucesso = true;
+            }
+            else
+            {
+                Sucesso = false;
+            }
 
             return Page();
         }

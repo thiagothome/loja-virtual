@@ -50,12 +50,13 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages(options =>
 {
-    //options.Conventions.AuthorizeFolder("/"); 
+    options.Conventions.AuthorizeFolder("/"); 
     options.Conventions.AllowAnonymousToPage("/Index"); 
     options.Conventions.AllowAnonymousToPage("/Entrar");
     options.Conventions.AllowAnonymousToPage("/CadastrarUsuario");
     options.Conventions.AllowAnonymousToPage("/Erro");
     options.Conventions.AllowAnonymousToPage("/AtivarConta");
+    options.Conventions.AllowAnonymousToPage("/EmailConfirmacao");
 });
 
 var app = builder.Build();
@@ -65,33 +66,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseStatusCodePages(async context =>
-{
-    var response = context.HttpContext.Response;
-
-    if (response.StatusCode == 404)
-    {
-        response.Redirect("/Erro");
-    }
-});
-
+app.UseStatusCodePagesWithReExecute("/Erro", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
-app.Use(async (context, next) =>
-{
-    await next();
-    if (context.Response.StatusCode == 404)
-    {
-        context.Request.Path = "/Erro";
-        await next();
-    }
-});
 app.Run();
