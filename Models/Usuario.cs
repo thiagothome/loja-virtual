@@ -33,12 +33,12 @@ namespace SiteAspas.Models
         public DateTime? DataNascimento { get; set; }
         public string? Telefone { get; set; }
 
-        [NotMapped] 
-        [Required(ErrorMessage = "A senha é obrigatória")]
+        [NotMapped]
         public string? Senha { get; set; }
+        public bool CadastroCompleto { get; set; } = false;
         [StringLength(256)]
-        public string? EmailConfirmationToken { get; set; } 
-        public DateTime? TokenExpiration { get; set; } 
+        public string? EmailConfirmationToken { get; set; }
+        public DateTime? TokenExpiration { get; set; }
         public bool IsAtivo { get; set; } = false;
         public TipoUsuario Tipo { get; set; } = TipoUsuario.Cliente;
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;

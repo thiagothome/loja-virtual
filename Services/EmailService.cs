@@ -22,7 +22,7 @@ namespace SiteAspas.Services
             }
 
             string assunto = "Confirme seu cadastro";
-            string linkConfirmacao = $"{appUrl}/ConfirmarEmail?userId={userId}&code={WebUtility.UrlEncode(token)}";
+            string linkConfirmacao = $"{appUrl}/Conta/ConfirmarEmail?userId={userId}&code={WebUtility.UrlEncode(token)}";
 
             string corpoHtml = $@"
                 <html>

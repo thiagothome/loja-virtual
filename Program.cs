@@ -12,8 +12,8 @@ builder.Services.AddDbContext<SiteAspasContext>(options =>
 
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
-    options.User.RequireUniqueEmail = true; 
-    options.SignIn.RequireConfirmedAccount = false; 
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
@@ -25,8 +25,8 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Entrar";
-    options.AccessDeniedPath = "/Erro"; 
+    options.LoginPath = "/Conta/Entrar";
+    options.AccessDeniedPath = "/Erro/Erro";
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.Cookie.HttpOnly = true;
@@ -38,7 +38,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.Name = ".SiteAspas.Session"; 
+    options.Cookie.Name = ".SiteAspas.Session";
     options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
@@ -50,14 +50,14 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/"); 
-    options.Conventions.AllowAnonymousToPage("/Index"); 
-    options.Conventions.AllowAnonymousToPage("/Entrar");
-    options.Conventions.AllowAnonymousToPage("/CadastrarUsuario");
-    options.Conventions.AllowAnonymousToPage("/Erro");
-    options.Conventions.AllowAnonymousToPage("/AtivarConta");
-    options.Conventions.AllowAnonymousToPage("/EmailConfirmacao");
-    options.Conventions.AllowAnonymousToPage("/ConfirmarEmail");
+    options.Conventions.AuthorizeFolder("/");
+    options.Conventions.AllowAnonymousToPage("/Home/Index");
+    options.Conventions.AllowAnonymousToPage("/Conta/Entrar");
+    options.Conventions.AllowAnonymousToPage("/Conta/CadastrarUsuario");
+    options.Conventions.AllowAnonymousToPage("/Erro/Erro");
+    options.Conventions.AllowAnonymousToPage("/Conta/AtivarConta");
+    options.Conventions.AllowAnonymousToPage("/Conta/EmailConfirmacao");
+    options.Conventions.AllowAnonymousToPage("/Conta/ConfirmarEmail");
 });
 
 var app = builder.Build();
@@ -67,7 +67,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute("/Erro", "?statusCode={0}");
+app.UseStatusCodePagesWithReExecute("/Erro/Erro", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();

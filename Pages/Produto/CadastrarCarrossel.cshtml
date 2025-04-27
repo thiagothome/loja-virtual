@@ -1,0 +1,48 @@
+@page
+@model SiteAspas.Pages.CadastrarCarrosselModel
+@{
+    Layout = "_Layout";
+    ViewData["HideHeader"] = true;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/cadastrarCarrossel.css">
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Atualizar Imagens do Carrossel</h2>
+            <p class="auth-subtitle">Selecione as 6 imagens para o carrossel principal</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="auth-form">
+            @if (TempData["Mensagem"] != null)
+            {
+                <div class="form-group">
+                    <div class="alert alert-success">@TempData["Mensagem"]</div>
+                </div>
+            }
+
+            @for (int i = 0; i < 6; i++)
+            {
+                <div class="form-group">
+                    <label class="form-label">Imagem @(i + 1):</label>
+                    <input type="file" name="Imagens" class="form-input" required />
+                </div>
+            }
+
+            <button type="submit" class="auth-button">
+                <span class="button-text">Atualizar Carrossel</span>
+                <span class="button-loader">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+        </form>
+        <div class="auth-form">
+            <a href="/" style="text-align: center; display: block; text-decoration: none;">
+                Voltar à Loja
+            </a>
+        </div>
+    </div>
+</div>

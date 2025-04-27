@@ -7,7 +7,9 @@ public class Produto
     public string Nome { get; set; } = string.Empty;
     public string ImagemUrl { get; set; } = string.Empty;
     public decimal Preco { get; set; }
+    public int Estoque { get; set; }
     public string Descricao { get; set; } = string.Empty;
+    public bool Ativo { get; set; } = true;
     public int? UsuarioId { get; set; }  
     public Usuario? Usuario { get; set; } 
 }

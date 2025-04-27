@@ -10,13 +10,14 @@
         hideHeader = (bool)headerValue;
     }
 
-    
+
     var usuario = await UserManager.GetUserAsync(User);
     var usuarioNome = usuario?.NomeCompleto;
 }
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,6 +32,7 @@
         <link rel="stylesheet" href="/css/autenticacao.css" />
     }
 </head>
+
 <body class="min-h-screen flex flex-col">
     @if (!hideHeader)
     {
@@ -39,20 +41,22 @@
                 <div class="max-w-1000px mx-auto flex justify-between items-center">
                     <div class="siga-nos flex items-center">
                         <span class="text-sm mr-2">Siga-nos:</span>
-                        <a href="https://instagram.com" target="_blank" class="text-pink-600 hover:text-pink-800">
+                        <a href="https://www.instagram.com/reel/DIklyBUA5qI/" target="_blank" class="text-pink-600 hover:text-pink-800">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
                     <div class="menu-links flex space-x-4">
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <a asp-page="/Carrinho" class="text-sm hover:text-purple-800">Carrinho</a>
+                            <a asp-page="/Produto/Carrinho" class="text-sm hover:text-purple-800">Carrinho</a>
                             <span class="text-gray-400">|</span>
-                            <a class="nav-link" asp-page="/CadastrarProduto">Vender Produto</a>
+                            <a class="nav-link" asp-page="/Produto/CadastrarProduto">Vender Produto</a>
+                            <span class="text-gray-400">|</span>
+                            <a class="nav-link" asp-page="/Produto/CadastrarCarrossel">Carrossel</a>
                             <span class="text-gray-400">|</span>
                             <span class="text-sm">Olá, @usuarioNome</span>
                             <span class="text-gray-400">|</span>
-                            <form asp-page="/Sair" method="post" class="inline">
+                            <form asp-page="/Conta/Sair" method="post" class="inline">
                                 <button type="submit" class="logout-btn text-sm text-purple-600 hover:text-purple-800 hover:underline">
                                     Sair
                                 </button>
@@ -60,9 +64,9 @@
                         }
                         else
                         {
-                            <a asp-page="/CadastrarUsuario" class="text-sm hover:text-purple-800">Cadastrar</a>
+                            <a asp-page="/Conta/CadastrarUsuario" class="text-sm hover:text-purple-800">Cadastrar</a>
                             <span class="text-gray-400">|</span>
-                            <a asp-page="/Entrar" class="text-sm hover:text-purple-800">Entrar</a>
+                            <a asp-page="/Conta/Entrar" class="text-sm hover:text-purple-800">Entrar</a>
                         }
                     </div>
                 </div>
@@ -72,14 +76,13 @@
                 <div class="header-content">
                     <div class="logo-col">
                         <h1 class="text-3xl font-bold text-purple-800">
-                            <a href="/" style="color: #7b00ff; font-size: 1.5rem;">ATELIÊ ADRI THOME</a>
+                            <a href="/" style="color: #7b00ff; font-size: 1.5rem;">PALOMA PRESENTES</a>
                         </h1>
                     </div>
 
                     <div class="search-col">
                         <form action="/busca" method="get">
-                            <input type="text" name="termo" placeholder="Buscar produtos..."
-                                   class="search-input" />
+                            <input type="text" name="termo" placeholder="Buscar produtos..." class="search-input" />
                         </form>
                     </div>
                 </div>
@@ -95,11 +98,12 @@
     {
         <footer class="bg-gray-100 py-6 mt-12">
             <div class="footer-container text-gray-600">
-                <p>© @DateTime.Now.Year ATELIÊ ADRI THOME - Todos os direitos reservados</p>
+                <p>© @DateTime.Now.Year PALOMA PRESENTES - Todos os direitos reservados</p>
             </div>
         </footer>
     }
 
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>

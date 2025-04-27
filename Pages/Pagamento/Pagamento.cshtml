@@ -1,0 +1,109 @@
+﻿@page
+@model SiteAspas.Pages.PagamentoModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Pagamento";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="/css/pages/pagamento.css" />
+}
+
+<div class="pagamento-container">
+    <div class="pagamento-card">
+        <div class="pagamento-header">
+            <h1 class="pagamento-title">Escolha a forma de pagamento</h1>
+        </div>
+
+        <div class="metodos-pagamento">
+            <form method="post" asp-page-handler="ProcessarPagamento">
+                <input type="hidden" name="pedidoId" value="@Model.PedidoId" />
+
+                <div class="metodo">
+                    <input type="radio" id="cartao" name="metodo" value="cartao" checked>
+                    <label for="cartao">Cartão de Crédito</label>
+
+                    <div class="detalhes-cartao">
+                        <div class="form-group">
+                            <label for="numeroCartao">Número do Cartão</label>
+                            <input type="text" id="numeroCartao" name="numeroCartao" class="form-control" placeholder="1234 5678 9012 3456">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="validade">Validade</label>
+                                <input type="text" id="validade" name="validade" class="form-control" placeholder="MM/AA" maxlength="5">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" name="cvv" class="form-control" placeholder="123">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nomeTitular">Nome do Titular</label>
+                            <input type="text" id="nomeTitular" name="nomeTitular" class="form-control" placeholder="Como no cartão">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="parcelas">Parcelas</label>
+                            <select id="parcelas" name="parcelas" class="form-control">
+                                <option value="1">1x sem juros</option>
+                                <option value="2">2x sem juros</option>
+                                <option value="3">3x sem juros</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metodo">
+                    <input type="radio" id="pix" name="metodo" value="pix">
+                    <label for="pix">PIX</label>
+                    <div class="detalhes-pix" style="display: none;">
+                        <p>Após confirmar o pedido, você receberá um QR Code para pagamento.</p>
+                    </div>
+                </div>
+
+                <div class="metodo">
+                    <input type="radio" id="boleto" name="metodo" value="boleto">
+                    <label for="boleto">Boleto Bancário</label>
+                    <div class="detalhes-boleto" style="display: none;">
+                        <p>O boleto será gerado e enviado para seu e-mail.</p>
+                    </div>
+                </div>
+
+                <div class="total-pagamento">
+                    <strong>Total a pagar:</strong> @Model.Total.ToString("C")
+                </div>
+
+                <button type="submit" class="btn-confirmar-pagamento">Confirmar Pagamento</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('validade').addEventListener('blur', function () {
+            const input = this.value.trim();
+            const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+            if (!regex.test(input)) {
+                alert('Data inválida. Use o formato MM/AA.');
+                this.focus();
+                return;
+            }
+
+            const [mes, ano] = input.split('/').map(Number);
+            const dataAtual = new Date();
+            const mesAtual = dataAtual.getMonth() + 1;
+            const anoAtual = dataAtual.getFullYear() % 100; 
+
+            if (ano < anoAtual || (ano === anoAtual && mes < mesAtual)) {
+                alert('A validade deve ser igual ou posterior ao mês atual.');
+                this.focus();
+            }
+        });
+    </script>
+}

@@ -12,15 +12,16 @@ public class ProdutoService
     {
         _context = context;
     }
-    
+
     public async Task<List<Produto>> ObterDestaques()
     {
         return await _context.Produtos
-            .OrderByDescending(p => p.Id) 
-            .Take(10) 
+            .Where(p => p.Ativo)
+            .OrderByDescending(p => p.Id)
+            .Take(10)
             .ToListAsync();
     }
-    
+
     public async Task<Produto?> ObterPorId(int id)
     {
         return await _context.Produtos.FindAsync(id);
@@ -38,16 +39,17 @@ public class ProdutoService
         await _context.SaveChangesAsync();
     }
 
-    public async Task RemoverProduto(int id)
+    public async Task Atualizar(Produto produto)
     {
-        var produto = await _context.Produtos.FindAsync(id);
-        if (produto != null)
+        if (produto == null)
         {
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
+            throw new ArgumentNullException(nameof(produto));
         }
+
+        _context.Produtos.Update(produto);
+        await _context.SaveChangesAsync();
     }
-    
+
     public async Task<List<Produto>> ObterProdutosPorUsuario(int usuarioId)
     {
         return await _context.Produtos

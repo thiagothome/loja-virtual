@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SiteAspas.Data;
 
@@ -11,9 +12,11 @@ using SiteAspas.Data;
 namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    partial class SiteAspasContextModelSnapshot : ModelSnapshot
+    [Migration("20250426222526_AdicionadoPropsPix")]
+    partial class AdicionadoPropsPix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -328,15 +331,9 @@ namespace SiteAspas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Estoque")
-                        .HasColumnType("int");
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
@@ -481,7 +478,7 @@ namespace SiteAspas.Migrations
                             NomeCompleto = "Administrador do Sistema",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFgFmxYg4eG0mhUgTk0vHT1jyR9TQ2b9IwMdS+ypumqUE7ecQRNtQsHw/o/EbACB/g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPnvjcOjnCWa3i5EbnV+qLnCU3J8vxlItHeVXEwwBtqOX6oxuhPWpOyKypeEsUJVwQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Tipo = 1,

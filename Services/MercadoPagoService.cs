@@ -10,19 +10,20 @@ using SiteAspas.Models;
 public class MercadoPagoService
 {
     private readonly HttpClient _httpClient;
-    private readonly SignInManager<Usuario> _signInManager;
-    private readonly UserManager<Usuario> _userManager;
-    private readonly string _accessToken = "TEST-418901374084346-042114-ffc83b782a91c82323ef848f2d031f42-268218013";
-    private readonly ILogger<PagamentoModel> _logger;
-    private readonly IConfiguration _config;
+    private readonly ILogger<MercadoPagoService> _logger;
+    private readonly string _accessToken;
+    private string ApiBaseUrl = "https://api.mercadopago.com/v1/payments";
+    private const int PixExpirationMinutes = 30; 
 
-    public MercadoPagoService(HttpClient httpClient, IConfiguration config, ILogger<PagamentoModel> logger)
+    public MercadoPagoService(
+        HttpClient httpClient,
+        IConfiguration config,
+        ILogger<MercadoPagoService> logger)
     {
         _httpClient = httpClient;
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-        _httpClient = httpClient;
-        _config = config;
         _logger = logger;
+        _accessToken = config["MercadoPago:AccessToken"];
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
     }
 
     private async Task<string> ObterBandeiraCartao(string numeroCartao)
@@ -156,44 +157,84 @@ public class MercadoPagoService
         public string StatusDetail { get; set; }
     }
 
-    public async Task<string> CriarPagamentoPixAsync(Pedido pedido)
-{
-    var body = new
+    public async Task<PixPaymentResult> CriarPagamentoPixAsync(Pedido pedido)
     {
-        transaction_amount = pedido.Total,
-        description = $"Pedido #{pedido.Id} - SiteAspas",
-        payment_method_id = "pix",
-        payer = new
+        try
         {
-            email = pedido.Usuario.Email,
-            first_name = pedido.Usuario.NomeCompleto.Split(' ')[0],
-            last_name = pedido.Usuario.NomeCompleto.Split(' ').Last(),
-            identification = new
+            var expirationDate = DateTime.UtcNow.AddMinutes(PixExpirationMinutes)
+                .ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+
+            var body = new
             {
-                type = "CPF",
-                number = "12345678909" // Em produção, use o CPF real do usuário
+                transaction_amount = pedido.Total,
+                description = $"Pedido #{pedido.Id} - {pedido.Usuario.NomeCompleto}",
+                payment_method_id = "pix",
+                date_of_expiration = expirationDate,
+                payer = new
+                {
+                    email = pedido.Usuario.Email,
+                    first_name = pedido.Usuario.NomeCompleto.Split(' ')[0],
+                    last_name = pedido.Usuario.NomeCompleto.Split(' ').Last(),
+                    identification = new
+                    {
+                        type = "CPF",
+                        number = pedido.Usuario.CPF.Replace(".", "").Replace("-", "")
+                    }
+                }
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, ApiBaseUrl)
+            {
+                Content = new StringContent(
+                    JsonSerializer.Serialize(body),
+                    Encoding.UTF8,
+                    "application/json")
+            };
+
+            request.Headers.Add("X-Idempotency-Key", Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Erro ao criar pagamento PIX. Status: {StatusCode}. Response: {Content}",
+                    response.StatusCode, content);
+                throw new MercadoPagoException("Erro ao criar pagamento PIX", content);
             }
+
+            using var jsonDoc = JsonDocument.Parse(content);
+            var root = jsonDoc.RootElement;
+
+            return new PixPaymentResult
+            {
+                Id = root.GetProperty("id").ToString(),
+                QrCode = root.GetProperty("point_of_interaction")
+                     .GetProperty("transaction_data")
+                     .GetProperty("qr_code")
+                     .GetString() ?? string.Empty,
+                QrCodeBase64 = root.GetProperty("point_of_interaction")
+                           .GetProperty("transaction_data")
+                           .GetProperty("qr_code_base64")
+                           .GetString() ?? string.Empty,
+                ExpirationDate = DateTime.Parse(root.GetProperty("date_of_expiration").GetString())
+            };
+
         }
-    };
-
-    var json = JsonSerializer.Serialize(body);
-    var request = new HttpRequestMessage(HttpMethod.Post, "https://api.mercadopago.com/v1/payments")
-    {
-        Content = new StringContent(json, Encoding.UTF8, "application/json")
-    };
-
-    request.Headers.Add("X-Idempotency-Key", Guid.NewGuid().ToString());
-
-    var response = await _httpClient.SendAsync(request);
-    if (!response.IsSuccessStatusCode)
-    {
-        var errorContent = await response.Content.ReadAsStringAsync();
-        _logger.LogError("Erro ao criar pagamento PIX: {Error}", errorContent);
-        throw new Exception($"Erro ao criar pagamento PIX: {errorContent}");
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado ao criar pagamento PIX");
+            throw;
+        }
     }
 
-    return await response.Content.ReadAsStringAsync();
-}
+    public class PixPaymentResult
+    {
+        public string Id { get; set; }
+        public string QrCode { get; set; }
+        public string QrCodeBase64 { get; set; }
+        public DateTime ExpirationDate { get; set; } 
+    }
 
     public async Task<string> ObterStatusPagamentoAsync(string paymentId)
     {
@@ -220,5 +261,16 @@ public class MercadoPagoService
             _logger.LogError(ex, "Erro ao verificar status do pagamento {PaymentId}", paymentId);
             throw;
         }
+    }
+}
+
+public class MercadoPagoException : Exception
+{
+    public string ResponseContent { get; }
+
+    public MercadoPagoException(string message, string responseContent)
+        : base(message)
+    {
+        ResponseContent = responseContent;
     }
 }

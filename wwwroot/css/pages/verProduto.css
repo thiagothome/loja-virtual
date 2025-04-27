@@ -50,3 +50,50 @@
 .btn-adicionar:hover {
     background-color: #e0ad00;
 }
+
+
+@media (max-width: 768px) {
+    .produto-detalhe-container {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+    
+    .produto-detalhe-container .imagem img {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+    }
+    
+    .produto-detalhe-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .produto-detalhe-container .preco {
+        font-size: 1.3rem;
+    }
+    
+    .btn-adicionar {
+        width: 100%;
+        padding: 12px 20px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .produto-detalhe-container {
+        padding: 0.8rem;
+    }
+    
+    .produto-detalhe-container h1 {
+        font-size: 1.3rem;
+    }
+    
+    .produto-detalhe-container .descricao {
+        font-size: 0.9rem;
+    }
+    
+    .produto-detalhe-container .preco {
+        font-size: 1.2rem;
+    }
+}

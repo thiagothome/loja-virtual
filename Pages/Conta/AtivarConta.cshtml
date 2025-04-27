@@ -1,0 +1,20 @@
+﻿@page
+@model SiteAspas.Pages.AtivarContaModel
+
+<div class="container">
+    @if (Model.Sucesso)
+    {
+        <div class="alert alert-success">
+            <h4>@Model.Mensagem</h4>
+            <p>Você pode agora <a asp-page="/Conta/Entrar">fazer login</a>.</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <h4>Erro na ativação</h4>
+            <p>@Model.Mensagem</p>
+            <p>Por favor, solicite um novo link de confirmação.</p>
+        </div>
+    }
+</div>

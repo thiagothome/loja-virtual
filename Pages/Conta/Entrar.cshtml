@@ -1,0 +1,67 @@
+@page
+@model EntrarModel
+@{
+    Layout = "_Layout";
+    ViewData["HideHeader"] = true;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/entrar.css">
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Bem-vindo de volta</h2>
+            <p class="auth-subtitle">Faça login para acessar sua conta</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            <div class="form-group">
+                <label for="Email" class="form-label">E-mail</label>
+                <input asp-for="Email" type="email" class="form-input" placeholder="seu@email.com" required />
+                <span asp-validation-for="Email" class="form-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Senha" class="form-label">Senha</label>
+                <div class="password-input">
+                    <input asp-for="Senha" type="password" class="form-input" placeholder="••••••••" required />
+                    <button type="button" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Senha" class="form-error"></span>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" />
+                    <span class="checkmark"></span>
+                    Lembrar-me
+                </label>
+                <a asp-page="/RecuperarSenha" class="forgot-password">Esqueceu a senha?</a>
+            </div>
+
+            <button type="submit" class="auth-button">
+                <span class="button-text">Entrar</span>
+                <span class="button-loader">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+
+            <div class="auth-divider">
+                <span>ou</span>
+            </div>
+
+            <button type="button" class="social-button google-button">
+                <i class="fab fa-google"></i>
+                Continuar com Google
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Não tem uma conta? <a asp-page="/Conta/CadastrarUsuario" class="auth-link">Cadastre-se</a></p>
+        </div>
+    </div>
+</div>

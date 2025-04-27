@@ -1,0 +1,49 @@
+@page "/"
+@model SiteAspas.Pages.IndexModel
+@using Microsoft.AspNetCore.Identity
+@using SiteAspas.Models
+@using SiteAspas.Models.Enums
+@inject UserManager<Usuario> _userManager
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "SiteAspas - Brechó Pet";
+}
+
+<div class="carrossel-container mb-10">
+    <h2 class="text-2xl font-bold mb-5 text-center">Velas aromáticas</h2>
+    <div class="carrossel-wrapper">
+        <div class="carrossel">
+            @for (int i = 1; i <= 6; i++)
+            {
+                <img src="@($"/img/carrossel/v{i}.jpg")" alt="Item @i" class="carrossel-img" />
+            }
+        </div>
+    </div>
+</div>
+
+<div class="produtos-container">
+    @foreach (var produto in Model.ProdutosDestaque)
+    {
+        <div class="card">
+            <img src="@produto.ImagemUrl" class="card-img" />
+            <div class="card-body">
+                <div class="card-title">@produto.Nome</div>
+                <div class="card-price">@produto.Preco.ToString("C")</div>
+                <button class="card-button" onclick="location.href='/Produto/Produto/@produto.Id'">Ver Produto</button>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    @if (user != null && user.Tipo == TipoUsuario.Administrador)
+                    {
+                        <form method="post" asp-page-handler="Desativar" asp-route-id="@produto.Id" class="d-inline">
+                            <button type="submit" class="card-button card-button-desativar" onclick="return confirm('Tem certeza que deseja desativar este produto?')">
+                                Desativar
+                            </button>
+                        </form>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
