@@ -374,7 +374,8 @@ namespace SiteAspas.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CPF")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<bool>("CadastroCompleto")
                         .HasColumnType("bit");
@@ -411,9 +412,10 @@ namespace SiteAspas.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("NomeCompleto")
+                    b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NormalizedEmail")
                         .IsRequired()
@@ -438,8 +440,14 @@ namespace SiteAspas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Sobrenome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Telefone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("Tipo")
                         .HasColumnType("int");
@@ -470,20 +478,23 @@ namespace SiteAspas.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
+                            CPF = "",
                             CadastroCompleto = false,
                             ConcurrencyStamp = "aa87e1b9-e1c1-4a9b-91c9-ae0000000000",
                             DataCadastro = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DataNascimento = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@admin.com",
                             EmailConfirmationToken = "SEED-TOKEN",
                             EmailConfirmed = true,
                             IsAtivo = true,
                             LockoutEnabled = true,
-                            NomeCompleto = "Administrador do Sistema",
+                            Nome = "Adriana",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFgFmxYg4eG0mhUgTk0vHT1jyR9TQ2b9IwMdS+ypumqUE7ecQRNtQsHw/o/EbACB/g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH+QoB9Vpx2B9ovC0twF3tLr3GsHehTh6whaEFFHoMwKGEJqL/mO6ZboZh0CsAvYWg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
+                            Sobrenome = "Thome",
                             Tipo = 1,
                             TokenExpiration = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TwoFactorEnabled = false,

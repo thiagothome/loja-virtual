@@ -337,3 +337,7 @@
         font-size: var(--font-size-title-sm);
     }
 }
+
+.erroValidacao {
+    color: red;
+}

@@ -16,8 +16,6 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
     public DbSet<CarrinhoItem> CarrinhoItems { get; set; }
     public DbSet<Endereco> Enderecos { get; set; }
 
-    
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -81,7 +79,10 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
             TwoFactorEnabled = false,
             LockoutEnabled = true,
             AccessFailedCount = 0,
-            NomeCompleto = "Administrador do Sistema",
+            Nome = "Adriana",
+            Sobrenome = "Thome",
+            CPF = "",
+            DataNascimento = new DateTime(),
             IsAtivo = true,
             Tipo = TipoUsuario.Administrador,
             DataCadastro = new DateTime(2024, 1, 1),
@@ -91,7 +92,7 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
             ConcurrencyStamp = "aa87e1b9-e1c1-4a9b-91c9-ae0000000000"
         };
 
-        adminUser.PasswordHash = hasher.HashPassword(adminUser, "Admin@123");
+        adminUser.PasswordHash = hasher.HashPassword(adminUser, "Aa200200@");
 
         modelBuilder.Entity<Usuario>().HasData(adminUser);
 

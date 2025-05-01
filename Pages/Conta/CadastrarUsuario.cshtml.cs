@@ -27,79 +27,116 @@ public class CadastrarUsuarioModel : PageModel
     }
 
     [BindProperty]
-    [Required(ErrorMessage = "O nome completo é obrigatório")]
-    [StringLength(100, ErrorMessage = "Máximo de 100 caracteres")]
-    public string NomeCompleto { get; set; }
+    public Usuario Usuario { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "O email é obrigatório")]
-    [EmailAddress(ErrorMessage = "Email inválido")]
-    public string Email { get; set; }
-
-    [BindProperty]
+    [Required(ErrorMessage = "O número de telefone é obrigatório")]
+    [StringLength(15, MinimumLength = 10, ErrorMessage = "Telefone inválido")]
     [RegularExpression(@"^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$",
-        ErrorMessage = "Telefone inválido. Use o formato (XX) XXXXX-XXXX")]
+    ErrorMessage = "Formato inválido. Use (XX) XXXXX-XXXX")]
     public string Telefone { get; set; }
 
     [BindProperty]
     [Required(ErrorMessage = "A senha é obrigatória")]
-    [StringLength(100, MinimumLength = 8, ErrorMessage = "Mínimo 8 caracteres")]
-    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
-        ErrorMessage = "Senha deve conter maiúsculas, minúsculas, números e símbolos")]
+    [DataType(DataType.Password)]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 100 caracteres")]
     public string Senha { get; set; }
 
     [BindProperty]
     [Required(ErrorMessage = "Confirme a senha")]
-    [Compare("Senha", ErrorMessage = "As senhas não coincidem")]
+    [DataType(DataType.Password)]
+    [Compare("Senha", ErrorMessage = "As senhas não conferem")]
     public string ConfirmarSenha { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
-            ViewData["Senha"] = Senha;
+            ViewData["Senha"] = Usuario.Senha;
             ViewData["ConfirmarSenha"] = ConfirmarSenha;
             return Page();
         }
 
-        var usuarioExistente = await _userManager.FindByEmailAsync(Email);
-        if (usuarioExistente != null)
+        var usuarioValidacao = await _userManager.FindByEmailAsync(Usuario.Email);
+        if (usuarioValidacao?.Email == Usuario.Email)
         {
-            ModelState.AddModelError("Email", "Este e-mail já está cadastrado.");
+            ModelState.AddModelError("Usuario.Email", "Este e-mail já está cadastrado.");
             return Page();
         }
 
-        var usuario = new Usuario
+        var smtpSettings = _configuration.GetSection("SmtpSettings");
+        if (!ValidateSmtpSettings(smtpSettings))
         {
-            UserName = Email,
-            Email = Email,
-            NormalizedEmail = _userManager.NormalizeEmail(Email),
-            NomeCompleto = NomeCompleto,
-            Telefone = Telefone,
-            Tipo = TipoUsuario.Cliente,
-            IsAtivo = false,
-            EmailConfirmationToken = GenerateToken(),
-            TokenExpiration = DateTime.UtcNow.AddHours(24)
-        };
+            ModelState.AddModelError("Email", "Verifique o endereço de e-mail ou contate o suporte.");
+            return Page();
+        }
 
-        var result = await _userManager.CreateAsync(usuario, Senha);
+        using var transaction = await _context.Database.BeginTransactionAsync();
 
-        if (!result.Succeeded)
+        try
         {
-            foreach (var error in result.Errors)
+            var usuario = new Usuario
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                UserName = Usuario.Email,
+                Email = Usuario.Email,
+                NormalizedEmail = _userManager.NormalizeEmail(Usuario.Email),
+                Nome = Usuario.Nome,
+                Sobrenome = Usuario.Sobrenome,
+                Telefone = Usuario.Telefone,
+                Tipo = TipoUsuario.Cliente,
+                IsAtivo = false,
+                EmailConfirmationToken = GenerateToken(),
+                TokenExpiration = DateTime.UtcNow.AddHours(24)
+            };
+
+            var result = await _userManager.CreateAsync(usuario, Senha);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return Page();
             }
+
+            await _emailService.EnviarEmailConfirmacaoAsync(
+                usuario.Id.ToString(),
+                usuario.Email,
+                usuario.Nome,
+                usuario.EmailConfirmationToken);
+
+            await transaction.CommitAsync();
+
+            return RedirectToPage("/Conta/EmailConfirmacao", new { email = usuario.Email });
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao processar seu cadastro. Por favor, tente novamente.");
             return Page();
         }
+    }
 
-        await _emailService.EnviarEmailConfirmacaoAsync(
-            usuario.Id.ToString(),
-            usuario.Email,
-            usuario.NomeCompleto,
-            usuario.EmailConfirmationToken);
+    private bool ValidateSmtpSettings(IConfigurationSection smtpSettings)
+    {
+        var requiredSettings = new[] { "Host", "Port", "Username", "Password", "FromEmail", "FromName" };
 
-        return RedirectToPage("/Conta/EmailConfirmacao", new { email = usuario.Email });
+        foreach (var setting in requiredSettings)
+        {
+            if (string.IsNullOrEmpty(smtpSettings[setting]))
+            {
+                return false;
+            }
+        }
+
+        if (!int.TryParse(smtpSettings["Port"], out _))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private string GenerateToken()

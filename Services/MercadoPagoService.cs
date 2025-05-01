@@ -167,14 +167,14 @@ public class MercadoPagoService
             var body = new
             {
                 transaction_amount = pedido.Total,
-                description = $"Pedido #{pedido.Id} - {pedido.Usuario.NomeCompleto}",
+                description = $"Pedido #{pedido.Id} - {pedido.Usuario.Nome}",
                 payment_method_id = "pix",
                 date_of_expiration = expirationDate,
                 payer = new
                 {
                     email = pedido.Usuario.Email,
-                    first_name = pedido.Usuario.NomeCompleto.Split(' ')[0],
-                    last_name = pedido.Usuario.NomeCompleto.Split(' ').Last(),
+                    first_name = pedido.Usuario.Nome.Split(' ')[0],
+                    last_name = pedido.Usuario.Nome.Split(' ').Last(),
                     identification = new
                     {
                         type = "CPF",

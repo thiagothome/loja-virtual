@@ -48,7 +48,7 @@ namespace SiteAspas.Pages
             await _emailService.EnviarEmailConfirmacaoAsync(
                 user.Id.ToString(),
                 user.Email,
-                user.NomeCompleto,
+                user.Nome,
                 user.EmailConfirmationToken);
 
             return Page();
