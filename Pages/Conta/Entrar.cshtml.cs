@@ -32,6 +32,8 @@ namespace SiteAspas.Pages
         [BindProperty]
         public bool LembrarMe { get; set; }
 
+
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -42,14 +44,13 @@ namespace SiteAspas.Pages
             var usuario = await _userManager.FindByEmailAsync(Email);
             if (usuario?.Email != Email)
             {
-                ModelState.AddModelError("Email", "Email inválida.");
+                ModelState.AddModelError("Email", "Email inválido.");
                 return Page();
             }
 
             if (!await _userManager.IsEmailConfirmedAsync(usuario))
             {
-                ModelState.AddModelError(string.Empty, "Você precisa confirmar seu e-mail antes de fazer login.");
-                return Page();
+                return RedirectToPage("ContaNaoConfirmada", new { email = Email });
             }
 
             if (!usuario.IsAtivo)

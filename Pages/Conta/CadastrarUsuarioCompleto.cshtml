@@ -17,6 +17,7 @@
         </div>
 
         <form method="post" class="auth-form">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Usuario.Id">
             <div class="form-columns">
                 <div class="form-column">
@@ -105,9 +106,9 @@
                         <span asp-validation-for="Estado" class="erroValidacao"></span>
                     </div>
 
-                    <div class="form-group form-check">
-                        <input asp-for="Principal" type="checkbox" class="form-check-input" checked />
-                        <label asp-for="Principal" class="form-check-label">Endereço Principal</label>
+                    <div class="form-group">
+                        <input asp-for="Principal" type="checkbox" />
+                        <label asp-for="Principal">Endereço Principal</label>
                     </div>
                 </div>
             </div>

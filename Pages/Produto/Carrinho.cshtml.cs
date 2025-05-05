@@ -26,13 +26,15 @@ public class CarrinhoModel : PageModel
     }
 
     public List<CarrinhoItem> Itens { get; set; } = new();
-    public decimal Total => Itens.Sum(i => i.Preco * i.Quantidade);
+    public decimal? Total => Itens.Sum(i => i.Preco * i.Quantidade);
 
     public void OnGet()
     {
         Itens = _carrinhoService.ObterCarrinho();
     }
 
+
+    [ValidateAntiForgeryToken]
     public IActionResult OnPostAtualizarQuantidade(int id, string acao)
     {
         var carrinho = _carrinhoService.ObterCarrinho();
@@ -58,6 +60,8 @@ public class CarrinhoModel : PageModel
         return RedirectToPage();
     }
 
+
+    [ValidateAntiForgeryToken]
     public IActionResult OnPostRemoverItem(int id)
     {
         var carrinho = _carrinhoService.ObterCarrinho();
@@ -71,6 +75,8 @@ public class CarrinhoModel : PageModel
         return RedirectToPage();
     }
 
+
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostFinalizarCompraAsync()
     {
         var user = await _userManager.GetUserAsync(User);

@@ -1,0 +1,27 @@
+﻿@page
+@model SiteAspas.Pages.Conta.ContaNaoConfirmadaModel
+@{
+    Layout = "_Layout";
+    ViewData["HideHeader"] = true;
+    ViewData["Title"] = "Ateliê Adri Thome - Confirmar";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/entrar.css">
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Você precisa confirmar seu e-mail antes de fazer login.</h2>
+            <p class="auth-subtitle">Um novo link de confirmação será enviado para: <strong>@Model.Email</strong></p>
+        </div>
+        <div class="auth-form">
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Email" />
+                <button type="submit" class="btn btn-primary">Reenviar link de confirmação</button>
+            </form>
+        </div>
+    </div>
+</div>

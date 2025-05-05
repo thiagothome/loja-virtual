@@ -32,7 +32,7 @@ public class PagamentoPixModel : PageModel
     public string QrCodeBase64 { get; set; }
 
     [BindProperty(SupportsGet = true)]
-    public decimal Valor { get; set; }
+    public decimal? Valor { get; set; }
     public DateTime ExpirationDate { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
@@ -56,6 +56,8 @@ public class PagamentoPixModel : PageModel
         return Page();
     }
 
+
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostVerificarPagamentoAsync()
     {
         var pedido = await _context.Pedidos
@@ -95,6 +97,8 @@ public class PagamentoPixModel : PageModel
         }
     }
 
+
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostCancelarAsync()
     {
         var pedido = await _context.Pedidos.FindAsync(PedidoId);

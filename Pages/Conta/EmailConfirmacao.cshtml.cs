@@ -27,6 +27,8 @@ namespace SiteAspas.Pages
         {
         }
 
+
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             if (string.IsNullOrEmpty(Email))

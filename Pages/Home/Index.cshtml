@@ -9,7 +9,7 @@
     ViewData["Title"] = "SiteAspas - Brechó Pet";
 }
 
-<div class="carrossel-container mb-10">
+<div class="carrossel-container">
     <h2 class="text-2xl font-bold mb-5 text-center">Velas aromáticas</h2>
     <div class="carrossel-wrapper">
         <div class="carrossel">
@@ -28,7 +28,7 @@
             <img src="@produto.ImagemUrl" class="card-img" />
             <div class="card-body">
                 <div class="card-title">@produto.Nome</div>
-                <div class="card-price">@produto.Preco.ToString("C")</div>
+                <div class="card-price">@produto.Preco</div>
                 <button class="card-button" onclick="location.href='/Produto/Produto/@produto.Id'">Ver Produto</button>
 
                 @if (User.Identity.IsAuthenticated)
@@ -37,6 +37,7 @@
                     @if (user != null && user.Tipo == TipoUsuario.Administrador)
                     {
                         <form method="post" asp-page-handler="Desativar" asp-route-id="@produto.Id" class="d-inline">
+                            @Html.AntiForgeryToken()
                             <button type="submit" class="card-button card-button-desativar" onclick="return confirm('Tem certeza que deseja desativar este produto?')">
                                 Desativar
                             </button>

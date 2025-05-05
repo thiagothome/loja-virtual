@@ -1,7 +1,9 @@
 @using Microsoft.AspNetCore.Identity
 @using SiteAspas.Models
+@using SiteAspas.Models.Enums
 @inject SignInManager<Usuario> SignInManager
-@inject UserManager<Usuario> UserManager
+@inject UserManager<Usuario> _userManager
+
 
 @{
     bool hideHeader = false;
@@ -11,7 +13,7 @@
     }
 
 
-    var usuario = await UserManager.GetUserAsync(User);
+    var usuario = await _userManager.GetUserAsync(User);
     var usuarioNome = usuario?.Nome;
 }
 
@@ -50,13 +52,23 @@
                         {
                             <a asp-page="/Produto/Carrinho" class="text-sm hover:text-purple-800">Carrinho</a>
                             <span class="text-gray-400">|</span>
-                            <a class="nav-link" asp-page="/Produto/CadastrarProduto">Vender Produto</a>
-                            <span class="text-gray-400">|</span>
-                            <a class="nav-link" asp-page="/Produto/CadastrarCarrossel">Carrossel</a>
-                            <span class="text-gray-400">|</span>
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                var user = await _userManager.GetUserAsync(User);
+                                @if (user != null && user.Tipo == TipoUsuario.Administrador)
+                                {
+                                    <a class="nav-link" asp-page="/Produto/CadastrarProduto">Vender Produto</a>
+                                    <span class="text-gray-400">|</span>
+                                    <a class="nav-link" asp-page="/Produto/CadastrarCarrossel">Carrossel</a>
+                                    <span class="text-gray-400">|</span>
+                                }
+                            }
+                            
                             <span class="text-sm">Olá, @usuarioNome</span>
                             <span class="text-gray-400">|</span>
                             <form asp-page="/Conta/Sair" method="post" class="inline">
+                                @Html.AntiForgeryToken()
                                 <button type="submit" class="logout-btn text-sm text-purple-600 hover:text-purple-800 hover:underline">
                                     Sair
                                 </button>

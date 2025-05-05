@@ -17,9 +17,10 @@
         </div>
 
         <form method="post" class="auth-form">
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <label for="Nome" class="form-label">Nome</label>
-                <input asp-for="Usuario.Nome" type="text" class="form-input" placeholder="Seu primeiro nome"/>
+                <input asp-for="Usuario.Nome" type="text" class="form-input" placeholder="Seu primeiro nome" />
                 <span asp-validation-for="Usuario.Nome" class="erroValidacao"></span>
             </div>
 

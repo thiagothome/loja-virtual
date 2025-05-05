@@ -86,6 +86,7 @@ namespace SiteAspas.Pages
             return Page();
         }
 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             if (!ModelState.IsValid)
@@ -103,8 +104,8 @@ namespace SiteAspas.Pages
             user.Nome = Usuario.Nome;
             user.Sobrenome = Usuario.Sobrenome;
             user.Email = Usuario.Email;
-            user.CPF = Usuario.CPF;
-            user.DataNascimento = Usuario.DataNascimento;
+            user.CPF = CPF;
+            user.DataNascimento = DataNascimento;
             user.Telefone = Usuario.Telefone;
             user.CadastroCompleto = true;
 

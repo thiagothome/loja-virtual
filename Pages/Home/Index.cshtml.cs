@@ -23,6 +23,8 @@ public class IndexModel : PageModel
         ProdutosDestaque = await _produtoService.ObterDestaques();
     }
 
+
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostDesativarAsync(int id)
     {
         var produto = await _produtoService.ObterPorId(id);

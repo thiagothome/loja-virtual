@@ -48,6 +48,7 @@ public class CadastrarUsuarioModel : PageModel
     [Compare("Senha", ErrorMessage = "As senhas não conferem")]
     public string ConfirmarSenha { get; set; }
 
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
@@ -82,7 +83,7 @@ public class CadastrarUsuarioModel : PageModel
                 NormalizedEmail = _userManager.NormalizeEmail(Usuario.Email),
                 Nome = Usuario.Nome,
                 Sobrenome = Usuario.Sobrenome,
-                Telefone = Usuario.Telefone,
+                Telefone = Telefone,
                 Tipo = TipoUsuario.Cliente,
                 IsAtivo = false,
                 EmailConfirmationToken = GenerateToken(),

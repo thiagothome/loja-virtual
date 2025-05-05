@@ -58,18 +58,24 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Conta/AtivarConta");
     options.Conventions.AllowAnonymousToPage("/Conta/EmailConfirmacao");
     options.Conventions.AllowAnonymousToPage("/Conta/ConfirmarEmail");
+    options.Conventions.AllowAnonymousToPage("/Conta/ContaNaoConfirmada");
 });
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseHsts();
+    app.UseExceptionHandler("/Erro/Erro");
 }
+
 
 app.UseStatusCodePagesWithReExecute("/Erro/Erro", "?statusCode={0}");
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseSession();
 app.UseStaticFiles();
 app.UseRouting();

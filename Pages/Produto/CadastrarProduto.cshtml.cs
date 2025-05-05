@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas.Models;
 using SiteAspas.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 namespace SiteAspas.Pages
 {
@@ -22,12 +23,15 @@ namespace SiteAspas.Pages
         public Produto Produto { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "A imagem do produto é obrigatória.")]
+        [StringLength(255, ErrorMessage = "A URL da imagem deve ter no máximo 255 caracteres.")]
         public IFormFile ImagemProduto { get; set; }
 
         public void OnGet()
         {
         }
 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -35,7 +39,6 @@ namespace SiteAspas.Pages
                 return Page();
             }
 
-            
             if (ImagemProduto != null && ImagemProduto.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "img", "produtos");

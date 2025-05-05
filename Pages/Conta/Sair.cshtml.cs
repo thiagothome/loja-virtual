@@ -14,6 +14,8 @@ public class SairModel : PageModel
         _signInManager = signInManager;
     }
 
+
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostAsync()
     {
         await _signInManager.SignOutAsync();

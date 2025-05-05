@@ -32,6 +32,8 @@ public class ProdutoModel : PageModel
         return Page();
     }
 
+
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostAdicionarAoCarrinhoAsync(int id)
     {
         var produto = await _produtoService.ObterPorId(id);
@@ -51,7 +53,9 @@ public class ProdutoModel : PageModel
         return RedirectToPage("/Produto/Carrinho");
     }
 
-     public async Task<IActionResult> OnPostDesativarAsync(int id)
+
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> OnPostDesativarAsync(int id)
     {
         var produto = await _produtoService.ObterPorId(id);
         if (produto == null) return NotFound();

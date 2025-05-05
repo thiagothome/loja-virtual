@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using SiteAspas.Models;
@@ -13,7 +14,7 @@ public class MercadoPagoService
     private readonly ILogger<MercadoPagoService> _logger;
     private readonly string _accessToken;
     private string ApiBaseUrl = "https://api.mercadopago.com/v1/payments";
-    private const int PixExpirationMinutes = 30; 
+    private const int PixExpirationMinutes = 30;
 
     public MercadoPagoService(
         HttpClient httpClient,
@@ -26,35 +27,34 @@ public class MercadoPagoService
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
     }
 
-    private async Task<string> ObterBandeiraCartao(string numeroCartao)
+    public async Task<string> ObterBandeiraCartao(string numeroCartao)
     {
-        var bin = numeroCartao.Substring(0, 6);
-        var url = $"https://api.mercadopago.com/v1/payment_methods/search?bin={bin}";
+        var numeroLimpo = new string(numeroCartao.Where(char.IsDigit).ToArray());
 
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+        if (string.IsNullOrWhiteSpace(numeroLimpo) || numeroLimpo.Length < 4)
+            return "desconhecida";
 
-        var response = await _httpClient.SendAsync(request);
-        var content = await response.Content.ReadAsStringAsync();
+        var bin = numeroLimpo.Substring(0, 6);
+        var primeirosDigitos = numeroLimpo.Substring(0, 2);
+        var primeiroDigito = numeroLimpo[0];
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Erro ao obter bandeira do cartão: {content}");
-        }
+        if (Regex.IsMatch(bin, @"^(5067|5090|6363|6362|4011[78]|4576|4571|4312|4389|4514|4573|5041[75])"))
+            return "elo";
 
-        using var jsonDoc = JsonDocument.Parse(content);
-        var results = jsonDoc.RootElement.GetProperty("results");
+        if (Regex.IsMatch(bin, @"^(606282|3841[0-6])"))
+            return "hipercard";
 
-        foreach (var result in results.EnumerateArray())
-        {
-            var paymentTypeId = result.GetProperty("payment_type_id").GetString();
-            if (paymentTypeId == "credit_card")
-            {
-                return result.GetProperty("id").GetString();
-            }
-        }
+        if (Regex.IsMatch(numeroLimpo, @"^3[47]") && numeroLimpo.Length == 15)
+            return "amex";
 
-        throw new Exception("Bandeira do cartão não encontrada.");
+        if (Regex.IsMatch(primeirosDigitos, @"^(5[0-5])") ||
+            Regex.IsMatch(numeroLimpo.Substring(0, 4), @"^(222[1-9]|22[3-9]|2[3-6]|27[0-1]|2720)"))
+            return "master";
+
+        if (primeiroDigito == '4')
+            return "visa";
+
+        return "desconhecida";
     }
 
 
@@ -81,7 +81,7 @@ public class MercadoPagoService
             payment_method_id = bandeira,
             payer = new
             {
-                email = pedido.Usuario.Email,
+                email = "adrithome2@gmail.com",
                 identification = new
                 {
                     type = "CPF",
@@ -101,21 +101,24 @@ public class MercadoPagoService
         var response = await _httpClient.SendAsync(request);
         var content = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Erro ao processar pagamento com cartão: {Content}", content);
-            throw new Exception($"Erro ao processar pagamento: {content}");
-        }
-
         using var jsonDoc = JsonDocument.Parse(content);
         var root = jsonDoc.RootElement;
 
-        return new PaymentResult
+        var result = new PaymentResult
         {
             Id = root.GetProperty("id").GetInt64(),
             Status = root.GetProperty("status").GetString(),
             StatusDetail = root.GetProperty("status_detail").GetString()
         };
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("Erro ao processar pagamento com cartão: {Content}", content);
+            result.Error = content;
+        }
+
+        return result;
+
     }
 
     private async Task<string> ObterTokenCartao(string cardNumber, string expiryMonth, string expiryYear, string cvv, string cardholderName)
@@ -155,6 +158,7 @@ public class MercadoPagoService
         public long Id { get; set; }
         public string Status { get; set; }
         public string StatusDetail { get; set; }
+        public string Error { get; set; }
     }
 
     public async Task<PixPaymentResult> CriarPagamentoPixAsync(Pedido pedido)
@@ -233,7 +237,7 @@ public class MercadoPagoService
         public string Id { get; set; }
         public string QrCode { get; set; }
         public string QrCodeBase64 { get; set; }
-        public DateTime ExpirationDate { get; set; } 
+        public DateTime ExpirationDate { get; set; }
     }
 
     public async Task<string> ObterStatusPagamentoAsync(string paymentId)

@@ -8,6 +8,8 @@ namespace SiteAspas.Pages
         [BindProperty]
         public List<IFormFile> Imagens { get; set; }
 
+
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             if (Imagens == null || Imagens.Count != 6)

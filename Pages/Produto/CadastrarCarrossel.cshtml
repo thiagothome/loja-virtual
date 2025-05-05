@@ -6,7 +6,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/pages/cadastrarCarrossel.css">
+    <link rel="stylesheet" href="~/css/pages/cadastrarCarrosselProduto.css">
 }
 
 <div class="auth-container">
@@ -17,6 +17,7 @@
         </div>
 
         <form method="post" enctype="multipart/form-data" class="auth-form">
+            @Html.AntiForgeryToken()
             @if (TempData["Mensagem"] != null)
             {
                 <div class="form-group">

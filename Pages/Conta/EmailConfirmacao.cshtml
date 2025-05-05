@@ -12,6 +12,7 @@
     <div class="alert alert-info mt-4">
         <p>Não recebeu o e-mail?</p>
         <form method="post">
+            @Html.AntiForgeryToken()
             <button type="submit" class="btn btn-primary">Reenviar E-mail</button>
         </form>
     </div>

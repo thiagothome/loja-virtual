@@ -22,11 +22,11 @@
                 <ul>
                     @foreach (var item in Model.Pedido.Itens)
                     {
-                        <li>@item.Quantidade x @item.Nome - @((item.Quantidade * item.PrecoUnitario).ToString("C"))</li>
+                        <li>@item.Quantidade x @item.Nome - @((item.Quantidade * item.PrecoUnitario))</li>
                     }
                 </ul>
                 <div class="total" style="margin-top: 16px; font-weight: bold;">
-                    Total: @Model.Pedido.Total.ToString("C")
+                    Total: @Model.Pedido.Total
                 </div>
             </div>
 

@@ -30,7 +30,7 @@ public class PagamentoModel : PageModel
     [BindProperty(SupportsGet = true)]
     public int PedidoId { get; set; }
 
-    public decimal Total { get; set; }
+    public decimal? Total { get; set; }
     public Pedido Pedido { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
@@ -54,6 +54,7 @@ public class PagamentoModel : PageModel
         return Page();
     }
 
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> OnPostProcessarPagamentoAsync(
       string metodo,
       [FromForm] string numeroCartao,
@@ -101,13 +102,11 @@ public class PagamentoModel : PageModel
         {
             try
             {
-
                 if (string.IsNullOrWhiteSpace(numeroCartao) || numeroCartao.Length < 13)
                 {
                     ModelState.AddModelError(string.Empty, "Número do cartão inválido");
                     return await OnGetAsync();
                 }
-
 
                 var paymentResult = await _mercadoPagoService.ProcessarPagamentoCartaoAsync(
                     pedido,
@@ -130,15 +129,36 @@ public class PagamentoModel : PageModel
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty,
-                        $"Pagamento não aprovado. Status: {paymentResult.Status}");
-                    _logger.LogWarning("Pagamento recusado para pedido {PedidoId}. Status: {Status}",
-                        pedido.Id, paymentResult.Status);
+                    var errorMessage = paymentResult.Status switch
+                    {
+                        "rejected" => "Pagamento recusado",
+                        "in_process" => "Pagamento em processamento",
+                        "pending" => "Pagamento pendente",
+                        "cancelled" => "Pagamento cancelado",
+                        "refunded" => "Pagamento reembolsado",
+                        "charged_back" => "Estorno no cartão",
+                        _ => $"Status de pagamento não reconhecido: {paymentResult.Status}"
+                    };
+
+
+                    if (!string.IsNullOrEmpty(paymentResult.StatusDetail))
+                    {
+                        errorMessage += $". Detalhe: {paymentResult.StatusDetail}";
+                    }
+
+                    if (!string.IsNullOrEmpty(paymentResult.Error))
+                    {
+                        errorMessage += $". Erro: {paymentResult.Error}";
+                    }
+
+                    ModelState.AddModelError(string.Empty, errorMessage);
+                    _logger.LogWarning("Pagamento não aprovado para pedido {PedidoId}. Status: {Status}, Detalhe: {Detail}",
+                        pedido.Id, paymentResult.Status, paymentResult.StatusDetail);
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Erro ao processar pagamento com cartão");
+                ModelState.AddModelError(string.Empty, $"Erro ao processar pagamento com cartão: {ex.Message}");
                 _logger.LogError(ex, "Erro no processamento do cartão para pedido {PedidoId}", pedido.Id);
             }
         }
