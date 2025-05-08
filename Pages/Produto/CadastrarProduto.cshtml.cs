@@ -24,7 +24,6 @@ namespace SiteAspas.Pages
 
         [BindProperty]
         [Required(ErrorMessage = "A imagem do produto é obrigatória.")]
-        [StringLength(255, ErrorMessage = "A URL da imagem deve ter no máximo 255 caracteres.")]
         public IFormFile ImagemProduto { get; set; }
 
         public void OnGet()
