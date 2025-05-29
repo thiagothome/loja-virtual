@@ -4,40 +4,40 @@
     padding: 2rem;
 }
 
-.carrinho-container h1 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-}
+    .carrinho-container h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
 
 .lista-itens {
     list-style: none;
     padding: 0;
 }
 
-.lista-itens .item {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 1rem;
-}
+    .lista-itens .item {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 1rem;
+    }
 
-.lista-itens img {
-    width: 120px;
-    height: auto;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+    .lista-itens img {
+        width: 120px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-.lista-itens .detalhes h2 {
-    margin: 0;
-    font-size: 1.2rem;
-}
+    .lista-itens .detalhes h2 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
 
-.lista-itens .detalhes p {
-    margin: 0.3rem 0;
-    color: #555;
-}
+    .lista-itens .detalhes p {
+        margin: 0.3rem 0;
+        color: #555;
+    }
 
 .total {
     text-align: right;
@@ -107,3 +107,112 @@
     .btn-finalizar:hover {
         background-color: #27ae60;
     }
+
+
+.calculo-frete {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+    .calculo-frete h3 {
+        font-size: 1.2rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .calculo-frete .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .calculo-frete label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+    }
+
+    .calculo-frete input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+.btn-calcular {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    margin-top: 0.5rem;
+}
+
+    .btn-calcular:hover {
+        background-color: #0056b3;
+    }
+
+.resultado-frete {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+    .resultado-frete h4 {
+        font-size: 1.1rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .resultado-frete ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .resultado-frete li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+    }
+
+        .resultado-frete li:last-child {
+            border-bottom: none;
+        }
+
+.btn-selecionar-frete {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+    .btn-selecionar-frete:hover {
+        background-color: #1e7e34;
+    }
+
+.mensagem-erro {
+    color: #dc3545;
+    margin-top: 0.5rem;
+}
+
+.frete-selecionado {
+    text-align: right;
+    font-size: 1rem;
+    color: #555;
+    margin-top: 1rem;
+}

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas.Data;
 using SiteAspas.Models;
+using SiteAspas.Models.ViewModel;
+using SiteAspas.Services;
 
 [Authorize]
 public class CarrinhoModel : PageModel
@@ -12,21 +14,85 @@ public class CarrinhoModel : PageModel
     private readonly SiteAspasContext _context;
     private readonly IPedidoService _pedidoService;
     private readonly UserManager<Usuario> _userManager;
+    private readonly IFreteService _freteService;
 
     public CarrinhoModel(
-        CarrinhoService carrinhoService,
-        SiteAspasContext context,
-        IPedidoService pedidoService,
-        UserManager<Usuario> userManager)
+    CarrinhoService carrinhoService,
+    SiteAspasContext context,
+    IPedidoService pedidoService,
+    UserManager<Usuario> userManager,
+    IFreteService freteService) // Adicione o serviço de frete
     {
         _carrinhoService = carrinhoService;
         _context = context;
         _pedidoService = pedidoService;
         _userManager = userManager;
+        _freteService = freteService;
     }
 
     public List<CarrinhoItem> Itens { get; set; } = new();
     public decimal? Total => Itens.Sum(i => i.Preco * i.Quantidade);
+    public string CepDestino { get; set; }
+    public string MensagemFrete { get; set; }
+    public string ClasseMensagemFrete { get; set; }
+    public List<OpcaoFrete> ResultadoFrete { get; set; }
+    public string OpcaoFreteSelecionada { get; set; }
+    public decimal ValorFreteSelecionado { get; set; }
+
+    public async Task<IActionResult> OnPostCalcularFreteAsync(string cep)
+    {
+        // Carrega os itens do carrinho antes de prosseguir
+        OnGet();
+
+        if (string.IsNullOrEmpty(cep))
+        {
+            MensagemFrete = "Por favor, digite o CEP.";
+            ClasseMensagemFrete = "mensagem-erro";
+            return Page();
+        }
+
+        CepDestino = cep;
+        string cepOrigem = "98803360"; // Configure isso
+
+        // Agora 'Itens' deve estar populado
+        ResultadoFrete = await _freteService.CalcularFrete(cepOrigem, cep, Itens);
+
+        if (ResultadoFrete == null || !ResultadoFrete.Any())
+        {
+            MensagemFrete = "Não foi possível calcular o frete para este CEP.";
+            ClasseMensagemFrete = "mensagem-erro";
+        }
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostSelecionarFreteAsync(string opcaoFreteSelecionada)
+    {
+        if (string.IsNullOrEmpty(opcaoFreteSelecionada) || ResultadoFrete == null)
+        {
+            MensagemFrete = "Por favor, selecione uma opção de frete.";
+            ClasseMensagemFrete = "mensagem-erro";
+            return Page();
+        }
+
+        OpcaoFreteSelecionada = opcaoFreteSelecionada;
+        var opcaoSelecionada = ResultadoFrete.FirstOrDefault(f => f.Servico == opcaoFreteSelecionada);
+        if (opcaoSelecionada != null)
+        {
+            ValorFreteSelecionado = opcaoSelecionada.Valor;
+            // Você pode armazenar o valor do frete em Session ou em algum estado do pedido
+            HttpContext.Session.SetString("ValorFrete", ValorFreteSelecionado.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        return RedirectToPage(); // Recarrega a página para exibir o frete selecionado
+    }
+
+
+    // Classe para desserializar a resposta da API de frete (adapte conforme a API)
+    public class RespostaCalculoFrete
+    {
+        public List<OpcaoFrete> Opcoes { get; set; }
+    }
 
     public void OnGet()
     {

@@ -45,6 +45,7 @@ public class PagamentoModel : PageModel
             .Include(p => p.Itens)
             .FirstOrDefaultAsync(p => p.Id == PedidoId && p.UsuarioId == user.Id);
 
+
         if (Pedido == null)
         {
             return RedirectToPage("/Produto/Carrinho");
@@ -76,7 +77,6 @@ public class PagamentoModel : PageModel
             {
                 var pixResult = await _mercadoPagoService.CriarPagamentoPixAsync(pedido);
 
-
                 pedido.Status = "Aguardando Pagamento";
                 pedido.MetodoPagamento = "PIX";
                 pedido.IdPagamento = pixResult.Id;
@@ -102,9 +102,29 @@ public class PagamentoModel : PageModel
         {
             try
             {
+
+
                 if (string.IsNullOrWhiteSpace(numeroCartao) || numeroCartao.Length < 13)
                 {
                     ModelState.AddModelError(string.Empty, "Número do cartão inválido");
+                    return await OnGetAsync();
+                }
+
+                if (string.IsNullOrWhiteSpace(validade) || validade.Length != 5 || !validade.Contains("/"))
+                {
+                    ModelState.AddModelError(string.Empty, "Validade do cartão inválida");
+                    return await OnGetAsync();
+                }
+
+                if (string.IsNullOrWhiteSpace(cvv) || cvv.Length < 3)
+                {
+                    ModelState.AddModelError(string.Empty, "CVV inválido");
+                    return await OnGetAsync();
+                }
+
+                if (string.IsNullOrWhiteSpace(nomeTitular))
+                {
+                    ModelState.AddModelError(string.Empty, "Nome do titular é obrigatório");
                     return await OnGetAsync();
                 }
 
@@ -162,7 +182,6 @@ public class PagamentoModel : PageModel
                 _logger.LogError(ex, "Erro no processamento do cartão para pedido {PedidoId}", pedido.Id);
             }
         }
-
 
         Pedido = pedido;
         Total = pedido.Total;

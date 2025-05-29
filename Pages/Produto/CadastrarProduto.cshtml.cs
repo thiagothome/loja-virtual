@@ -40,13 +40,19 @@ namespace SiteAspas.Pages
 
             if (ImagemProduto != null && ImagemProduto.Length > 0)
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "img", "produtos");
-                if (!Directory.Exists(uploadsFolder))
+                var ext = Path.GetExtension(ImagemProduto.FileName).ToLower();
+                var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+
+                if (!extensoesPermitidas.Contains(ext))
                 {
-                    Directory.CreateDirectory(uploadsFolder);
+                    ModelState.AddModelError(string.Empty, "Formato de imagem não permitido.");
+                    return Page();
                 }
 
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + ImagemProduto.FileName;
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "img", "produtos");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = Guid.NewGuid().ToString() + ext;
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))

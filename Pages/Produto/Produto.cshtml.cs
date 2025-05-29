@@ -21,8 +21,11 @@ public class ProdutoModel : PageModel
     public async Task<IActionResult> OnGetAsync(int? id)
     {
 
+        /*if (id == null)
+            return RedirectToPage("/Conta/Entrar");*/
+
         if (id == null)
-            return RedirectToPage("/Conta/Entrar");
+            return BadRequest("ID do produto é obrigatório.");
 
         Produto = await _produtoService.ObterPorId(id.Value);
 

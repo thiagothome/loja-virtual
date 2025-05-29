@@ -8,6 +8,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\img\produtos\060d626b-5ac6-492c-8bcf-895c6e8b760c_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\0ba67c21-eda5-446b-a4b9-63858ffed194_blusa.jpg" />
+    <Content Remove="wwwroot\img\produtos\1ca1049f-eb6e-4880-8107-cf4a8731580f_rebecca-peterson-hall-aN-zGYlxiCI-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\2ff5dc2b-8b55-4d2d-a36f-f142fc669921_kat-von-wood-z2lWYC94eaA-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\30b30fdf-2e05-478e-a0d6-f6f07af6a7f7_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\49167fb6-46af-4e93-b6c0-ed1626bd57c5_v7.jpg" />
+    <Content Remove="wwwroot\img\produtos\49e10dce-7e2a-4303-ad30-14645faec6ee_rebecca-peterson-hall-aN-zGYlxiCI-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\4b2f5023-254b-4d75-bb2d-651599849932_vestido.jpg" />
+    <Content Remove="wwwroot\img\produtos\5d552cf2-c095-40e8-91f6-b2ecb05dafbd_v7.jpg" />
+    <Content Remove="wwwroot\img\produtos\7cab586f-a2a1-479c-ba4f-b56dbf0c2ebf_vela2.jfif" />
+    <Content Remove="wwwroot\img\produtos\7d8e27fb-6b3b-449a-8a25-14a7eb82418f_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\7f79fb58-9ffe-4a37-965d-58c9cc4e34fa_rebecca-peterson-hall-aN-zGYlxiCI-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\82950758-ce82-4fff-beb5-bf8b46fc5d54_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\8aa3ffd3-80c3-4dc1-b456-49874772a991_pmv-chamara-KLU0scqbKQ0-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\8db82521-9562-4503-bed5-2ee4e2535c62_vela.jfif" />
+    <Content Remove="wwwroot\img\produtos\928e1120-2618-4a02-bb7c-e0b8062ba093_vela2.jfif" />
+    <Content Remove="wwwroot\img\produtos\975fd01e-600c-4a5a-87a1-af4913732d0f_vestido.jpg" />
+    <Content Remove="wwwroot\img\produtos\9906abaa-2e59-496a-bcd5-5f47a7947cf4_vestido.jpg" />
+    <Content Remove="wwwroot\img\produtos\9aabeef2-cbcd-4639-83b3-8e8936863f97_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\9bf64b99-b8e3-4eac-85b6-ead315a3b019_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\9cfabc76-0991-4349-b826-b9af85e0c26b_vela-aromatica-240g-saquinho-de-algodao-cru.webp" />
+    <Content Remove="wwwroot\img\produtos\9df6180d-3013-44e4-8ca7-1ae95bd92d2f_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\a49b1f36-345f-4b79-840a-774de5e9382d_Captura de tela 2025-04-22 161820.png" />
+    <Content Remove="wwwroot\img\produtos\a5351597-e22c-4fb6-bb44-6b7aa7284c01_blusa.jpg" />
+    <Content Remove="wwwroot\img\produtos\a96e2c56-114e-4d3f-9083-7d9a111ee8d7_cbimage.png" />
+    <Content Remove="wwwroot\img\produtos\ac7ebcd5-1aaa-4187-903b-8a83fe7c00ec_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\be1d032a-e0de-43ee-95b9-d8e6ee91655c_vela.jfif" />
+    <Content Remove="wwwroot\img\produtos\c1b5ff28-6604-4291-9d1d-adec1e04e626_m.png" />
+    <Content Remove="wwwroot\img\produtos\c5384fec-406c-438a-8a43-8443420e8638_pmv-chamara-KLU0scqbKQ0-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\c7f6165a-0836-4942-9176-2e2e77d8d303_vela.jfif" />
+    <Content Remove="wwwroot\img\produtos\cd1f5b86-a2e0-4e8b-bf48-6713b5729102_capagithub.jpg" />
+    <Content Remove="wwwroot\img\produtos\e067a856-3297-4a2b-bb14-954b6cfe389e_blusa.jpg" />
+    <Content Remove="wwwroot\img\produtos\e1f6dbe7-903c-46fa-8d7f-1bd44c6fa970_ionela-mat-ZG7raWjUTmw-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\ea19dd63-fe0a-4c6d-904b-74dbdbbf9035_blusa.jpg" />
+    <Content Remove="wwwroot\img\produtos\ed20653e-eae3-4075-b25e-8f266221745a_daria-Hm2UqlVTBnc-unsplash.jpg" />
+    <Content Remove="wwwroot\img\produtos\ed20ef40-8f31-463d-920f-a1ae9bc5dbea_v6.jpg" />
+    <Content Remove="wwwroot\img\produtos\faace898-c087-4f70-b4ee-34b80266a1d5_pratiksha-mohanty-hDTpVVEm6wg-unsplash.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="jQuery.Validation" Version="1.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.4" />

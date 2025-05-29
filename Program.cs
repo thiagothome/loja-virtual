@@ -46,6 +46,7 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<CarrinhoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddHttpClient<IFreteService, FreteService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages(options =>

@@ -29,11 +29,20 @@ public class CarrinhoService
 
     public List<CarrinhoItem> ObterCarrinho()
     {
-        var carrinhoJson = Session.GetString(CarrinhoKey);
-        return string.IsNullOrEmpty(carrinhoJson)
-            ? new List<CarrinhoItem>()
-            : JsonSerializer.Deserialize<List<CarrinhoItem>>(carrinhoJson) ?? new List<CarrinhoItem>();
+        try
+        {
+            var carrinhoJson = Session.GetString(CarrinhoKey);
+            return string.IsNullOrEmpty(carrinhoJson)
+                ? new List<CarrinhoItem>()
+                : JsonSerializer.Deserialize<List<CarrinhoItem>>(carrinhoJson) ?? new List<CarrinhoItem>();
+        }
+        catch (JsonException)
+        {
+            LimparCarrinho();
+            return new List<CarrinhoItem>();
+        }
     }
+
 
     public void AdicionarItem(CarrinhoItem item)
     {

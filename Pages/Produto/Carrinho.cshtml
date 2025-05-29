@@ -48,11 +48,48 @@
                     </div>
                 </li>
             }
-
         </ul>
 
+        <div class="calculo-frete">
+            <h3>Calcular Frete</h3>
+            <form method="post" asp-page-handler="CalcularFrete">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="cep">CEP:</label>
+                    <input type="text" id="cep" name="cep" placeholder="Digite seu CEP" required>
+                </div>
+                <button type="submit" class="btn-calcular">Calcular</button>
+                @if (!string.IsNullOrEmpty(Model.MensagemFrete))
+                {
+                    <p class="@Model.ClasseMensagemFrete">@Model.MensagemFrete</p>
+                }
+                @if (Model.ResultadoFrete != null)
+                {
+                    <div class="resultado-frete">
+                        <h4>Opções de Frete:</h4>
+                        <ul>
+                            @foreach (var frete in Model.ResultadoFrete)
+                            {
+                                <li>
+                                    <strong>@frete.Servico:</strong> @frete.Valor.ToString("C") - Prazo: @frete.PrazoEntrega
+                                    <input type="radio" name="opcaoFreteSelecionada" value="@frete.Servico" /> Selecionar
+                                </li>
+                            }
+                        </ul>
+                        <button type="submit" asp-page-handler="SelecionarFrete" class="btn-selecionar-frete">Selecionar Frete</button>
+                    </div>
+                }
+            </form>
+        </div>
+
+        @if (Model.ValorFreteSelecionado > 0)
+        {
+            <div class="frete-selecionado">
+                <strong>Frete (@Model.OpcaoFreteSelecionada):</strong> @Model.ValorFreteSelecionado.ToString("C")
+            </div>
+        }
         <div class="total">
-            <strong>Total:</strong> @Model.Total
+            <strong>Total:</strong> @(Model.Total + Model.ValorFreteSelecionado)
         </div>
         <div class="acoes-carrinho">
             <form method="post" asp-page-handler="FinalizarCompra">
