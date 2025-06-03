@@ -68,13 +68,13 @@
                     <div class="resultado-frete">
                         <h4>Opções de Frete:</h4>
                         <ul>
-                            @foreach (var frete in Model.ResultadoFrete)
+                           @*  @foreach (var frete in Model.ResultadoFrete)
                             {
                                 <li>
                                     <strong>@frete.Servico:</strong> @frete.Valor.ToString("C") - Prazo: @frete.PrazoEntrega
                                     <input type="radio" name="opcaoFreteSelecionada" value="@frete.Servico" /> Selecionar
                                 </li>
-                            }
+                            } *@
                         </ul>
                         <button type="submit" asp-page-handler="SelecionarFrete" class="btn-selecionar-frete">Selecionar Frete</button>
                     </div>

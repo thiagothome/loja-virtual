@@ -35,7 +35,7 @@ public class CarrinhoModel : PageModel
     public string CepDestino { get; set; }
     public string MensagemFrete { get; set; }
     public string ClasseMensagemFrete { get; set; }
-    public List<OpcaoFrete> ResultadoFrete { get; set; }
+    public List<CarrinhoItem> ResultadoFrete { get; set; }
     public string OpcaoFreteSelecionada { get; set; }
     public decimal ValorFreteSelecionado { get; set; }
 
@@ -55,7 +55,7 @@ public class CarrinhoModel : PageModel
         string cepOrigem = "98803360"; // Configure isso
 
         // Agora 'Itens' deve estar populado
-        ResultadoFrete = await _freteService.CalcularFrete(cepOrigem, cep, Itens);
+        var ResultadoFrete = await _freteService.CalcularFrete(cepOrigem, cep, Itens);
 
         if (ResultadoFrete == null || !ResultadoFrete.Any())
         {
@@ -66,7 +66,7 @@ public class CarrinhoModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostSelecionarFreteAsync(string opcaoFreteSelecionada)
+    /*public async Task<IActionResult> OnPostSelecionarFreteAsync(string opcaoFreteSelecionada)
     {
         if (string.IsNullOrEmpty(opcaoFreteSelecionada) || ResultadoFrete == null)
         {
@@ -85,7 +85,7 @@ public class CarrinhoModel : PageModel
         }
 
         return RedirectToPage(); // Recarrega a página para exibir o frete selecionado
-    }
+    }*/
 
 
     // Classe para desserializar a resposta da API de frete (adapte conforme a API)
