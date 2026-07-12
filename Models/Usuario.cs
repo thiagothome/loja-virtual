@@ -72,5 +72,8 @@ namespace SiteAspas.Models
 
         public virtual ICollection<Endereco>? Enderecos { get; set; }
         public virtual ICollection<Pedido>? Pedidos { get; set; }
+        
+        [StringLength(50)]
+        public string? CustomerId { get; set; }
     }
 }

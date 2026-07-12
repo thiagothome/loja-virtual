@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SiteAspas.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddCustomerId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,6 +46,7 @@ namespace SiteAspas.Migrations
                     IsAtivo = table.Column<bool>(type: "boolean", nullable: false),
                     Tipo = table.Column<int>(type: "integer", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CustomerId = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
@@ -110,34 +111,6 @@ namespace SiteAspas.Migrations
                         principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pedidos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DataPedido = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UsuarioId = table.Column<int>(type: "integer", nullable: false),
-                    Total = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    MetodoPagamento = table.Column<string>(type: "text", nullable: true),
-                    DataPagamento = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IdPagamento = table.Column<string>(type: "text", nullable: true),
-                    QrCode = table.Column<string>(type: "text", nullable: true),
-                    QrCodeBase64 = table.Column<string>(type: "text", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pedidos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Pedidos_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -250,6 +223,42 @@ namespace SiteAspas.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pedidos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DataPedido = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UsuarioId = table.Column<int>(type: "integer", nullable: false),
+                    EnderecoId = table.Column<int>(type: "integer", nullable: false),
+                    Total = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    MetodoPagamento = table.Column<int>(type: "integer", nullable: false),
+                    DataPagamento = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IdPagamento = table.Column<string>(type: "text", nullable: true),
+                    QrCode = table.Column<string>(type: "text", nullable: true),
+                    QrCodeBase64 = table.Column<string>(type: "text", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CustomerId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pedidos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Enderecos_EnderecoId",
+                        column: x => x.EnderecoId,
+                        principalTable: "Enderecos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CarrinhoItems",
                 columns: table => new
                 {
@@ -309,8 +318,8 @@ namespace SiteAspas.Migrations
 
             migrationBuilder.InsertData(
                 table: "Usuarios",
-                columns: new[] { "Id", "AccessFailedCount", "CPF", "CadastroCompleto", "ConcurrencyStamp", "DataCadastro", "DataNascimento", "Email", "EmailConfirmationToken", "EmailConfirmed", "IsAtivo", "LockoutEnabled", "LockoutEnd", "Nome", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Sobrenome", "Telefone", "Tipo", "TokenExpiration", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "", false, "aa87e1b9-e1c1-4a9b-91c9-ae0000000000", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@admin.com", "SEED-TOKEN", true, true, true, null, "Adriana", "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEAUfyuAcC1hNAzsm/2+3nYEpdWK3ZAX8i0E2sZ7XyxL7cfgUSOrg0la+uCaJzVoz2w==", null, false, "d1f6e1d0-b321-4bdf-bb0a-bf0000000000", "Thome", null, 1, new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "admin@admin.com" });
+                columns: new[] { "Id", "AccessFailedCount", "CPF", "CadastroCompleto", "ConcurrencyStamp", "CustomerId", "DataCadastro", "DataNascimento", "Email", "EmailConfirmationToken", "EmailConfirmed", "IsAtivo", "LockoutEnabled", "LockoutEnd", "Nome", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Sobrenome", "Telefone", "Tipo", "TokenExpiration", "TwoFactorEnabled", "UserName" },
+                values: new object[] { 1, 0, "", false, "aa87e1b9-e1c1-4a9b-91c9-ae0000000000", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@admin.com", "SEED-TOKEN", true, true, true, null, "Adriana", "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEFp6PXaRdIgSawXZvBAM0jN0xHOPeH9o/LxVtmElIX5+fRChU1BVyE6jLn7i4VQeBA==", null, false, "d1f6e1d0-b321-4bdf-bb0a-bf0000000000", "Thome", null, 1, new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "admin@admin.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CarrinhoItems_ClienteId",
@@ -336,6 +345,11 @@ namespace SiteAspas.Migrations
                 name: "IX_PedidoItems_ProdutoId",
                 table: "PedidoItems",
                 column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_EnderecoId",
+                table: "Pedidos",
+                column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_UsuarioId",
@@ -397,9 +411,6 @@ namespace SiteAspas.Migrations
                 name: "CarrinhoItems");
 
             migrationBuilder.DropTable(
-                name: "Enderecos");
-
-            migrationBuilder.DropTable(
                 name: "PedidoItems");
 
             migrationBuilder.DropTable(
@@ -425,6 +436,9 @@ namespace SiteAspas.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Enderecos");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

@@ -1,0 +1,170 @@
+@page
+@model SiteAspas.Pages.Pagamento.IndexModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Pagamento";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="~/css/pages/pagamento.css" asp-append-version="true" />
+}
+
+@if (!Model.Itens.Any())
+{
+    <p>Seu carrinho está vazio.</p>
+}
+
+<div class="auth-container">
+
+    <div class="auth-card pagamento-card">
+
+        <div class="auth-header">
+            <h2 class="auth-title">Pagamento</h2>
+            <p class="auth-subtitle">
+                Confira seu pedido antes de concluir a compra.
+            </p>
+        </div>
+
+        <div class="auth-form">
+
+            @foreach (var item in Model.Itens)
+            {
+                <div class="item-carrinho">
+
+                    <img src="@item.ImagemUrl"
+                         alt="@item.Nome"
+                         class="produto-img" />
+
+                    <div class="produto-info">
+
+                        <h5>@item.Nome</h5>
+
+                        <p>
+                            Quantidade:
+                            <strong>@item.Quantidade</strong>
+                        </p>
+
+                        <p>
+                            Valor unitário:
+                            <strong>@item.Preco?.ToString("C")</strong>
+                        </p>
+
+                    </div>
+
+                    <div class="produto-total">
+
+                        <span>Subtotal</span>
+
+                        <strong>
+                            @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
+                        </strong>
+
+                    </div>
+
+                </div>
+            }
+
+            <hr />
+
+            <div class="total-container">
+
+                <div>
+                    <small>Total da compra</small>
+                    <h3>@Model.Total.ToString("C")</h3>
+                </div>
+
+            </div>
+
+            <hr />
+
+            <div class="bloco">
+
+                <h3>Endereço de entrega</h3>
+
+                @if (Model.EnderecoPrincipal != null)
+                {
+                    <p>
+                        <strong>
+                            @Model.EnderecoPrincipal.Logradouro,
+                            @Model.EnderecoPrincipal.Numero
+                        </strong>
+                    </p>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.EnderecoPrincipal.Complemento))
+                    {
+                        <p>@Model.EnderecoPrincipal.Complemento</p>
+                    }
+
+                    <p>@Model.EnderecoPrincipal.Bairro</p>
+
+                    <p>
+                        @Model.EnderecoPrincipal.Cidade -
+                        @Model.EnderecoPrincipal.Estado
+                    </p>
+
+                    <p>CEP: @Model.EnderecoPrincipal.CEP</p>
+                }
+
+            </div>
+
+            <hr />
+
+            <form method="post">
+
+                <div class="bloco">
+
+                    <h3>Forma de pagamento</h3>
+
+                    <label class="forma">
+                        <input type="radio"
+                               name="FormaPagamento"
+                               value="Pix"
+                               checked />
+
+                        <span>PIX</span>
+                    </label>
+
+                    <label class="forma">
+                        <input type="radio"
+                               name="FormaPagamento"
+                               value="CartaoCredito" />
+
+                        <span>Cartão de Crédito</span>
+                    </label>
+
+                    <label class="forma">
+                        <input type="radio"
+                               name="FormaPagamento"
+                               value="Boleto" />
+
+                        <span>Boleto Bancário</span>
+                    </label>
+
+                </div>
+
+                <div class="acoes">
+
+                    <a asp-page="/Produto/Carrinho"
+                       class="btn-continuar">
+
+                        Voltar ao carrinho
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn-finalizar">
+
+                        Continuar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

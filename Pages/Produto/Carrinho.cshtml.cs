@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SiteAspas.Data;
@@ -36,5 +37,26 @@ public class CarrinhoModel : PageModel
             .Where(x => x.ClienteId == usuario.Id)
             .OrderByDescending(x => x.DataAdicao)
             .ToListAsync();
+    }
+
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> OnPostFinalizarAsync()
+    {
+        var usuario = await _userManager.GetUserAsync(User);
+
+        if (usuario == null)
+            return Challenge();
+
+        if (!usuario.CadastroCompleto)
+        {
+            return RedirectToPage(
+                "/Conta/CadastrarUsuarioCompleto",
+                new
+                {
+                    returnUrl = Url.Page("/Pagamento/Index")
+                });
+        }
+
+        return RedirectToPage("/Pagamento/Index");
     }
 }

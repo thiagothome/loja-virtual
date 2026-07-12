@@ -1,0 +1,98 @@
+@page "{id:int}"
+@model SiteAspas.Pages.Pagamento.PixModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Pagamento PIX";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/pages/pagamento.css"
+          asp-append-version="true" />
+}
+
+<div class="auth-container">
+    <div class="auth-card pagamento-card">
+        <div class="auth-header">
+            <h2 class="auth-title">
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
+                    ? "✅ Pagamento Confirmado!" 
+                    : "Pagamento PIX")
+            </h2>
+            <p class="auth-subtitle">
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
+                    ? "Seu pagamento foi processado com sucesso." 
+                    : "Finalize seu pagamento para confirmar o pedido.")
+            </p>
+        </div>
+
+        <div class="auth-form">
+            
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-success" style="text-align:center; margin-bottom:20px; padding:15px; background:#d4edda; border-radius:8px; color:#155724;">
+                    @Model.StatusMessage
+                </div>
+            }
+
+            <div class="bloco">
+                <h3>Pedido #@Model.Pedido?.Id</h3>
+                <p>Status: <strong>@Model.Pedido?.Status</strong></p>
+                <p>Valor: <strong>@Model.Pedido?.Total?.ToString("C")</strong></p>
+            </div>
+
+            <hr />
+
+            @if (Model.Pedido?.Status != SiteAspas.Models.Enums.StatusPedido.Pago)
+            {
+                <div class="pix-area">
+                    <h3>QR Code PIX</h3>
+
+                    @if (!string.IsNullOrEmpty(Model.Pedido?.QrCodeBase64))
+                    {
+                        <img src="data:image/png;base64,@Model.Pedido.QrCodeBase64"
+                             alt="QR Code PIX"
+                             style="max-width:300px" />
+                        
+                        <p class="pix-info">
+                            Após realizar o pagamento, aguardaremos a confirmação.
+                        </p>
+
+                        <!-- Botão de simulação (apenas para testes) -->
+                        <form method="post" asp-page-handler="SimularPagamento" asp-route-id="@Model.Pedido?.Id">
+                            <button type="submit" class="btn-simular" style="background:#ff9800; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin-top:15px;">
+                                🧪 Simular Pagamento (Sandbox)
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="qr-placeholder">
+                            QR Code não disponível
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="sucesso-area" style="text-align:center;">
+                    <p style="font-size:1.2em; margin:20px 0;">
+                        🎉 Seu pedido foi pago com sucesso!
+                    </p>
+                    <p>
+                        Data do pagamento: @Model.Pedido?.DataPagamento?.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+                </div>
+            }
+
+            <hr />
+
+            <div class="acoes">
+                <a asp-page="/Home/Index" class="btn-continuar">
+                    Voltar para loja
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

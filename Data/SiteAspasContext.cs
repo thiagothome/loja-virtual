@@ -34,9 +34,13 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
         {
             e.Property(p => p.Total).HasPrecision(18, 2);
             e.HasOne(p => p.Usuario)
-             .WithMany(u => u.Pedidos)
-             .HasForeignKey(p => p.UsuarioId)
-             .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(u => u.Pedidos)
+                .HasForeignKey(p => p.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+             e.HasOne(p => p.Endereco)
+                .WithMany()
+                .HasForeignKey(p => p.EnderecoId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<PedidoItem>(e =>

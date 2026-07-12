@@ -84,9 +84,13 @@ else
                     Continuar comprando
                 </a>
 
-                <button class="btn-finalizar">
-                    Finalizar compra
-                </button>
+               <form method="post" asp-page-handler="Finalizar">
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="btn-finalizar">
+                        Finalizar compra
+                    </button>
+                </form>
 
             </div>
 

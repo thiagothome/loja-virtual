@@ -3,9 +3,15 @@
     public class Endereco
     {
         public int Id { get; set; }
+
         public int UsuarioId { get; set; }
+
+        public virtual Usuario Usuario { get; set; } = null!;
+
         public string CEP { get; set; }
+
         public bool Principal { get; set; } = true;
+
         public string? Logradouro { get; set; }
         public string? Numero { get; set; }
         public string? Complemento { get; set; }

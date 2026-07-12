@@ -1,0 +1,113 @@
+@page "{id:int}"
+@model SiteAspas.Pages.Pagamento.BoletoModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Pagamento por Boleto";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/pages/pagamento.css"
+          asp-append-version="true" />
+}
+
+<div class="auth-container">
+    <div class="auth-card pagamento-card">
+        <div class="auth-header">
+            <h2 class="auth-title">
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
+                    ? "✅ Pagamento Confirmado!" 
+                    : "Boleto Bancário")
+            </h2>
+            <p class="auth-subtitle">
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
+                    ? "Seu pagamento foi processado com sucesso." 
+                    : "Pague o boleto para confirmar seu pedido.")
+            </p>
+        </div>
+
+        <div class="auth-form">
+            
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-success" style="text-align:center; margin-bottom:20px; padding:15px; background:#d4edda; border-radius:8px; color:#155724;">
+                    @Model.StatusMessage
+                </div>
+            }
+
+            <div class="bloco">
+                <h3>Pedido #@Model.Pedido?.Id</h3>
+                <p>Status: <strong>@Model.Pedido?.Status</strong></p>
+                <p>Valor: <strong>@Model.Pedido?.Total?.ToString("C")</strong></p>
+                @if (Model.Pedido?.ExpirationDate != null)
+                {
+                    <p>Vencimento: <strong>@Model.Pedido.ExpirationDate?.ToString("dd/MM/yyyy")</strong></p>
+                }
+            </div>
+
+            <hr />
+
+            @if (Model.Pedido?.Status != SiteAspas.Models.Enums.StatusPedido.Pago)
+            {
+                <div class="boleto-area">
+                    <h3>Dados do Boleto</h3>
+
+                    @if (!string.IsNullOrEmpty(Model.Pedido?.LinhaDigitavel))
+                    {
+                        <div class="linha-digitavel" style="background:#f5f5f5; padding:15px; border-radius:8px; margin:15px 0; word-break:break-all;">
+                            <strong>Linha Digitável:</strong><br />
+                            <span style="font-size:1.1em;">@Model.Pedido.LinhaDigitavel</span>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Pedido?.BoletoUrl))
+                        {
+                            <a href="@Model.Pedido.BoletoUrl" 
+                               target="_blank" 
+                               class="btn-boleto" 
+                               style="display:inline-block; background:#007bff; color:white; padding:12px 24px; text-decoration:none; border-radius:5px; margin:10px 0;">
+                                📄 Abrir Boleto em PDF
+                            </a>
+                        }
+
+                        <p class="boleto-info" style="margin-top:15px; color:#666;">
+                            Após realizar o pagamento, a confirmação pode levar até 3 dias úteis.
+                        </p>
+
+                        <!-- Botão de simulação (apenas para testes) -->
+                        <form method="post" asp-page-handler="SimularPagamento" asp-route-id="@Model.Pedido?.Id">
+                            <button type="submit" style="background:#ff9800; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin-top:15px;">
+                                🧪 Simular Pagamento (Sandbox)
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="qr-placeholder" style="text-align:center; padding:20px;">
+                            <p>Boleto não disponível no momento.</p>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="sucesso-area" style="text-align:center;">
+                    <p style="font-size:1.2em; margin:20px 0;">
+                        🎉 Seu pedido foi pago com sucesso!
+                    </p>
+                    <p>
+                        Data do pagamento: @Model.Pedido?.DataPagamento?.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+                </div>
+            }
+
+            <hr />
+
+            <div class="acoes">
+                <a asp-page="/Home/Index" class="btn-continuar">
+                    Voltar para loja
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

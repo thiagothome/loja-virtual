@@ -12,8 +12,8 @@ using SiteAspas.Data;
 namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    [Migration("20260711174759_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260712184558_AddCustomerId")]
+    partial class AddCustomerId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -265,11 +265,17 @@ namespace SiteAspas.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("DataPagamento")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EnderecoId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("timestamp with time zone");
@@ -277,8 +283,8 @@ namespace SiteAspas.Migrations
                     b.Property<string>("IdPagamento")
                         .HasColumnType("text");
 
-                    b.Property<string>("MetodoPagamento")
-                        .HasColumnType("text");
+                    b.Property<int>("MetodoPagamento")
+                        .HasColumnType("integer");
 
                     b.Property<string>("QrCode")
                         .HasColumnType("text");
@@ -286,9 +292,8 @@ namespace SiteAspas.Migrations
                     b.Property<string>("QrCodeBase64")
                         .HasColumnType("text");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("Total")
                         .HasPrecision(18, 2)
@@ -298,6 +303,8 @@ namespace SiteAspas.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EnderecoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -407,6 +414,10 @@ namespace SiteAspas.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CustomerId")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("timestamp with time zone");
 
@@ -513,7 +524,7 @@ namespace SiteAspas.Migrations
                             Nome = "Adriana",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAUfyuAcC1hNAzsm/2+3nYEpdWK3ZAX8i0E2sZ7XyxL7cfgUSOrg0la+uCaJzVoz2w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFp6PXaRdIgSawXZvBAM0jN0xHOPeH9o/LxVtmElIX5+fRChU1BVyE6jLn7i4VQeBA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Sobrenome = "Thome",
@@ -588,20 +599,30 @@ namespace SiteAspas.Migrations
 
             modelBuilder.Entity("SiteAspas.Models.Endereco", b =>
                 {
-                    b.HasOne("SiteAspas.Models.Usuario", null)
+                    b.HasOne("SiteAspas.Models.Usuario", "Usuario")
                         .WithMany("Enderecos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("SiteAspas.Models.Pedido", b =>
                 {
+                    b.HasOne("SiteAspas.Models.Endereco", "Endereco")
+                        .WithMany()
+                        .HasForeignKey("EnderecoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("SiteAspas.Models.Usuario", "Usuario")
                         .WithMany("Pedidos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Endereco");
 
                     b.Navigation("Usuario");
                 });

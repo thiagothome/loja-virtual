@@ -1,24 +1,34 @@
 using SiteAspas.Data;
 using SiteAspas.Models;
 using Microsoft.EntityFrameworkCore;
+using SiteAspas.Models.Enums;
 
+namespace SiteAspas.Services
+{
 public class PedidoService : IPedidoService
 {
-    private readonly SiteAspasContext _context;
+   private readonly SiteAspasContext _context;
 
-    public PedidoService(SiteAspasContext context)
-    {
-        _context = context;
-    }
+        public PedidoService(
+            SiteAspasContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<int> CriarPedido(int clienteId, List<CarrinhoItem> itens)
+    public async Task<int> CriarPedido(
+    int usuarioId,
+    int enderecoId,
+    MetodoPagamento metodoPagamento,
+    List<CarrinhoItem> itens)
     {
         var pedido = new Pedido
         {
-            UsuarioId = clienteId,
-            DataPedido = DateTime.Now,
+            UsuarioId = usuarioId,
+            EnderecoId = enderecoId,
+            MetodoPagamento = metodoPagamento,
+            Status = StatusPedido.AguardandoPagamento,
+            DataPedido = DateTime.UtcNow,
             Total = itens.Sum(i => i.Preco * i.Quantidade),
-            Status = "Processando",
             Itens = itens.Select(i => new PedidoItem
             {
                 ProdutoId = i.ProdutoId,
@@ -41,4 +51,5 @@ public class PedidoService : IPedidoService
             .ThenInclude(i => i.Produto)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+}
 }

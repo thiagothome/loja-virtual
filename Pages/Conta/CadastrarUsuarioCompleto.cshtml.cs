@@ -75,16 +75,17 @@ namespace SiteAspas.Pages
         [BindProperty]
         public Usuario Usuario { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
+       public async Task<IActionResult> OnGetAsync()
+{
+        var user = await _userManager.GetUserAsync(User);
 
-            if (user == null) return NotFound();
+        if (user == null)
+            return Challenge();
 
-            Usuario = user;
+        Usuario = user;
 
-            return Page();
-        }
+        return Page();
+    }
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -100,16 +101,25 @@ namespace SiteAspas.Pages
                 return NotFound();
             }
 
-
             user.Nome = Usuario.Nome;
             user.Sobrenome = Usuario.Sobrenome;
             user.Email = Usuario.Email;
             user.CPF = CPF;
-            user.DataNascimento = DataNascimento;
+            user.DataNascimento = DataNascimento.HasValue
+            ? DateTime.SpecifyKind(DataNascimento.Value, DateTimeKind.Utc)
+            : null;            
             user.Telefone = Usuario.Telefone;
             user.CadastroCompleto = true;
 
+            Console.WriteLine(user.DataNascimento?.Kind);
+            Console.WriteLine($"Nascimento: {user.DataNascimento?.Kind}");
+            Console.WriteLine($"Cadastro: {user.DataCadastro.Kind}");
+            Console.WriteLine($"Token: {user.TokenExpiration?.Kind}");
+
             var result = await _userManager.UpdateAsync(user);
+
+
+
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)

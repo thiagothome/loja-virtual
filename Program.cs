@@ -4,6 +4,7 @@ using SiteAspas.Services;
 using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SiteAspasContext>(options =>
@@ -43,6 +44,9 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+
+builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<AsaasService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages(options =>
