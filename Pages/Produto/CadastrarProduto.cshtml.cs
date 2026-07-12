@@ -20,7 +20,7 @@ namespace SiteAspas.Pages
         }
 
         [BindProperty]
-        public Produto Produto { get; set; }
+        public Models.Produto Produto { get; set; } = new();
 
         [BindProperty]
         [Required(ErrorMessage = "A imagem do produto é obrigatória.")]
@@ -66,7 +66,7 @@ namespace SiteAspas.Pages
             _context.Produtos.Add(Produto);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Produto/Produto", new { id = Produto.Id });
+            return RedirectToPage("/Produto/ProdutoDetalhe", new { id = Produto.Id });
         }
     }
 }

@@ -1,105 +1,98 @@
 @page
-@model CarrinhoModel
+@model SiteAspas.Pages.CarrinhoModel
+
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Carrinho de Compras";
+    ViewData["Title"] = "Meu Carrinho";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="/css/pages/carrinho.css" />
+    <link rel="stylesheet" href="/css/pages/carrinho.css" asp-append-version="true" />
 }
 
-<div class="carrinho-container">
-    <h1>Carrinho de Compras</h1>
+@if (!Model.Itens.Any())
+{
+    <p>Seu carrinho está vazio.</p>
+}
+else
+{
+    <div class="auth-container">
 
-    @if (Model.Itens.Any())
-    {
-        <ul class="lista-itens">
-            @foreach (var item in Model.Itens)
+    <div class="auth-card carrinho-card">
+
+        <div class="auth-header">
+            <h2 class="auth-title">Meu Carrinho</h2>
+            <p class="auth-subtitle">
+                Revise seus produtos antes de finalizar a compra.
+            </p>
+        </div>
+
+        <div class="auth-form">
+
+            @foreach (SiteAspas.Models.CarrinhoItem item in Model.Itens)
             {
-                <li class="item">
-                    <img src="@item.ImagemUrl" alt="@item.Nome" />
-                    <div class="detalhes">
-                        <h2>@item.Nome</h2>
-                        <p>Preço: @item.Preco</p>
-                        <p>Quantidade: @item.Quantidade</p>
+                <div class="item-carrinho">
 
-                        <div class="controles-quantidade">
-                            <form method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@item.ProdutoId" />
-                                <input type="hidden" name="acao" value="diminuir" />
-                                <button type="submit" asp-page-handler="AtualizarQuantidade" class="btn-controle">-</button>
-                            </form>
+                    <img src="@item.ImagemUrl"
+                         alt="@item.Nome"
+                         class="produto-img" />
 
-                            <form method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@item.ProdutoId" />
-                                <input type="hidden" name="acao" value="aumentar" />
-                                <button type="submit" asp-page-handler="AtualizarQuantidade" class="btn-controle">+</button>
-                            </form>
-                        </div>
+                    <div class="produto-info">
 
-                        <form method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@item.ProdutoId" />
-                            <button type="submit" asp-page-handler="RemoverItem" class="btn-remover">Remover</button>
-                        </form>
+                        <h5>@item.Nome</h5>
+
+                        <p>
+                            Quantidade:
+                            <strong>@item.Quantidade</strong>
+                        </p>
+
+                        <p>
+                            Valor unitário:
+                            <strong>@item.Preco?.ToString("C")</strong>
+                        </p>
+
                     </div>
-                </li>
-            }
-        </ul>
 
-        <div class="calculo-frete">
-            <h3>Calcular Frete</h3>
-            <form method="post" asp-page-handler="CalcularFrete">
-                @Html.AntiForgeryToken()
-                <div class="form-group">
-                    <label for="cep">CEP:</label>
-                    <input type="text" id="cep" name="cep" placeholder="Digite seu CEP" required>
+                    <div class="produto-total">
+
+                        <span>Subtotal</span>
+
+                        <strong>
+                            @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
+                        </strong>
+
+                    </div>
+
                 </div>
-                <button type="submit" class="btn-calcular">Calcular</button>
-                @if (!string.IsNullOrEmpty(Model.MensagemFrete))
-                {
-                    <p class="@Model.ClasseMensagemFrete">@Model.MensagemFrete</p>
-                }
-                @if (Model.ResultadoFrete != null)
-                {
-                    <div class="resultado-frete">
-                        <h4>Opções de Frete:</h4>
-                        <ul>
-                           @*  @foreach (var frete in Model.ResultadoFrete)
-                            {
-                                <li>
-                                    <strong>@frete.Servico:</strong> @frete.Valor.ToString("C") - Prazo: @frete.PrazoEntrega
-                                    <input type="radio" name="opcaoFreteSelecionada" value="@frete.Servico" /> Selecionar
-                                </li>
-                            } *@
-                        </ul>
-                        <button type="submit" asp-page-handler="SelecionarFrete" class="btn-selecionar-frete">Selecionar Frete</button>
-                    </div>
-                }
-            </form>
+            }
+
+            <hr />
+
+            <div class="total-container">
+
+                <div>
+                    <small>Total da compra</small>
+                    <h3>@Model.Total.ToString("C")</h3>
+                </div>
+
+            </div>
+
+            <div class="acoes">
+
+                <a asp-page="/Home/Index"
+                   class="btn-continuar">
+                    Continuar comprando
+                </a>
+
+                <button class="btn-finalizar">
+                    Finalizar compra
+                </button>
+
+            </div>
+
         </div>
 
-        @if (Model.ValorFreteSelecionado > 0)
-        {
-            <div class="frete-selecionado">
-                <strong>Frete (@Model.OpcaoFreteSelecionada):</strong> @Model.ValorFreteSelecionado.ToString("C")
-            </div>
-        }
-        <div class="total">
-            <strong>Total:</strong> @(Model.Total + Model.ValorFreteSelecionado)
-        </div>
-        <div class="acoes-carrinho">
-            <form method="post" asp-page-handler="FinalizarCompra">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn-finalizar">Finalizar Compra</button>
-            </form>
-        </div>
-    }
-    else
-    {
-        <p>Seu carrinho está vazio.</p>
-    }
+    </div>
+
 </div>
+}

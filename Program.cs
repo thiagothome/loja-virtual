@@ -5,10 +5,9 @@ using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpClient<MercadoPagoService>();
 
 builder.Services.AddDbContext<SiteAspasContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
@@ -43,10 +42,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<ProdutoService>();
-builder.Services.AddScoped<CarrinhoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddHttpClient<IFreteService, FreteService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages(options =>
@@ -57,9 +53,6 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Conta/CadastrarUsuario");
     options.Conventions.AllowAnonymousToPage("/Erro/Erro");
     options.Conventions.AllowAnonymousToPage("/Conta/AtivarConta");
-    options.Conventions.AllowAnonymousToPage("/Conta/EmailConfirmacao");
-    options.Conventions.AllowAnonymousToPage("/Conta/ConfirmarEmail");
-    options.Conventions.AllowAnonymousToPage("/Conta/ContaNaoConfirmada");
 });
 
 var app = builder.Build();

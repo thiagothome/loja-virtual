@@ -1,0 +1,28 @@
+@page "{id:int?}"
+@model SiteAspas.Pages.ProdutoDetalheModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Model.Produto.Nome;
+} 
+
+@section Styles {
+    <link rel="stylesheet" href="/css/pages/verProduto.css">
+}
+
+<div class="produto-detalhe-container">
+    <div class="imagem">
+        <img src="@Model.Produto.ImagemUrl" alt="@Model.Produto.Nome" />
+    </div>
+    <div class="informacoes">
+        <h1>@Model.Produto.Nome</h1>
+        <p class="descricao">@Model.Produto.Descricao</p>
+        <p class="preco">@Model.Produto.Preco</p>
+        <form method="post" asp-page="/Produto/ProdutoDetalhe" asp-route-id="@Model.Produto.Id" asp-page-handler="AdicionarAoCarrinho">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Produto.Id" />
+            <button type="submit" class="btn-adicionar">Adicionar ao Carrinho</button>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/css/pages/verProduto.css" />

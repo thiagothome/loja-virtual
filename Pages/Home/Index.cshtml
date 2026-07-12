@@ -6,11 +6,10 @@
 @inject UserManager<Usuario> _userManager
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Ateliê Adri Thome";
+    ViewData["Title"] = "TGO Studio";
 }
 
 <div class="carrossel-container">
-    <h2 class="text-2xl font-bold mb-5 text-center">Velas aromáticas</h2>
     <div class="carrossel-wrapper">
         <div class="carrossel">
             @for (int i = 1; i <= 6; i++)
@@ -29,7 +28,7 @@
             <div class="card-body">
                 <div class="card-title">@produto.Nome</div>
                 <div class="card-price">@produto.Preco</div>
-                <button class="card-button" onclick="location.href='/Produto/Produto/@produto.Id'">Ver Produto</button>
+                <button class="card-button" onclick="location.href='/Produto/ProdutoDetalhe/@produto.Id'">Ver Produto</button>
 
                 @if (User.Identity.IsAuthenticated)
                 {

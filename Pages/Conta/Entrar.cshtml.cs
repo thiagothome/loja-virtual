@@ -48,11 +48,6 @@ namespace SiteAspas.Pages
                 return Page();
             }
 
-            if (!await _userManager.IsEmailConfirmedAsync(usuario))
-            {
-                return RedirectToPage("ContaNaoConfirmada", new { email = Email });
-            }
-
             if (!usuario.IsAtivo)
             {
                 ModelState.AddModelError(string.Empty, "Sua conta ainda não está ativa.");

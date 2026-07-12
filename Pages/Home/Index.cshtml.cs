@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas.Models;
 using SiteAspas.Services;
 
-namespace SiteAspas.Pages;
+namespace SiteAspas.Pages{
 
 public class IndexModel : PageModel
 {
     private readonly ProdutoService _produtoService;
     private readonly UserManager<Usuario> _userManager;
-    public List<Produto> ProdutosDestaque { get; set; } = new();
-
+    public List<SiteAspas.Models.Produto> ProdutosDestaque { get; set; } = new();
     public IndexModel(ProdutoService produtoService, UserManager<Usuario> userManager)
     {
         _produtoService = produtoService;
@@ -38,4 +37,5 @@ public class IndexModel : PageModel
 
         return RedirectToPage("/Home/Index");
     }
+}
 }

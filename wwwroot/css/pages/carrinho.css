@@ -1,218 +1,141 @@
-.carrinho-container {
+.auth-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.carrinho-card {
+    width: 100%;
     max-width: 900px;
-    margin: auto;
-    padding: 2rem;
 }
 
-    .carrinho-container h1 {
-        font-size: 2rem;
-        margin-bottom: 2rem;
-    }
-
-.lista-itens {
-    list-style: none;
-    padding: 0;
-}
-
-    .lista-itens .item {
-        display: flex;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 1rem;
-    }
-
-    .lista-itens img {
-        width: 120px;
-        height: auto;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .lista-itens .detalhes h2 {
-        margin: 0;
-        font-size: 1.2rem;
-    }
-
-    .lista-itens .detalhes p {
-        margin: 0.3rem 0;
-        color: #555;
-    }
-
-.total {
-    text-align: right;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #23b5aa;
-    margin-top: 1rem;
-}
-
-.controles-quantidade {
+.item-carrinho {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #ececec;
 }
 
-    .controles-quantidade form {
-        display: inline;
-    }
-
-.btn-controle {
-    background-color: #23b5aa;
-    border: none;
-    color: white;
-    padding: 0.3rem 0.6rem;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
+.item-carrinho:last-child {
+    border-bottom: none;
 }
 
-    .btn-controle:hover {
-        background-color: #1b928b;
-    }
-
-.btn-remover {
-    background-color: #e74c3c;
-    border: none;
-    color: white;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.9rem;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 0.5rem;
+.produto-img {
+    width: 120px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    flex-shrink: 0;
 }
 
-    .btn-remover:hover {
-        background-color: #c0392b;
-    }
+.produto-info {
+    flex: 1;
+}
 
-.acoes-carrinho {
+.produto-info h5 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.produto-info p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.produto-total {
+    text-align: right;
+    min-width: 140px;
+}
+
+.produto-total span {
+    display: block;
+    color: #777;
+    font-size: .9rem;
+}
+
+.produto-total strong {
+    font-size: 1.2rem;
+    color: #23b5aa;
+}
+
+.total-container {
     display: flex;
     justify-content: flex-end;
-    margin-top: 2rem;
+    margin-top: 30px;
+}
+
+.total-container small {
+    color: #777;
+}
+
+.total-container h3 {
+    margin-top: 4px;
+    color: #23b5aa;
+    font-size: 2rem;
+}
+
+.acoes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.btn-continuar,
+.btn-finalizar {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.btn-continuar {
+    border: 1px solid #ddd;
+    color: #555;
+    background: white;
+}
+
+.btn-continuar:hover {
+    background: #f5f5f5;
 }
 
 .btn-finalizar {
-    background-color: #2ecc71;
     border: none;
     color: white;
-    padding: 0.8rem 1.5rem;
-    font-size: 1.1rem;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    background: linear-gradient(90deg,#7b00ff,#a855f7);
 }
 
-    .btn-finalizar:hover {
-        background-color: #27ae60;
-    }
-
-
-.calculo-frete {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+.btn-finalizar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(123,0,255,.25);
 }
 
-    .calculo-frete h3 {
-        font-size: 1.2rem;
-        margin-top: 0;
-        margin-bottom: 1rem;
+@media (max-width:768px){
+
+    .item-carrinho{
+        flex-direction:column;
+        text-align:center;
     }
 
-    .calculo-frete .form-group {
-        margin-bottom: 1rem;
+    .produto-total{
+        text-align:center;
     }
 
-    .calculo-frete label {
-        display: block;
-        margin-bottom: 0.3rem;
-        font-weight: bold;
+    .acoes{
+        flex-direction:column;
     }
 
-    .calculo-frete input[type="text"] {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
+    .produto-img{
+        width:180px;
+        height:220px;
     }
-
-.btn-calcular {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    margin-top: 0.5rem;
-}
-
-    .btn-calcular:hover {
-        background-color: #0056b3;
-    }
-
-.resultado-frete {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-}
-
-    .resultado-frete h4 {
-        font-size: 1.1rem;
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-    }
-
-    .resultado-frete ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .resultado-frete li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #eee;
-    }
-
-        .resultado-frete li:last-child {
-            border-bottom: none;
-        }
-
-.btn-selecionar-frete {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    margin-top: 1rem;
-}
-
-    .btn-selecionar-frete:hover {
-        background-color: #1e7e34;
-    }
-
-.mensagem-erro {
-    color: #dc3545;
-    margin-top: 0.5rem;
-}
-
-.frete-selecionado {
-    text-align: right;
-    font-size: 1rem;
-    color: #555;
-    margin-top: 1rem;
 }

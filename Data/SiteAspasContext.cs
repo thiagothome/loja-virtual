@@ -64,6 +64,10 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
              .HasForeignKey(c => c.ProdutoId)
              .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(c => c.ClienteId);
+            e.Property(c => c.Peso).HasPrecision(10, 2);
+            e.Property(c => c.Altura).HasPrecision(10, 2);
+            e.Property(c => c.Largura).HasPrecision(10, 2);
+            e.Property(c => c.Comprimento).HasPrecision(10, 2);
         });
 
         var hasher = new PasswordHasher<Usuario>();
@@ -82,12 +86,12 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
             Nome = "Adriana",
             Sobrenome = "Thome",
             CPF = "",
-            DataNascimento = new DateTime(),
+            DataNascimento = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
             IsAtivo = true,
             Tipo = TipoUsuario.Administrador,
-            DataCadastro = new DateTime(2024, 1, 1),
+            DataCadastro = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             EmailConfirmationToken = "SEED-TOKEN",
-            TokenExpiration = new DateTime(2030, 1, 1),
+            TokenExpiration = new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
             ConcurrencyStamp = "aa87e1b9-e1c1-4a9b-91c9-ae0000000000"
         };

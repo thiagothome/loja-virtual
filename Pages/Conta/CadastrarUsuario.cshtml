@@ -38,9 +38,10 @@
 
             <div class="form-group">
                 <label asp-for="Telefone" class="form-label">Telefone</label>
-                <input asp-for="Telefone" type="tel" class="form-input"
-                       placeholder="(11) 99999-9999"
-                       pattern="^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$" />
+                <input asp-for="Telefone"
+                    type="tel"
+                    class="form-input"
+                    placeholder="(11) 99999-9999" />
                 <span asp-validation-for="Telefone" class="erroValidacao"></span>
             </div>
 
@@ -53,6 +54,20 @@
                     </button>
                 </div>
                 <span asp-validation-for="Senha" class="erroValidacao"></span>
+            </div>
+
+            <div class="password-requirements">
+                <div class="requirements-title">
+                    A senha deve conter:
+                </div>
+
+                <ul class="requirements-list">
+                    <li>Pelo menos 8 caracteres</li>
+                    <li>Uma letra maiúscula</li>
+                    <li>Uma letra minúscula</li>
+                    <li>Um número</li>
+                    <li>Um caractere especial</li>
+                </ul>
             </div>
 
             <div class="form-group">
@@ -82,7 +97,7 @@
                 Continuar com Google
             </button>
         </form>
-
+    
         <div class="auth-footer">
             <p>Já tem uma conta? <a asp-page="/Conta/Entrar" class="auth-link">Entrar agora</a></p>
         </div>
