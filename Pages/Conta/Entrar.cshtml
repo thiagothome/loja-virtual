@@ -1,5 +1,5 @@
 @page
-@model SiteAspas.Pages.EntrarModel
+@model SiteAspas.Pages.Conta.EntrarModel
 @{
     Layout = "_Layout";
     ViewData["HideHeader"] = true;
@@ -16,6 +16,7 @@
             <p class="auth-subtitle">Faça login para acessar sua conta</p>
         </div>
 
+        <!-- LOGIN NORMAL -->
         <form method="post" class="auth-form">
             @Html.AntiForgeryToken()
             <div class="form-group">
@@ -28,7 +29,7 @@
                 <label for="Senha" class="form-label">Senha</label>
                 <div class="password-input">
                     <input asp-for="Senha" type="password" class="form-input" placeholder="••••••••" />
-                    <button type="button" class="password-toggle">
+                    <button type="button" class="password-toggle" onclick="return false;">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
@@ -50,12 +51,16 @@
                     <i class="fas fa-spinner fa-spin"></i>
                 </span>
             </button>
+        </form>
 
-            <div class="auth-divider">
-                <span>ou</span>
-            </div>
+        <div class="auth-divider">
+            <span>ou</span>
+        </div>
 
-            <button type="button" class="social-button google-button">
+        <!-- BOTÃO GOOGLE SEPARADO -->
+        <form method="post" asp-page-handler="GoogleLogin">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="social-button google-button" style="width:100%;">
                 <i class="fab fa-google"></i>
                 Continuar com Google
             </button>
@@ -69,4 +74,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="/js/site.js"></script>
 }

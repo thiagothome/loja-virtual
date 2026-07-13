@@ -1,0 +1,133 @@
+@page "{id:int}"
+@model SiteAspas.Pages.Pagamento.CartaoModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Pagamento com Cartão";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/pages/pagamento.css"
+          asp-append-version="true" />
+    <style>
+        .cartao-form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+    </style>
+}
+
+<div class="auth-container">
+    <div class="auth-card pagamento-card">
+        <div class="auth-header">
+            <h2 class="auth-title">
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
+                    ? "✅ Pagamento Confirmado!" 
+                    : "Cartão de Crédito")
+            </h2>
+            <p class="auth-subtitle">
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
+                    ? "Seu pagamento foi processado com sucesso." 
+                    : "Insira os dados do cartão para finalizar.")
+            </p>
+        </div>
+
+        <div class="auth-form">
+            
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-success" style="text-align:center; margin-bottom:20px; padding:15px; background:#d4edda; border-radius:8px; color:#155724;">
+                    @Model.StatusMessage
+                </div>
+            }
+
+            <div class="bloco">
+                <h3>Pedido #@Model.Pedido?.Id</h3>
+                <p>Status: <strong>@Model.Pedido?.Status</strong></p>
+                <p>Valor: <strong>@Model.Pedido?.Total?.ToString("C")</strong></p>
+            </div>
+
+            <hr />
+
+            @if (Model.Pedido?.Status != SiteAspas.Models.Enums.StatusPedido.Pago)
+            {
+                <form method="post">
+                    <div class="cartao-form">
+                        <h3>Dados do Cartão</h3>
+                        
+                        <div class="form-group">
+                            <label>Número do Cartão</label>
+                            <input type="text" name="NumeroCartao" placeholder="0000 0000 0000 0000" required maxlength="16" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nome no Cartão</label>
+                            <input type="text" name="NomeCartao" placeholder="Como está impresso no cartão" required />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Mês de Expiração</label>
+                                <input type="text" name="MesExpiracao" placeholder="MM" required maxlength="2" />
+                            </div>
+                            <div class="form-group">
+                                <label>Ano de Expiração</label>
+                                <input type="text" name="AnoExpiracao" placeholder="AAAA" required maxlength="4" />
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" name="Cvv" placeholder="123" required maxlength="4" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                            style="width:100%; background:#28a745; color:white; padding:15px; border:none; border-radius:5px; font-size:1.1em; cursor:pointer;">
+                        💳 Pagar com Cartão
+                    </button>
+                </form>
+            }
+            else
+            {
+                <div class="sucesso-area" style="text-align:center;">
+                    <p style="font-size:1.2em; margin:20px 0;">
+                        🎉 Seu pedido foi pago com sucesso!
+                    </p>
+                </div>
+            }
+
+            <hr />
+
+            <div class="acoes">
+                <a asp-page="/Home/Index" class="btn-continuar">
+                    Voltar para loja
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

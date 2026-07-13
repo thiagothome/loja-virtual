@@ -305,6 +305,80 @@ public async Task<string?> ObterLinhaDigitavelAsync(string paymentId)
     return result.GetProperty("identificationField").GetString();
 }
 
+public async Task<CreateCreditCardPaymentResponse?> CriarCobrancaCartaoAsync(
+    string customerId,
+    decimal valor,
+    string holderName,
+    string number,
+    string expiryMonth,
+    string expiryYear,
+    string ccv,
+    string holderEmail,
+    string holderCpfCnpj,
+    string postalCode,
+    string addressNumber,
+    string phone)
+{
+    var request = new CreateCreditCardPaymentRequest
+    {
+        Customer = customerId,
+        Value = valor,
+        DueDate = DateTime.UtcNow.AddDays(1),
+        BillingType = "CREDIT_CARD",
+        CreditCard = new CreditCardInfo
+        {
+            HolderName = holderName,
+            Number = number,
+            ExpiryMonth = expiryMonth,
+            ExpiryYear = expiryYear,
+            Ccv = ccv
+        },
+        CreditCardHolderInfo = new CreditCardHolderInfo
+        {
+            Name = holderName,
+            Email = holderEmail,
+            CpfCnpj = holderCpfCnpj,
+            PostalCode = postalCode,
+            AddressNumber = addressNumber,
+            Phone = phone
+        }
+    };
+
+    var json = JsonSerializer.Serialize(request);
+    Console.WriteLine($"Criando cobrança cartão: {json}");
+
+    var response =
+        await _httpClient.PostAsync(
+            "payments",
+            new StringContent(
+                json,
+                Encoding.UTF8,
+                "application/json"));
+
+    if (!response.IsSuccessStatusCode)
+    {
+        var erro =
+            await response.Content.ReadAsStringAsync();
+
+        Console.WriteLine(
+            $"ASAAS ERRO [CriarCartao]: {response.StatusCode}");
+        Console.WriteLine(erro);
+
+        return null;
+    }
+
+    var content =
+        await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"Cobrança cartão criada: {content}");
+
+    return JsonSerializer.Deserialize<CreateCreditCardPaymentResponse>(
+        content,
+        new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+}
+
     public async Task<bool> SimularPagamentoPixAsync(string paymentId, decimal valor, DateTime dataPagamento)
 {
     var request = new

@@ -28,15 +28,14 @@ public class CadastrarUsuarioModel : PageModel
 
     [BindProperty]
     [Required(ErrorMessage = "O número de telefone é obrigatório")]
-    [StringLength(15, MinimumLength = 10, ErrorMessage = "Telefone inválido")]
-    [RegularExpression(@"^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$",
-    ErrorMessage = "Formato inválido. Use (XX) XXXXX-XXXX")]
+    [RegularExpression(@"^\(\d{2}\)\s\d{5}-\d{4}$",
+        ErrorMessage = "Formato inválido. Use (XX) XXXXX-XXXX")]
     public string Telefone { get; set; }
 
     [BindProperty]
     [Required(ErrorMessage = "A senha é obrigatória")]
     [DataType(DataType.Password)]
-    [StringLength(100, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 100 caracteres")]
+    [StringLength(100, MinimumLength = 8, ErrorMessage = "A senha deve ter no mínimo 8 caracteres")]
     public string Senha { get; set; }
 
     [BindProperty]
@@ -50,8 +49,6 @@ public class CadastrarUsuarioModel : PageModel
     {
         if (!ModelState.IsValid)
         {
-            ViewData["Senha"] = Usuario.Senha;
-            ViewData["ConfirmarSenha"] = ConfirmarSenha;
             return Page();
         }
 
@@ -74,7 +71,7 @@ public class CadastrarUsuarioModel : PageModel
                 NormalizedUserName = _userManager.NormalizeName(Usuario.Email),
                 Nome = Usuario.Nome,
                 Sobrenome = Usuario.Sobrenome,
-                Telefone = Telefone,
+                Telefone = Telefone, // Salva com máscara
                 Tipo = TipoUsuario.Cliente,
                 IsAtivo = true,
                 EmailConfirmed = true
@@ -82,27 +79,28 @@ public class CadastrarUsuarioModel : PageModel
 
             var result = await _userManager.CreateAsync(usuario, Senha);
 
-          if (!result.Succeeded)
-{
-            foreach (var error in result.Errors)
+            if (!result.Succeeded)
             {
-                if (error.Code.Contains("Password"))
+                foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("Senha",
-                        "A senha não atende aos requisitos mínimos.");
+                    if (error.Code.Contains("Password"))
+                    {
+                        ModelState.AddModelError("Senha",
+                            "A senha não atende aos requisitos mínimos.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+
+                return Page();
             }
 
-            return Page();
+            await transaction.CommitAsync();
+
+            return RedirectToPage("/Conta/Entrar");
         }
-
-                await transaction.CommitAsync();
-
-                return RedirectToPage("/Conta/Entrar");        }
         catch (Exception)
         {
             await transaction.RollbackAsync();

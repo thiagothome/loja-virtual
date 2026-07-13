@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SiteAspas.Services;
 using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +30,24 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    // Ajuste automático para desenvolvimento vs produção
+    if (builder.Environment.IsDevelopment())
+    {
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Permite HTTP local
+    }
+    else
+    {
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    }
 });
+
+// Configurar Google Authentication
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Google:ClientId"]!;
+        options.ClientSecret = builder.Configuration["Google:ClientSecret"]!;
+    });
 
 builder.Services.AddSession(options =>
 {
@@ -71,9 +87,12 @@ else
     app.UseExceptionHandler("/Erro/Erro");
 }
 
-
 app.UseStatusCodePagesWithReExecute("/Erro/Erro", "?statusCode={0}");
-app.UseHttpsRedirection();
+// Desabilitar HTTPS em desenvolvimento
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseSession();
 app.UseStaticFiles();
 app.UseRouting();
