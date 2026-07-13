@@ -7,6 +7,9 @@ using SiteAspas.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using SiteAspas.Services;
 
+
+namespace SiteAspas.Pages.Conta
+{
 public class CadastrarUsuarioModel : PageModel
 {
     private readonly SiteAspasContext _context;
@@ -109,4 +112,5 @@ public class CadastrarUsuarioModel : PageModel
             return Page();
         }
     }
+}
 }

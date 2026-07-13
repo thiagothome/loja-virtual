@@ -41,10 +41,35 @@ else
 
                         <h5>@item.Nome</h5>
 
-                        <p>
-                            Quantidade:
-                            <strong>@item.Quantidade</strong>
-                        </p>
+                        <div class="quantidade-container">
+
+                        <form method="post"
+                            asp-page-handler="Diminuir"
+                            asp-route-id="@item.Id">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit">
+                                -
+                            </button>
+
+                        </form>
+
+                        <strong>@item.Quantidade</strong>
+
+                        <form method="post"
+                            asp-page-handler="Aumentar"
+                            asp-route-id="@item.Id">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit">
+                                +
+                            </button>
+
+                        </form>
+
+                    </div>
 
                         <p>
                             Valor unitário:
@@ -62,6 +87,28 @@ else
                         </strong>
 
                     </div>
+
+                    <div class="produto-total">
+
+    <span>Subtotal</span>
+
+    <strong>
+        @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
+    </strong>
+
+    <form method="post"
+          asp-page-handler="Remover"
+          asp-route-id="@item.Id">
+
+        @Html.AntiForgeryToken()
+
+        <button type="submit">
+            Remover
+        </button>
+
+    </form>
+
+</div>
 
                 </div>
             }

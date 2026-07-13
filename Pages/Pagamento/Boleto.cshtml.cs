@@ -12,14 +12,17 @@ public class BoletoModel : PageModel
 {
     private readonly SiteAspasContext _context;
     private readonly AsaasService _asaasService;
-    
+    private readonly IPedidoService _pedidoService;
+
     public BoletoModel(
-        SiteAspasContext context,
-        AsaasService asaasService)
-    {
-        _context = context;
-        _asaasService = asaasService;
-    }
+    SiteAspasContext context,
+    AsaasService asaasService,
+    IPedidoService pedidoService)
+{
+    _context = context;
+    _asaasService = asaasService;
+    _pedidoService = pedidoService;
+}
 
     public Pedido? Pedido { get; set; }
     
@@ -105,17 +108,22 @@ public class BoletoModel : PageModel
             DateTime.Now);
 
         if (sucesso)
-        {
-            pedido.Status = StatusPedido.Pago;
-            pedido.DataPagamento = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
+{
+    var confirmado =
+        await _pedidoService.ConfirmarPagamento(
+            pedido.Id);
 
-            StatusMessage = "✅ Pagamento simulado com sucesso!";
-        }
-        else
-        {
-            StatusMessage = "❌ Erro ao simular pagamento. Tente novamente.";
-        }
+    if (confirmado)
+    {
+        StatusMessage =
+            "✅ Pagamento aprovado com sucesso!";
+    }
+    else
+    {
+        StatusMessage =
+            "❌ Estoque insuficiente para concluir o pedido.";
+    }
+}
 
         return RedirectToPage(new { id });
     }

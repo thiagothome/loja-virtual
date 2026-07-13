@@ -12,15 +12,18 @@ namespace SiteAspas.Pages.Pagamento;
 public class PixModel : PageModel
 {
     private readonly SiteAspasContext _context;
-    private readonly AsaasService _asaasService;
+private readonly AsaasService _asaasService;
+private readonly IPedidoService _pedidoService;
     
     public PixModel(
-        SiteAspasContext context,
-        AsaasService asaasService)
-    {
-        _context = context;
-        _asaasService = asaasService;
-    }
+    SiteAspasContext context,
+    AsaasService asaasService,
+    IPedidoService pedidoService)
+{
+    _context = context;
+    _asaasService = asaasService;
+    _pedidoService = pedidoService;
+}
 
     public Pedido? Pedido { get; set; }
     
@@ -96,17 +99,22 @@ public class PixModel : PageModel
         DateTime.Now);
 
     if (sucesso)
+{
+    var confirmado =
+        await _pedidoService.ConfirmarPagamento(
+            pedido.Id);
+
+    if (confirmado)
     {
-        pedido.Status = StatusPedido.Pago;
-        pedido.DataPagamento = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
-        
-        StatusMessage = "✅ Pagamento simulado com sucesso!";
+        StatusMessage =
+            "✅ Pagamento aprovado com sucesso!";
     }
     else
     {
-        StatusMessage = "❌ Erro ao simular pagamento. Tente novamente.";
+        StatusMessage =
+            "❌ Estoque insuficiente para concluir o pedido.";
     }
+}
 
     return RedirectToPage(new { id });
 }

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas.Models;
 
+namespace SiteAspas.Pages.Conta
+{
+    
 [Authorize]
 public class SairModel : PageModel
 {
@@ -21,4 +24,5 @@ public class SairModel : PageModel
         await _signInManager.SignOutAsync();
         return RedirectToPage("/Home/Index");
     }
+}
 }

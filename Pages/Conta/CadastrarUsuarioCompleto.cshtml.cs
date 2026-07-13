@@ -6,7 +6,7 @@ using SiteAspas.Data;
 using SiteAspas.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SiteAspas.Pages
+namespace SiteAspas.Pages.Conta
 {
     [Authorize]
     public class CadastrarUsuarioCompletoModel : PageModel

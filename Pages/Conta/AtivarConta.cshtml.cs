@@ -4,7 +4,7 @@ using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
-namespace SiteAspas.Pages
+namespace SiteAspas.Pages.Conta
 {
     [Authorize]
     public class AtivarContaModel : PageModel

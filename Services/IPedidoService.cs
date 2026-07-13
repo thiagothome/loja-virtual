@@ -16,5 +16,6 @@ namespace SiteAspas.Services
         Task<Pedido?> ObterPedidoPorId(
             int id
         );
+        Task<bool> ConfirmarPagamento(int pedidoId);
     }
 }

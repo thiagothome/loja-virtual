@@ -65,6 +65,33 @@ public class IndexModel : PageModel
             return RedirectToPage("/Produto/Carrinho");
         }
 
+        // Validar estoque antes de criar pedido
+foreach (var item in itens)
+{
+    var produto = await _context.Produtos
+        .FirstOrDefaultAsync(p => p.Id == item.ProdutoId);
+
+    if (produto == null)
+    {
+        ModelState.AddModelError(
+            string.Empty,
+            $"Produto {item.Nome} não encontrado.");
+
+        await OnGetAsync();
+        return Page();
+    }
+
+    if (item.Quantidade > produto.Estoque)
+    {
+        ModelState.AddModelError(
+            string.Empty,
+            $"O produto {item.Nome} possui apenas {produto.Estoque} unidade(s) em estoque.");
+
+        await OnGetAsync();
+        return Page();
+    }
+}
+
         var endereco = await _context.Enderecos
             .FirstOrDefaultAsync(e =>
                 e.UsuarioId == usuario.Id &&

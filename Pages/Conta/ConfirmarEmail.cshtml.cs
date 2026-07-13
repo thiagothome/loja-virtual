@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SiteAspas.Models;
 
-namespace SiteAspas.Pages
+namespace SiteAspas.Pages.Conta
 {
     public class ConfirmarEmailModel : PageModel
     {

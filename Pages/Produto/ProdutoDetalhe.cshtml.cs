@@ -40,41 +40,59 @@ public SiteAspas.Models.Produto Produto { get; set; }
 
 
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> OnPostAdicionarAoCarrinhoAsync(int id)
+public async Task<IActionResult> OnPostAdicionarAoCarrinhoAsync(int id)
+{
+    var produto = await _produtoService.ObterPorId(id);
+
+    if (produto == null)
+        return NotFound();
+
+    var clienteId = int.Parse(
+        User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+    var itemExistente = await _context.CarrinhoItems
+        .FirstOrDefaultAsync(x =>
+            x.ClienteId == clienteId &&
+            x.ProdutoId == produto.Id);
+
+    // Produto já existe no carrinho
+    if (itemExistente != null)
     {
-        SiteAspas.Models.Produto? produto = await _produtoService.ObterPorId(id);
-        if (produto == null)
-            return NotFound();
-
-        var clienteId = int.Parse(
-            User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-        var itemExistente = await _context.CarrinhoItems
-            .FirstOrDefaultAsync(x =>
-                x.ClienteId == clienteId &&
-                x.ProdutoId == produto.Id);
-
-        if (itemExistente != null)
+        if (produto.Estoque.HasValue &&
+            itemExistente.Quantidade < produto.Estoque.Value)
         {
             itemExistente.Quantidade++;
         }
-        else
+    }
+    else
+    {
+        // Sem estoque
+        if (!produto.Estoque.HasValue ||
+            produto.Estoque.Value <= 0)
         {
-            _context.CarrinhoItems.Add(new CarrinhoItem
-            {
-                ProdutoId = produto.Id,
-                ClienteId = clienteId,
-                Nome = produto.Nome,
-                ImagemUrl = produto.ImagemUrl,
-                Preco = produto.Preco,
-                Quantidade = 1
-            });
+            TempData["Erro"] =
+                "Produto sem estoque.";
+
+            return RedirectToPage(
+                "/Produto/ProdutoDetalhe",
+                new { id });
         }
 
-        await _context.SaveChangesAsync();
-
-        return RedirectToPage("/Produto/Carrinho");
+        _context.CarrinhoItems.Add(new CarrinhoItem
+        {
+            ProdutoId = produto.Id,
+            ClienteId = clienteId,
+            Nome = produto.Nome,
+            ImagemUrl = produto.ImagemUrl,
+            Preco = produto.Preco,
+            Quantidade = 1
+        });
     }
+
+    await _context.SaveChangesAsync();
+
+    return RedirectToPage("/Produto/Carrinho");
+}
 
 
     [ValidateAntiForgeryToken]
