@@ -6,23 +6,23 @@ using SiteAspas.Models;
 
 namespace SiteAspas.Pages.Conta
 {
-    
-[Authorize]
-public class SairModel : PageModel
-{
-    private readonly SignInManager<Usuario> _signInManager;
 
-    public SairModel(SignInManager<Usuario> signInManager)
+    [Authorize]
+    public class SairModel : PageModel
     {
-        _signInManager = signInManager;
-    }
+        private readonly SignInManager<Usuario> _signInManager;
+
+        public SairModel(SignInManager<Usuario> signInManager)
+        {
+            _signInManager = signInManager;
+        }
 
 
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> OnPostAsync()
-    {
-        await _signInManager.SignOutAsync();
-        return RedirectToPage("/Home/Index");
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OnPostAsync()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToPage("/Home/Index");
+        }
     }
-}
 }

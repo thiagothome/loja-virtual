@@ -7,9 +7,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet"
-          href="~/css/pages/pagamento.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/pagamento.css" asp-append-version="true" />
     <style>
         .cartao-form {
             background: #f9f9f9;
@@ -17,14 +15,17 @@
             border-radius: 8px;
             margin: 20px 0;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
+
         .form-group input {
             width: 100%;
             padding: 10px;
@@ -32,10 +33,12 @@
             border-radius: 5px;
             font-size: 1em;
         }
+
         .form-row {
             display: flex;
             gap: 15px;
         }
+
         .form-row .form-group {
             flex: 1;
         }
@@ -46,22 +49,23 @@
     <div class="auth-card pagamento-card">
         <div class="auth-header">
             <h2 class="auth-title">
-                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
-                    ? "✅ Pagamento Confirmado!" 
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago
+                    ? "✅ Pagamento Confirmado!"
                     : "Cartão de Crédito")
             </h2>
             <p class="auth-subtitle">
-                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago 
-                    ? "Seu pagamento foi processado com sucesso." 
+                @(Model.Pedido?.Status == SiteAspas.Models.Enums.StatusPedido.Pago
+                    ? "Seu pagamento foi processado com sucesso."
                     : "Insira os dados do cartão para finalizar.")
             </p>
         </div>
 
         <div class="auth-form">
-            
+
             @if (!string.IsNullOrEmpty(Model.StatusMessage))
             {
-                <div class="alert alert-success" style="text-align:center; margin-bottom:20px; padding:15px; background:#d4edda; border-radius:8px; color:#155724;">
+                <div class="alert alert-success"
+                     style="text-align:center; margin-bottom:20px; padding:15px; background:#d4edda; border-radius:8px; color:#155724;">
                     @Model.StatusMessage
                 </div>
             }
@@ -79,10 +83,11 @@
                 <form method="post">
                     <div class="cartao-form">
                         <h3>Dados do Cartão</h3>
-                        
+
                         <div class="form-group">
                             <label>Número do Cartão</label>
-                            <input type="text" name="NumeroCartao" placeholder="0000 0000 0000 0000" required maxlength="16" />
+                            <input type="text" name="NumeroCartao" placeholder="0000 0000 0000 0000" required
+                                   maxlength="16" />
                         </div>
 
                         <div class="form-group">
@@ -106,7 +111,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" 
+                    <button type="submit"
                             style="width:100%; background:#28a745; color:white; padding:15px; border:none; border-radius:5px; font-size:1.1em; cursor:pointer;">
                         💳 Pagar com Cartão
                     </button>

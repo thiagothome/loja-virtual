@@ -44,74 +44,74 @@ public class AsaasService
     string email,
     string telefone,
     string cpf)
-{
-    // Limpar telefone: remover tudo que não for número
-    var telefoneLimpo = string.IsNullOrEmpty(telefone) 
-        ? "" 
-        : new string(telefone.Where(char.IsDigit).ToArray());
-
-    // Se o telefone não começar com 55, adicionar
-    if (!string.IsNullOrEmpty(telefoneLimpo) && !telefoneLimpo.StartsWith("55"))
     {
-        telefoneLimpo = "55" + telefoneLimpo;
-    }
+        // Limpar telefone: remover tudo que não for número
+        var telefoneLimpo = string.IsNullOrEmpty(telefone)
+            ? ""
+            : new string(telefone.Where(char.IsDigit).ToArray());
 
-    // Validar: se não tiver 13 dígitos (55 + DDD + 9 dígitos), não enviar
-    if (telefoneLimpo.Length != 13)
-    {
-        Console.WriteLine($"Telefone inválido ({telefoneLimpo.Length} dígitos): {telefoneLimpo}");
-        telefoneLimpo = "";
-    }
+        // Se o telefone não começar com 55, adicionar
+        if (!string.IsNullOrEmpty(telefoneLimpo) && !telefoneLimpo.StartsWith("55"))
+        {
+            telefoneLimpo = "55" + telefoneLimpo;
+        }
 
-    var cpfLimpo = string.IsNullOrEmpty(cpf)
-        ? ""
-        : new string(cpf.Where(char.IsDigit).ToArray());
+        // Validar: se não tiver 13 dígitos (55 + DDD + 9 dígitos), não enviar
+        if (telefoneLimpo.Length != 13)
+        {
+            Console.WriteLine($"Telefone inválido ({telefoneLimpo.Length} dígitos): {telefoneLimpo}");
+            telefoneLimpo = "";
+        }
 
-    var request = new CreateCustomerRequest
-    {
-        Name = nome,
-        Email = email,
-        MobilePhone = telefoneLimpo,
-        CpfCnpj = cpfLimpo
-    };
+        var cpfLimpo = string.IsNullOrEmpty(cpf)
+            ? ""
+            : new string(cpf.Where(char.IsDigit).ToArray());
 
-    var json = JsonSerializer.Serialize(request);
-    Console.WriteLine($"Criando cliente: {json}");
+        var request = new CreateCustomerRequest
+        {
+            Name = nome,
+            Email = email,
+            MobilePhone = telefoneLimpo,
+            CpfCnpj = cpfLimpo
+        };
 
-    var response =
-        await _httpClient.PostAsync(
-            "customers",
-            new StringContent(
-                json,
-                Encoding.UTF8,
-                "application/json"));
+        var json = JsonSerializer.Serialize(request);
+        Console.WriteLine($"Criando cliente: {json}");
 
-    if (!response.IsSuccessStatusCode)
-    {
-        var erro =
+        var response =
+            await _httpClient.PostAsync(
+                "customers",
+                new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json"));
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro =
+                await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(
+                $"ASAAS ERRO [CriarCliente]: {response.StatusCode}");
+            Console.WriteLine(erro);
+
+            return null;
+        }
+
+        var content =
             await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Cliente criado: {content}");
 
-        Console.WriteLine(
-            $"ASAAS ERRO [CriarCliente]: {response.StatusCode}");
-        Console.WriteLine(erro);
+        var customer =
+            JsonSerializer.Deserialize<CreateCustomerResponse>(
+                content,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
-        return null;
+        return customer?.Id;
     }
-
-    var content =
-        await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"Cliente criado: {content}");
-
-    var customer =
-        JsonSerializer.Deserialize<CreateCustomerResponse>(
-            content,
-            new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-    return customer?.Id;
-}
 
     public async Task<string?> CriarCobrancaPixAsync(
         string customerId,
@@ -130,11 +130,11 @@ public class AsaasService
 
         var response =
             await _httpClient.PostAsync(
-                "payments",
-                new StringContent(
-                    json,
-                    Encoding.UTF8,
-                    "application/json"));
+"payments",
+new StringContent(
+    json,
+    Encoding.UTF8,
+    "application/json"));
 
         if (!response.IsSuccessStatusCode)
         {
@@ -199,213 +199,213 @@ public class AsaasService
     public async Task<string?> CriarCobrancaBoletoAsync(
     string customerId,
     decimal valor)
-{
-    var request = new CreateBoletoPaymentRequest
     {
-        Customer = customerId,
-        Value = valor,
-        DueDate = DateTime.Today.AddDays(3), // Vencimento em 3 dias
-        BillingType = "BOLETO"
-    };
+        var request = new CreateBoletoPaymentRequest
+        {
+            Customer = customerId,
+            Value = valor,
+            DueDate = DateTime.Today.AddDays(3), // Vencimento em 3 dias
+            BillingType = "BOLETO"
+        };
 
-    var json = JsonSerializer.Serialize(request);
-    Console.WriteLine($"Criando boleto: {json}");
+        var json = JsonSerializer.Serialize(request);
+        Console.WriteLine($"Criando boleto: {json}");
 
-    var response =
-        await _httpClient.PostAsync(
-            "payments",
-            new StringContent(
-                json,
-                Encoding.UTF8,
-                "application/json"));
+        var response =
+            await _httpClient.PostAsync(
+                "payments",
+                new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json"));
 
-    if (!response.IsSuccessStatusCode)
-    {
-        var erro =
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro =
+                await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(
+                $"ASAAS ERRO [CriarBoleto]: {response.StatusCode}");
+            Console.WriteLine(erro);
+
+            return null;
+        }
+
+        var content =
             await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Boleto criado: {content}");
 
-        Console.WriteLine(
-            $"ASAAS ERRO [CriarBoleto]: {response.StatusCode}");
-        Console.WriteLine(erro);
+        var payment =
+            JsonSerializer.Deserialize<CreateBoletoPaymentResponse>(
+                content,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
-        return null;
+        return payment?.Id;
     }
 
-    var content =
-        await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"Boleto criado: {content}");
+    public async Task<CreateBoletoPaymentResponse?> ObterBoletoAsync(
+        string paymentId)
+    {
+        Console.WriteLine($"Buscando boleto para pagamento: {paymentId}");
 
-    var payment =
-        JsonSerializer.Deserialize<CreateBoletoPaymentResponse>(
+        var response =
+            await _httpClient.GetAsync(
+                $"payments/{paymentId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro =
+                await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(
+                $"ASAAS ERRO [ObterBoleto]: {response.StatusCode}");
+            Console.WriteLine(erro);
+
+            return null;
+        }
+
+        var content =
+            await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Boleto obtido: {content}");
+
+        return JsonSerializer.Deserialize<CreateBoletoPaymentResponse>(
             content,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
-
-    return payment?.Id;
-}
-
-public async Task<CreateBoletoPaymentResponse?> ObterBoletoAsync(
-    string paymentId)
-{
-    Console.WriteLine($"Buscando boleto para pagamento: {paymentId}");
-
-    var response =
-        await _httpClient.GetAsync(
-            $"payments/{paymentId}");
-
-    if (!response.IsSuccessStatusCode)
-    {
-        var erro =
-            await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine(
-            $"ASAAS ERRO [ObterBoleto]: {response.StatusCode}");
-        Console.WriteLine(erro);
-
-        return null;
     }
 
-    var content =
-        await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"Boleto obtido: {content}");
-
-    return JsonSerializer.Deserialize<CreateBoletoPaymentResponse>(
-        content,
-        new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-}
-
-public async Task<string?> ObterLinhaDigitavelAsync(string paymentId)
-{
-    Console.WriteLine($"Buscando linha digitável para: {paymentId}");
-
-    var response =
-        await _httpClient.GetAsync(
-            $"payments/{paymentId}/identificationField");
-
-    if (!response.IsSuccessStatusCode)
+    public async Task<string?> ObterLinhaDigitavelAsync(string paymentId)
     {
-        var erro =
-            await response.Content.ReadAsStringAsync();
-        Console.WriteLine(
-            $"ASAAS ERRO [LinhaDigitavel]: {response.StatusCode}");
-        Console.WriteLine(erro);
-        return null;
-    }
+        Console.WriteLine($"Buscando linha digitável para: {paymentId}");
 
-    var content =
-        await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"Linha digitável: {content}");
+        var response =
+            await _httpClient.GetAsync(
+                $"payments/{paymentId}/identificationField");
 
-    var result = JsonSerializer.Deserialize<JsonElement>(content);
-    return result.GetProperty("identificationField").GetString();
-}
-
-public async Task<CreateCreditCardPaymentResponse?> CriarCobrancaCartaoAsync(
-    string customerId,
-    decimal valor,
-    string holderName,
-    string number,
-    string expiryMonth,
-    string expiryYear,
-    string ccv,
-    string holderEmail,
-    string holderCpfCnpj,
-    string postalCode,
-    string addressNumber,
-    string phone)
-{
-    var request = new CreateCreditCardPaymentRequest
-    {
-        Customer = customerId,
-        Value = valor,
-        DueDate = DateTime.UtcNow.AddDays(1),
-        BillingType = "CREDIT_CARD",
-        CreditCard = new CreditCardInfo
+        if (!response.IsSuccessStatusCode)
         {
-            HolderName = holderName,
-            Number = number,
-            ExpiryMonth = expiryMonth,
-            ExpiryYear = expiryYear,
-            Ccv = ccv
-        },
-        CreditCardHolderInfo = new CreditCardHolderInfo
-        {
-            Name = holderName,
-            Email = holderEmail,
-            CpfCnpj = holderCpfCnpj,
-            PostalCode = postalCode,
-            AddressNumber = addressNumber,
-            Phone = phone
+            var erro =
+                await response.Content.ReadAsStringAsync();
+            Console.WriteLine(
+                $"ASAAS ERRO [LinhaDigitavel]: {response.StatusCode}");
+            Console.WriteLine(erro);
+            return null;
         }
-    };
 
-    var json = JsonSerializer.Serialize(request);
-    Console.WriteLine($"Criando cobrança cartão: {json}");
+        var content =
+            await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Linha digitável: {content}");
 
-    var response =
-        await _httpClient.PostAsync(
-            "payments",
+        var result = JsonSerializer.Deserialize<JsonElement>(content);
+        return result.GetProperty("identificationField").GetString();
+    }
+
+    public async Task<CreateCreditCardPaymentResponse?> CriarCobrancaCartaoAsync(
+        string customerId,
+        decimal valor,
+        string holderName,
+        string number,
+        string expiryMonth,
+        string expiryYear,
+        string ccv,
+        string holderEmail,
+        string holderCpfCnpj,
+        string postalCode,
+        string addressNumber,
+        string phone)
+    {
+        var request = new CreateCreditCardPaymentRequest
+        {
+            Customer = customerId,
+            Value = valor,
+            DueDate = DateTime.UtcNow.AddDays(1),
+            BillingType = "CREDIT_CARD",
+            CreditCard = new CreditCardInfo
+            {
+                HolderName = holderName,
+                Number = number,
+                ExpiryMonth = expiryMonth,
+                ExpiryYear = expiryYear,
+                Ccv = ccv
+            },
+            CreditCardHolderInfo = new CreditCardHolderInfo
+            {
+                Name = holderName,
+                Email = holderEmail,
+                CpfCnpj = holderCpfCnpj,
+                PostalCode = postalCode,
+                AddressNumber = addressNumber,
+                Phone = phone
+            }
+        };
+
+        var json = JsonSerializer.Serialize(request);
+        Console.WriteLine($"Criando cobrança cartão: {json}");
+
+        var response =
+            await _httpClient.PostAsync(
+                "payments",
+                new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json"));
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro =
+                await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(
+                $"ASAAS ERRO [CriarCartao]: {response.StatusCode}");
+            Console.WriteLine(erro);
+
+            return null;
+        }
+
+        var content =
+            await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Cobrança cartão criada: {content}");
+
+        return JsonSerializer.Deserialize<CreateCreditCardPaymentResponse>(
+            content,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+    }
+
+    public async Task<bool> SimularPagamentoPixAsync(string paymentId, decimal valor, DateTime dataPagamento)
+    {
+        var request = new
+        {
+            value = valor,
+            paymentDate = dataPagamento.ToString("yyyy-MM-dd")
+        };
+
+        var json = JsonSerializer.Serialize(request);
+        Console.WriteLine($"Simulando pagamento: {json}");
+
+        var response = await _httpClient.PostAsync(
+            $"payments/{paymentId}/receiveInCash",
             new StringContent(
                 json,
                 Encoding.UTF8,
                 "application/json"));
 
-    if (!response.IsSuccessStatusCode)
-    {
-        var erro =
-            await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine(
-            $"ASAAS ERRO [CriarCartao]: {response.StatusCode}");
-        Console.WriteLine(erro);
-
-        return null;
-    }
-
-    var content =
-        await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"Cobrança cartão criada: {content}");
-
-    return JsonSerializer.Deserialize<CreateCreditCardPaymentResponse>(
-        content,
-        new JsonSerializerOptions
+        if (!response.IsSuccessStatusCode)
         {
-            PropertyNameCaseInsensitive = true
-        });
-}
+            var erro = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"ERRO ao simular pagamento: {erro}");
+            return false;
+        }
 
-    public async Task<bool> SimularPagamentoPixAsync(string paymentId, decimal valor, DateTime dataPagamento)
-{
-    var request = new
-    {
-        value = valor,
-        paymentDate = dataPagamento.ToString("yyyy-MM-dd")
-    };
-
-    var json = JsonSerializer.Serialize(request);
-    Console.WriteLine($"Simulando pagamento: {json}");
-
-    var response = await _httpClient.PostAsync(
-        $"payments/{paymentId}/receiveInCash",
-        new StringContent(
-            json,
-            Encoding.UTF8,
-            "application/json"));
-
-    if (!response.IsSuccessStatusCode)
-    {
-        var erro = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($"ERRO ao simular pagamento: {erro}");
-        return false;
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Pagamento simulado com sucesso! Resposta: {content}");
+        return true;
     }
-
-    var content = await response.Content.ReadAsStringAsync();
-    Console.WriteLine($"Pagamento simulado com sucesso! Resposta: {content}");
-    return true;
-}
 }

@@ -75,17 +75,17 @@ namespace SiteAspas.Pages.Conta
         [BindProperty]
         public Usuario Usuario { get; set; }
 
-       public async Task<IActionResult> OnGetAsync()
-{
-        var user = await _userManager.GetUserAsync(User);
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
 
-        if (user == null)
-            return Challenge();
+            if (user == null)
+                return Challenge();
 
-        Usuario = user;
+            Usuario = user;
 
-        return Page();
-    }
+            return Page();
+        }
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -107,7 +107,7 @@ namespace SiteAspas.Pages.Conta
             user.CPF = CPF;
             user.DataNascimento = DataNascimento.HasValue
             ? DateTime.SpecifyKind(DataNascimento.Value, DateTimeKind.Utc)
-            : null;            
+            : null;
             user.Telefone = Usuario.Telefone;
             user.CadastroCompleto = true;
 

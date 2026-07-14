@@ -7,7 +7,7 @@ namespace SiteAspas.Pages.Conta
 {
     public class ConfirmarEmailModel : PageModel
     {
-    private readonly UserManager<Usuario> _userManager;
+        private readonly UserManager<Usuario> _userManager;
 
         public bool Sucesso { get; set; }
 

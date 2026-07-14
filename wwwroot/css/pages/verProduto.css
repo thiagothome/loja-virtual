@@ -1,99 +1,97 @@
 .produto-detalhe-container {
-    display: flex;
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 900px;
-    margin: auto;
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 900px;
+  margin: auto;
 }
 
 .produto-detalhe-container .imagem img {
-    width: 445px;
-    height: 650px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 445px;
+  height: 650px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .produto-detalhe-container .informacoes {
-    flex: 1;
+  flex: 1;
 }
 
 .produto-detalhe-container h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .produto-detalhe-container .descricao {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    color: #555;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #555;
 }
 
 .produto-detalhe-container .preco {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #23b5aa;
-    margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #23b5aa;
+  margin-bottom: 1.5rem;
 }
 
 .btn-adicionar {
-    background-color: #fec200;
-    color: #000;
-    padding: 10px 20px;
-    border: none;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
+  background-color: #fec200;
+  color: #000;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .btn-adicionar:hover {
-    background-color: #e0ad00;
+  background-color: #e0ad00;
 }
-
 
 @media (max-width: 768px) {
-    .produto-detalhe-container {
-        flex-direction: column;
-        padding: 1rem;
-        gap: 1.5rem;
-    }
-    
-    .produto-detalhe-container .imagem img {
-        width: 100%;
-        height: auto;
-        max-height: 500px;
-    }
-    
-    .produto-detalhe-container h1 {
-        font-size: 1.5rem;
-    }
-    
-    .produto-detalhe-container .preco {
-        font-size: 1.3rem;
-    }
-    
-    .btn-adicionar {
-        width: 100%;
-        padding: 12px 20px;
-    }
+  .produto-detalhe-container {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .produto-detalhe-container .imagem img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+  }
+
+  .produto-detalhe-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .produto-detalhe-container .preco {
+    font-size: 1.3rem;
+  }
+
+  .btn-adicionar {
+    width: 100%;
+    padding: 12px 20px;
+  }
 }
 
-
 @media (max-width: 480px) {
-    .produto-detalhe-container {
-        padding: 0.8rem;
-    }
-    
-    .produto-detalhe-container h1 {
-        font-size: 1.3rem;
-    }
-    
-    .produto-detalhe-container .descricao {
-        font-size: 0.9rem;
-    }
-    
-    .produto-detalhe-container .preco {
-        font-size: 1.2rem;
-    }
+  .produto-detalhe-container {
+    padding: 0.8rem;
+  }
+
+  .produto-detalhe-container h1 {
+    font-size: 1.3rem;
+  }
+
+  .produto-detalhe-container .descricao {
+    font-size: 0.9rem;
+  }
+
+  .produto-detalhe-container .preco {
+    font-size: 1.2rem;
+  }
 }

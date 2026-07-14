@@ -6,7 +6,7 @@
     ViewData["Title"] = "Pagamento";
 }
 
-@section Styles{
+@section Styles {
     <link rel="stylesheet" href="~/css/pages/pagamento.css" asp-append-version="true" />
 }
 
@@ -32,9 +32,7 @@
             {
                 <div class="item-carrinho">
 
-                    <img src="@item.ImagemUrl"
-                         alt="@item.Nome"
-                         class="produto-img" />
+                    <img src="@item.ImagemUrl" alt="@item.Nome" class="produto-img" />
 
                     <div class="produto-info">
 
@@ -110,9 +108,8 @@
 
             <hr />
 
-<div asp-validation-summary="All"
-     class="text-danger">
-</div>
+            <div asp-validation-summary="All" class="text-danger">
+            </div>
 
             <form method="post">
 
@@ -121,26 +118,19 @@
                     <h3>Forma de pagamento</h3>
 
                     <label class="forma">
-                        <input type="radio"
-                               name="FormaPagamento"
-                               value="Pix"
-                               checked />
+                        <input type="radio" name="FormaPagamento" value="Pix" checked />
 
                         <span>PIX</span>
                     </label>
 
                     <label class="forma">
-                        <input type="radio"
-                               name="FormaPagamento"
-                               value="CartaoCredito" />
+                        <input type="radio" name="FormaPagamento" value="CartaoCredito" />
 
                         <span>Cartão de Crédito</span>
                     </label>
 
                     <label class="forma">
-                        <input type="radio"
-                               name="FormaPagamento"
-                               value="Boleto" />
+                        <input type="radio" name="FormaPagamento" value="Boleto" />
 
                         <span>Boleto Bancário</span>
                     </label>
@@ -149,15 +139,13 @@
 
                 <div class="acoes">
 
-                    <a asp-page="/Produto/Carrinho"
-                       class="btn-continuar">
+                    <a asp-page="/Produto/Carrinho" class="btn-continuar">
 
                         Voltar ao carrinho
 
                     </a>
 
-                    <button type="submit"
-                            class="btn-finalizar">
+                    <button type="submit" class="btn-finalizar">
 
                         Continuar
 

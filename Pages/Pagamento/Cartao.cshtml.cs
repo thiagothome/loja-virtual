@@ -13,19 +13,19 @@ public class CartaoModel : PageModel
     private readonly SiteAspasContext _context;
     private readonly AsaasService _asaasService;
     private readonly IPedidoService _pedidoService;
-    
+
     public CartaoModel(
     SiteAspasContext context,
     AsaasService asaasService,
     IPedidoService pedidoService)
-{
-    _context = context;
-    _asaasService = asaasService;
-    _pedidoService = pedidoService;
-}
+    {
+        _context = context;
+        _asaasService = asaasService;
+        _pedidoService = pedidoService;
+    }
 
     public Pedido? Pedido { get; set; }
-    
+
     [TempData]
     public string? StatusMessage { get; set; }
 
@@ -109,26 +109,26 @@ public class CartaoModel : PageModel
             "100",      // Número (ideal pegar do endereço)
             Pedido.Usuario.Telefone ?? "");
 
-     if (resultado != null && resultado.Status == "CONFIRMED")
-{
-    Pedido.IdPagamento = resultado.Id;
-    await _context.SaveChangesAsync();
+        if (resultado != null && resultado.Status == "CONFIRMED")
+        {
+            Pedido.IdPagamento = resultado.Id;
+            await _context.SaveChangesAsync();
 
-    var confirmado =
-        await _pedidoService.ConfirmarPagamento(
-            Pedido.Id);
+            var confirmado =
+                await _pedidoService.ConfirmarPagamento(
+                    Pedido.Id);
 
-    if (confirmado)
-    {
-        StatusMessage =
-            "✅ Pagamento aprovado com sucesso!";
-    }
-    else
-    {
-        StatusMessage =
-            "❌ Estoque insuficiente para concluir o pedido.";
-    }
-}
+            if (confirmado)
+            {
+                StatusMessage =
+                    "✅ Pagamento aprovado com sucesso!";
+            }
+            else
+            {
+                StatusMessage =
+                    "❌ Estoque insuficiente para concluir o pedido.";
+            }
+        }
 
         return RedirectToPage(new { id });
     }

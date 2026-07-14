@@ -18,132 +18,123 @@ else
 {
     <div class="auth-container">
 
-    <div class="auth-card carrinho-card">
+        <div class="auth-card carrinho-card">
 
-        <div class="auth-header">
-            <h2 class="auth-title">Meu Carrinho</h2>
-            <p class="auth-subtitle">
-                Revise seus produtos antes de finalizar a compra.
-            </p>
-        </div>
-
-        <div class="auth-form">
-
-            @foreach (SiteAspas.Models.CarrinhoItem item in Model.Itens)
-            {
-                <div class="item-carrinho">
-
-                    <img src="@item.ImagemUrl"
-                         alt="@item.Nome"
-                         class="produto-img" />
-
-                    <div class="produto-info">
-
-                        <h5>@item.Nome</h5>
-
-                        <div class="quantidade-container">
-
-                        <form method="post"
-                            asp-page-handler="Diminuir"
-                            asp-route-id="@item.Id">
-
-                            @Html.AntiForgeryToken()
-
-                            <button type="submit">
-                                -
-                            </button>
-
-                        </form>
-
-                        <strong>@item.Quantidade</strong>
-
-                        <form method="post"
-                            asp-page-handler="Aumentar"
-                            asp-route-id="@item.Id">
-
-                            @Html.AntiForgeryToken()
-
-                            <button type="submit">
-                                +
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                        <p>
-                            Valor unitário:
-                            <strong>@item.Preco?.ToString("C")</strong>
-                        </p>
-
-                    </div>
-
-                    <div class="produto-total">
-
-                        <span>Subtotal</span>
-
-                        <strong>
-                            @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
-                        </strong>
-
-                    </div>
-
-                    <div class="produto-total">
-
-    <span>Subtotal</span>
-
-    <strong>
-        @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
-    </strong>
-
-    <form method="post"
-          asp-page-handler="Remover"
-          asp-route-id="@item.Id">
-
-        @Html.AntiForgeryToken()
-
-        <button type="submit">
-            Remover
-        </button>
-
-    </form>
-
-</div>
-
-                </div>
-            }
-
-            <hr />
-
-            <div class="total-container">
-
-                <div>
-                    <small>Total da compra</small>
-                    <h3>@Model.Total.ToString("C")</h3>
-                </div>
-
+            <div class="auth-header">
+                <h2 class="auth-title">Meu Carrinho</h2>
+                <p class="auth-subtitle">
+                    Revise seus produtos antes de finalizar a compra.
+                </p>
             </div>
 
-            <div class="acoes">
+            <div class="auth-form">
 
-                <a asp-page="/Home/Index"
-                   class="btn-continuar">
-                    Continuar comprando
-                </a>
+                @foreach (SiteAspas.Models.CarrinhoItem item in Model.Itens)
+                {
+                    <div class="item-carrinho">
 
-               <form method="post" asp-page-handler="Finalizar">
-                    @Html.AntiForgeryToken()
+                        <img src="@item.ImagemUrl" alt="@item.Nome" class="produto-img" />
 
-                    <button type="submit" class="btn-finalizar">
-                        Finalizar compra
-                    </button>
-                </form>
+                        <div class="produto-info">
+
+                            <h5>@item.Nome</h5>
+
+                            <div class="quantidade-container">
+
+                                <form method="post" asp-page-handler="Diminuir" asp-route-id="@item.Id">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit">
+                                        -
+                                    </button>
+
+                                </form>
+
+                                <strong>@item.Quantidade</strong>
+
+                                <form method="post" asp-page-handler="Aumentar" asp-route-id="@item.Id">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit">
+                                        +
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            <p>
+                                Valor unitário:
+                                <strong>@item.Preco?.ToString("C")</strong>
+                            </p>
+
+                        </div>
+
+                        <div class="produto-total">
+
+                            <span>Subtotal</span>
+
+                            <strong>
+                                @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
+                            </strong>
+
+                        </div>
+
+                        <div class="produto-total">
+
+                            <span>Subtotal</span>
+
+                            <strong>
+                                @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
+                            </strong>
+
+                            <form method="post" asp-page-handler="Remover" asp-route-id="@item.Id">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit">
+                                    Remover
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+                }
+
+                <hr />
+
+                <div class="total-container">
+
+                    <div>
+                        <small>Total da compra</small>
+                        <h3>@Model.Total.ToString("C")</h3>
+                    </div>
+
+                </div>
+
+                <div class="acoes">
+
+                    <a asp-page="/Home/Index" class="btn-continuar">
+                        Continuar comprando
+                    </a>
+
+                    <form method="post" asp-page-handler="Finalizar">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit" class="btn-finalizar">
+                            Finalizar compra
+                        </button>
+                    </form>
+
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
-</div>
 }

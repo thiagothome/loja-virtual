@@ -12,21 +12,21 @@ namespace SiteAspas.Pages.Pagamento;
 public class PixModel : PageModel
 {
     private readonly SiteAspasContext _context;
-private readonly AsaasService _asaasService;
-private readonly IPedidoService _pedidoService;
-    
+    private readonly AsaasService _asaasService;
+    private readonly IPedidoService _pedidoService;
+
     public PixModel(
     SiteAspasContext context,
     AsaasService asaasService,
     IPedidoService pedidoService)
-{
-    _context = context;
-    _asaasService = asaasService;
-    _pedidoService = pedidoService;
-}
+    {
+        _context = context;
+        _asaasService = asaasService;
+        _pedidoService = pedidoService;
+    }
 
     public Pedido? Pedido { get; set; }
-    
+
     [TempData]
     public string? StatusMessage { get; set; }
 
@@ -86,36 +86,36 @@ private readonly IPedidoService _pedidoService;
     }
 
     public async Task<IActionResult> OnPostSimularPagamentoAsync(int id)
-{
-    var pedido = await _context.Pedidos
-        .FirstOrDefaultAsync(p => p.Id == id);
-
-    if (pedido == null || string.IsNullOrEmpty(pedido.IdPagamento))
-        return NotFound();
-
-    var sucesso = await _asaasService.SimularPagamentoPixAsync(
-        pedido.IdPagamento, 
-        pedido.Total ?? 0,
-        DateTime.Now);
-
-    if (sucesso)
-{
-    var confirmado =
-        await _pedidoService.ConfirmarPagamento(
-            pedido.Id);
-
-    if (confirmado)
     {
-        StatusMessage =
-            "✅ Pagamento aprovado com sucesso!";
-    }
-    else
-    {
-        StatusMessage =
-            "❌ Estoque insuficiente para concluir o pedido.";
-    }
-}
+        var pedido = await _context.Pedidos
+            .FirstOrDefaultAsync(p => p.Id == id);
 
-    return RedirectToPage(new { id });
-}
+        if (pedido == null || string.IsNullOrEmpty(pedido.IdPagamento))
+            return NotFound();
+
+        var sucesso = await _asaasService.SimularPagamentoPixAsync(
+            pedido.IdPagamento,
+            pedido.Total ?? 0,
+            DateTime.Now);
+
+        if (sucesso)
+        {
+            var confirmado =
+                await _pedidoService.ConfirmarPagamento(
+                    pedido.Id);
+
+            if (confirmado)
+            {
+                StatusMessage =
+                    "✅ Pagamento aprovado com sucesso!";
+            }
+            else
+            {
+                StatusMessage =
+                    "❌ Estoque insuficiente para concluir o pedido.";
+            }
+        }
+
+        return RedirectToPage(new { id });
+    }
 }

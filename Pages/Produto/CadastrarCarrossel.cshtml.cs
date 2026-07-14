@@ -28,7 +28,7 @@ namespace SiteAspas.Pages
                 var imagem = Imagens[i];
                 if (imagem.Length > 0)
                 {
-                    var nome = $"v{i + 1}.jpg"; 
+                    var nome = $"v{i + 1}.jpg";
                     var caminho = Path.Combine(pasta, nome);
 
                     using var stream = new FileStream(caminho, FileMode.Create);

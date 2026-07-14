@@ -28,22 +28,24 @@
             <div class="card-body">
                 <div class="card-title">@produto.Nome</div>
                 <div class="card-price">@produto.Preco</div>
-                <button class="card-button" onclick="location.href='/Produto/ProdutoDetalhe/@produto.Id'">Ver Produto</button>
+                <button class="card-button" onclick="location.href='/Produto/ProdutoDetalhe/@produto.Id'">Ver
+                    Produto</button>
 
-                @if (User.Identity.IsAuthenticated)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    @if (user != null && user.Tipo == TipoUsuario.Administrador)
+                    @if (User.Identity.IsAuthenticated)
                     {
-                        <form method="post" asp-page-handler="Desativar" asp-route-id="@produto.Id" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="card-button card-button-desativar" onclick="return confirm('Tem certeza que deseja desativar este produto?')">
-                                Desativar
-                            </button>
-                        </form>
+                        var user = await _userManager.GetUserAsync(User);
+                        @if (user != null && user.Tipo == TipoUsuario.Administrador)
+                        {
+                            <form method="post" asp-page-handler="Desativar" asp-route-id="@produto.Id" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="card-button card-button-desativar"
+                                        onclick="return confirm('Tem certeza que deseja desativar este produto?')">
+                                    Desativar
+                                </button>
+                            </form>
+                        }
                     }
-                }
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
