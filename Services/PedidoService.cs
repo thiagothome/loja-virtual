@@ -84,9 +84,13 @@ namespace SiteAspas.Services
             pedido.Status = StatusPedido.Pago;
             pedido.DataPagamento = DateTime.UtcNow;
 
+            Console.WriteLine($"Pedido UsuarioId: {pedido.UsuarioId}");
+
             var carrinho = await _context.CarrinhoItems
                 .Where(c => c.ClienteId == pedido.UsuarioId)
                 .ToListAsync();
+
+            Console.WriteLine($"Itens encontrados: {carrinho.Count}");
 
             _context.CarrinhoItems.RemoveRange(carrinho);
 

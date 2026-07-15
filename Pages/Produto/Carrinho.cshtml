@@ -22,10 +22,25 @@ else
 
             <div class="auth-header">
                 <h2 class="auth-title">Meu Carrinho</h2>
+
                 <p class="auth-subtitle">
                     Revise seus produtos antes de finalizar a compra.
                 </p>
             </div>
+
+            @if (TempData["Erro"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Erro"]
+                </div>
+            }
+
+            @if (TempData["Sucesso"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Sucesso"]
+                </div>
+            }
 
             <div class="auth-form">
 

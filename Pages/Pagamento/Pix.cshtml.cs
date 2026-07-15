@@ -64,6 +64,41 @@ public class PixModel : PageModel
                     Pedido.Usuario.CustomerId!,
                     Pedido.Total ?? 0);
 
+            // CustomerId inválido ou removido
+            if (paymentId == null)
+            {
+                Pedido.Usuario.CustomerId = null;
+                await _context.SaveChangesAsync();
+
+                var novoCustomer =
+                    await _asaasService.CriarClienteAsync(
+                        $"{Pedido.Usuario.Nome} {Pedido.Usuario.Sobrenome}",
+                        Pedido.Usuario.Email!,
+                        Pedido.Usuario.Telefone ?? "",
+                        Pedido.Usuario.CPF ?? "");
+
+                if (string.IsNullOrEmpty(novoCustomer))
+                {
+                    TempData["Erro"] = "Não foi possível criar o cliente no Asaas.";
+                    return Page();
+                }
+
+                Pedido.Usuario.CustomerId = novoCustomer;
+                await _context.SaveChangesAsync();
+
+                paymentId =
+                    await _asaasService.CriarCobrancaPixAsync(
+                        novoCustomer,
+                        Pedido.Total ?? 0);
+            }
+
+            // Ainda falhou? Não salva o pedido.
+            if (string.IsNullOrEmpty(paymentId))
+            {
+                TempData["Erro"] = "Não foi possível gerar o pagamento.";
+                return Page();
+            }
+
             Pedido.IdPagamento = paymentId;
             await _context.SaveChangesAsync();
         }

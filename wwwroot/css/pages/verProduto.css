@@ -95,3 +95,22 @@
     font-size: 1.2rem;
   }
 }
+
+.alert {
+  padding: 14px;
+  margin: 20px 0;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.alert-danger {
+  background: #fdeaea;
+  border: 1px solid #f5b7b1;
+  color: #b42318;
+}
+
+.alert-success {
+  background: #ecfdf3;
+  border: 1px solid #a6f4c5;
+  color: #027a48;
+}
