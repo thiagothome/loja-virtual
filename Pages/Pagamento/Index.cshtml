@@ -67,9 +67,27 @@
 
             <div class="total-container">
 
-                <div>
-                    <small>Total da compra</small>
-                    <h3>@Model.Total.ToString("C")</h3>
+                <div class="total-container">
+
+                    <div>
+
+                        <p>
+                            Subtotal:
+                            <strong>@Model.Total.ToString("C")</strong>
+                        </p>
+
+                        <p>
+                            Frete:
+                            <strong>@Model.Frete.ToString("C")</strong>
+                        </p>
+
+                        <h3>
+                            Total Geral:
+                            @Model.TotalGeral.ToString("C")
+                        </h3>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -103,6 +121,24 @@
 
                     <p>CEP: @Model.EnderecoPrincipal.CEP</p>
                 }
+
+            </div>
+
+            <hr />
+
+            <div class="bloco">
+
+                <h3>Frete</h3>
+
+                <p>
+                    CEP destino:
+                    <strong>@Model.EnderecoPrincipal?.CEP</strong>
+                </p>
+
+                <p>
+                    Valor do frete:
+                    <strong>@Model.Frete.ToString("C")</strong>
+                </p>
 
             </div>
 

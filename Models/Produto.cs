@@ -6,22 +6,38 @@ namespace SiteAspas.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "O nome é obrigatório.")]
-        [StringLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres.")]
+        [Required(ErrorMessage = "O nome ï¿½ obrigatï¿½rio.")]
+        [StringLength(100, ErrorMessage = "O nome deve ter no mï¿½ximo 100 caracteres.")]
         public string Nome { get; set; } = string.Empty;
 
         public string ImagemUrl { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "O preço é obrigatório.")]
-        [Range(0.01, 999999.99, ErrorMessage = "O preço deve ser maior que zero.")]
+        [Required(ErrorMessage = "O preï¿½o ï¿½ obrigatï¿½rio.")]
+        [Range(0.01, 999999.99, ErrorMessage = "O preï¿½o deve ser maior que zero.")]
         public decimal? Preco { get; set; }
 
-        [Required(ErrorMessage = "O estoque é obrigatório.")]
-        [Range(0, int.MaxValue, ErrorMessage = "O estoque não pode ser negativo.")]
+        [Required(ErrorMessage = "O estoque ï¿½ obrigatï¿½rio.")]
+        [Range(0, int.MaxValue, ErrorMessage = "O estoque nï¿½o pode ser negativo.")]
         public int? Estoque { get; set; }
 
-        [Required(ErrorMessage = "A descrição é obrigatória.")]
-        [StringLength(1000, ErrorMessage = "A descrição deve ter no máximo 1000 caracteres.")]
+        [Required(ErrorMessage = "O peso Ã© obrigatÃ³rio.")]
+        [Range(0.001, 9999)]
+        public decimal Peso { get; set; }
+
+        [Required(ErrorMessage = "A altura Ã© obrigatÃ³ria.")]
+        [Range(1, 999)]
+        public decimal Altura { get; set; }
+
+        [Required(ErrorMessage = "A largura Ã© obrigatÃ³ria.")]
+        [Range(1, 999)]
+        public decimal Largura { get; set; }
+
+        [Required(ErrorMessage = "O comprimento Ã© obrigatÃ³rio.")]
+        [Range(1, 999)]
+        public decimal Comprimento { get; set; }
+
+        [Required(ErrorMessage = "A descriï¿½ï¿½o ï¿½ obrigatï¿½ria.")]
+        [StringLength(1000, ErrorMessage = "A descriï¿½ï¿½o deve ter no mï¿½ximo 1000 caracteres.")]
         public string Descricao { get; set; } = string.Empty;
 
         public bool Ativo { get; set; } = true;

@@ -16,15 +16,22 @@ public class IndexModel : PageModel
     private readonly SiteAspasContext _context;
     private readonly UserManager<Usuario> _userManager;
     private readonly IPedidoService _pedidoService;
+    private readonly FreteService _freteService;
+    public decimal Frete { get; set; }
+
+    public decimal TotalGeral =>
+        Total + Frete;
 
     public IndexModel(
-        SiteAspasContext context,
-        UserManager<Usuario> userManager,
-        IPedidoService pedidoService)
+    SiteAspasContext context,
+    UserManager<Usuario> userManager,
+    IPedidoService pedidoService,
+    FreteService freteService)
     {
         _context = context;
         _userManager = userManager;
         _pedidoService = pedidoService;
+        _freteService = freteService;
     }
 
     public List<CarrinhoItem> Itens { get; set; } = new();
@@ -48,6 +55,19 @@ public class IndexModel : PageModel
 
         Total = Itens.Sum(x =>
             (x.Preco ?? 0) * x.Quantidade);
+
+        if (EnderecoPrincipal != null)
+        {
+            var produtos = await _context.Produtos
+                .Where(p =>
+                    Itens.Select(i => i.ProdutoId)
+                         .Contains(p.Id))
+                .ToListAsync();
+
+            Frete = _freteService.CalcularFrete(
+                EnderecoPrincipal.CEP,
+                produtos);
+        }
     }
 
     public async Task<IActionResult> OnPostAsync(string FormaPagamento)

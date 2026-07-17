@@ -12,8 +12,8 @@ using SiteAspas.Data;
 namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    [Migration("20260712184558_AddCustomerId")]
-    partial class AddCustomerId
+    [Migration("20260717010224_AddDimensoesProduto")]
+    partial class AddDimensoesProduto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -265,6 +265,9 @@ namespace SiteAspas.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BoletoUrl")
+                        .HasColumnType("text");
+
                     b.Property<string>("CustomerId")
                         .HasColumnType("text");
 
@@ -283,8 +286,14 @@ namespace SiteAspas.Migrations
                     b.Property<string>("IdPagamento")
                         .HasColumnType("text");
 
+                    b.Property<string>("LinhaDigitavel")
+                        .HasColumnType("text");
+
                     b.Property<int>("MetodoPagamento")
                         .HasColumnType("integer");
+
+                    b.Property<string>("NossoNumero")
+                        .HasColumnType("text");
 
                     b.Property<string>("QrCode")
                         .HasColumnType("text");
@@ -353,8 +362,14 @@ namespace SiteAspas.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Altura")
+                        .HasColumnType("numeric");
+
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
+
+                    b.Property<decimal>("Comprimento")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -369,10 +384,16 @@ namespace SiteAspas.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal>("Largura")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("Peso")
+                        .HasColumnType("numeric");
 
                     b.Property<decimal?>("Preco")
                         .IsRequired()
@@ -524,7 +545,7 @@ namespace SiteAspas.Migrations
                             Nome = "Adriana",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFp6PXaRdIgSawXZvBAM0jN0xHOPeH9o/LxVtmElIX5+fRChU1BVyE6jLn7i4VQeBA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKTU9GBZZpfXaE1v0Z+uMieoVaC4CCpn1tytyS02p0HCnsOWXm93DjwJerJHzVOVcg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Sobrenome = "Thome",

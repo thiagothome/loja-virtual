@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SiteAspas.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCustomerId : Migration
+    public partial class AddDimensoesProduto : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -123,6 +123,10 @@ namespace SiteAspas.Migrations
                     ImagemUrl = table.Column<string>(type: "text", nullable: false),
                     Preco = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     Estoque = table.Column<int>(type: "integer", nullable: false),
+                    Peso = table.Column<decimal>(type: "numeric", nullable: false),
+                    Altura = table.Column<decimal>(type: "numeric", nullable: false),
+                    Largura = table.Column<decimal>(type: "numeric", nullable: false),
+                    Comprimento = table.Column<decimal>(type: "numeric", nullable: false),
                     Descricao = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     Ativo = table.Column<bool>(type: "boolean", nullable: false),
                     UsuarioId = table.Column<int>(type: "integer", nullable: true)
@@ -239,7 +243,10 @@ namespace SiteAspas.Migrations
                     QrCode = table.Column<string>(type: "text", nullable: true),
                     QrCodeBase64 = table.Column<string>(type: "text", nullable: true),
                     ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CustomerId = table.Column<string>(type: "text", nullable: true)
+                    CustomerId = table.Column<string>(type: "text", nullable: true),
+                    BoletoUrl = table.Column<string>(type: "text", nullable: true),
+                    LinhaDigitavel = table.Column<string>(type: "text", nullable: true),
+                    NossoNumero = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -319,7 +326,7 @@ namespace SiteAspas.Migrations
             migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "Id", "AccessFailedCount", "CPF", "CadastroCompleto", "ConcurrencyStamp", "CustomerId", "DataCadastro", "DataNascimento", "Email", "EmailConfirmationToken", "EmailConfirmed", "IsAtivo", "LockoutEnabled", "LockoutEnd", "Nome", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Sobrenome", "Telefone", "Tipo", "TokenExpiration", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "", false, "aa87e1b9-e1c1-4a9b-91c9-ae0000000000", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@admin.com", "SEED-TOKEN", true, true, true, null, "Adriana", "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEFp6PXaRdIgSawXZvBAM0jN0xHOPeH9o/LxVtmElIX5+fRChU1BVyE6jLn7i4VQeBA==", null, false, "d1f6e1d0-b321-4bdf-bb0a-bf0000000000", "Thome", null, 1, new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "admin@admin.com" });
+                values: new object[] { 1, 0, "", false, "aa87e1b9-e1c1-4a9b-91c9-ae0000000000", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@admin.com", "SEED-TOKEN", true, true, true, null, "Adriana", "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEKTU9GBZZpfXaE1v0Z+uMieoVaC4CCpn1tytyS02p0HCnsOWXm93DjwJerJHzVOVcg==", null, false, "d1f6e1d0-b321-4bdf-bb0a-bf0000000000", "Thome", null, 1, new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "admin@admin.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CarrinhoItems_ClienteId",

@@ -60,6 +60,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<FreteService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<AsaasService>();

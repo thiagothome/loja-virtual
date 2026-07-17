@@ -359,8 +359,14 @@ namespace SiteAspas.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Altura")
+                        .HasColumnType("numeric");
+
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
+
+                    b.Property<decimal>("Comprimento")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -375,10 +381,16 @@ namespace SiteAspas.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal>("Largura")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("Peso")
+                        .HasColumnType("numeric");
 
                     b.Property<decimal?>("Preco")
                         .IsRequired()
@@ -530,7 +542,7 @@ namespace SiteAspas.Migrations
                             Nome = "Adriana",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKElCpobl1W4p0f3n5Cb7pYFxOkq1T8XGiOenn0At6KIB+fQTQPC5VFEU4BMiOYJSw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKTU9GBZZpfXaE1v0Z+uMieoVaC4CCpn1tytyS02p0HCnsOWXm93DjwJerJHzVOVcg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Sobrenome = "Thome",
