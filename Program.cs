@@ -4,11 +4,15 @@ using SiteAspas.Services;
 using SiteAspas.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Google;
+using SiteAspas.Models.MelhorEnvio;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SiteAspasContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    builder.Services.Configure<MelhorEnvioSettings>(
+    builder.Configuration.GetSection("MelhorEnvio"));
 
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
@@ -61,6 +65,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<FreteService>();
+builder.Services.AddHttpClient<MelhorEnvioService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<AsaasService>();

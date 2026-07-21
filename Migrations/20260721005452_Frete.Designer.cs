@@ -12,8 +12,8 @@ using SiteAspas.Data;
 namespace SiteAspas.Migrations
 {
     [DbContext(typeof(SiteAspasContext))]
-    [Migration("20260717010224_AddDimensoesProduto")]
-    partial class AddDimensoesProduto
+    [Migration("20260721005452_Frete")]
+    partial class Frete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -545,7 +545,7 @@ namespace SiteAspas.Migrations
                             Nome = "Adriana",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKTU9GBZZpfXaE1v0Z+uMieoVaC4CCpn1tytyS02p0HCnsOWXm93DjwJerJHzVOVcg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH0lryN7ptPuCKZR9ssOEIGi/jCudtKZ/TaqUN7jT6IzoKwDuGj9ggKncTZtx3Qxwg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d1f6e1d0-b321-4bdf-bb0a-bf0000000000",
                             Sobrenome = "Thome",

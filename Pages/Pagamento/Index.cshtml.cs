@@ -7,6 +7,8 @@ using SiteAspas.Data;
 using SiteAspas.Models;
 using SiteAspas.Models.Enums;
 using SiteAspas.Services;
+using SiteAspas.Models.MelhorEnvio;
+
 
 namespace SiteAspas.Pages.Pagamento;
 
@@ -16,22 +18,23 @@ public class IndexModel : PageModel
     private readonly SiteAspasContext _context;
     private readonly UserManager<Usuario> _userManager;
     private readonly IPedidoService _pedidoService;
-    private readonly FreteService _freteService;
-    public decimal Frete { get; set; }
+    private readonly MelhorEnvioService _melhorEnvioService;
+    public List<CotacaoFreteResponse> OpcoesFrete { get; set; } = new();
+    public decimal FreteSelecionado { get; set; }
 
     public decimal TotalGeral =>
-        Total + Frete;
+        Total + FreteSelecionado;
 
     public IndexModel(
     SiteAspasContext context,
     UserManager<Usuario> userManager,
     IPedidoService pedidoService,
-    FreteService freteService)
+    MelhorEnvioService melhorEnvioService)
     {
         _context = context;
         _userManager = userManager;
         _pedidoService = pedidoService;
-        _freteService = freteService;
+        _melhorEnvioService = melhorEnvioService;
     }
 
     public List<CarrinhoItem> Itens { get; set; } = new();
@@ -58,15 +61,30 @@ public class IndexModel : PageModel
 
         if (EnderecoPrincipal != null)
         {
-            var produtos = await _context.Produtos
-                .Where(p =>
-                    Itens.Select(i => i.ProdutoId)
-                         .Contains(p.Id))
-                .ToListAsync();
+            var cotacao = new CotacaoFreteRequest
+            {
+                CepOrigem = "98803360",
+                CepDestino = EnderecoPrincipal.CEP,
 
-            Frete = _freteService.CalcularFrete(
-                EnderecoPrincipal.CEP,
-                produtos);
+                Produtos = Itens.Select(i => new ProdutoFreteRequest
+                {
+                    Id = i.ProdutoId.ToString(),
+
+                    Altura = i.Altura ?? 10,
+                    Largura = i.Largura ?? 10,
+                    Comprimento = i.Comprimento ?? 10,
+
+                    Peso = i.Peso ?? 0.5m,
+
+                    Quantidade = i.Quantidade,
+
+                    ValorDeclarado = i.Preco ?? 0
+                }).ToList()
+            };
+
+
+            OpcoesFrete =
+                await _melhorEnvioService.CalcularFreteAsync(cotacao);
         }
     }
 

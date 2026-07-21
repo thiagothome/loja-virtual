@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SiteAspas.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDimensoesProduto : Migration
+    public partial class Frete : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -326,7 +326,7 @@ namespace SiteAspas.Migrations
             migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "Id", "AccessFailedCount", "CPF", "CadastroCompleto", "ConcurrencyStamp", "CustomerId", "DataCadastro", "DataNascimento", "Email", "EmailConfirmationToken", "EmailConfirmed", "IsAtivo", "LockoutEnabled", "LockoutEnd", "Nome", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Sobrenome", "Telefone", "Tipo", "TokenExpiration", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "", false, "aa87e1b9-e1c1-4a9b-91c9-ae0000000000", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@admin.com", "SEED-TOKEN", true, true, true, null, "Adriana", "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEKTU9GBZZpfXaE1v0Z+uMieoVaC4CCpn1tytyS02p0HCnsOWXm93DjwJerJHzVOVcg==", null, false, "d1f6e1d0-b321-4bdf-bb0a-bf0000000000", "Thome", null, 1, new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "admin@admin.com" });
+                values: new object[] { 1, 0, "", false, "aa87e1b9-e1c1-4a9b-91c9-ae0000000000", null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@admin.com", "SEED-TOKEN", true, true, true, null, "Adriana", "ADMIN@ADMIN.COM", "ADMIN@ADMIN.COM", "AQAAAAIAAYagAAAAEH0lryN7ptPuCKZR9ssOEIGi/jCudtKZ/TaqUN7jT6IzoKwDuGj9ggKncTZtx3Qxwg==", null, false, "d1f6e1d0-b321-4bdf-bb0a-bf0000000000", "Thome", null, 1, new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "admin@admin.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CarrinhoItems_ClienteId",

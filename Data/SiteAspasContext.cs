@@ -15,7 +15,6 @@ public class SiteAspasContext : IdentityDbContext<Usuario, IdentityRole<int>, in
     public DbSet<PedidoItem> PedidoItems { get; set; }
     public DbSet<CarrinhoItem> CarrinhoItems { get; set; }
     public DbSet<Endereco> Enderecos { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
