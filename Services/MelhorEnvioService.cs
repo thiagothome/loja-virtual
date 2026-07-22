@@ -18,30 +18,6 @@ public class MelhorEnvioService
     {
         _httpClient = httpClient;
         _settings = settings.Value;
-
-        Console.WriteLine("==============================");
-        Console.WriteLine(
-        "AUTH HEADER: " +
-        _httpClient.DefaultRequestHeaders.Authorization?.ToString()
-    );
-        Console.WriteLine("MELHOR ENVIO CONFIG");
-        Console.WriteLine("BASE: " + _settings.BaseUrl);
-
-        if (!string.IsNullOrEmpty(_settings.AccessToken))
-        {
-            Console.WriteLine(
-                "TOKEN INICIO: " +
-                _settings.AccessToken.Substring(0, 20)
-            );
-        }
-        else
-        {
-            Console.WriteLine("TOKEN VAZIO");
-        }
-
-        Console.WriteLine("==============================");
-
-
         _httpClient.BaseAddress =
             new Uri(_settings.BaseUrl);
 
@@ -89,12 +65,6 @@ public class MelhorEnvioService
         };
 
         var json = JsonSerializer.Serialize(body);
-
-        Console.WriteLine("=================================");
-        Console.WriteLine("REQUISIÇÃO MELHOR ENVIO");
-        Console.WriteLine(json);
-        Console.WriteLine("=================================");
-
         var response = await _httpClient.PostAsync(
             "/api/v2/me/shipment/calculate",
             new StringContent(
@@ -103,8 +73,6 @@ public class MelhorEnvioService
                 "application/json"));
 
         var content = await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine(content);
 
         if (!response.IsSuccessStatusCode)
             return new List<CotacaoFreteResponse>();

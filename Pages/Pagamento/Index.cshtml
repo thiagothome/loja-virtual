@@ -28,40 +28,42 @@
 
         <div class="auth-form">
 
-            @foreach (var item in Model.Itens)
-            {
-                <div class="item-carrinho">
+            <form method="post">
 
-                    <img src="@item.ImagemUrl" alt="@item.Nome" class="produto-img" />
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="item-carrinho">
 
-                    <div class="produto-info">
+                        <img src="@item.ImagemUrl" alt="@item.Nome" class="produto-img" />
 
-                        <h5>@item.Nome</h5>
+                        <div class="produto-info">
 
-                        <p>
-                            Quantidade:
-                            <strong>@item.Quantidade</strong>
-                        </p>
+                            <h5>@item.Nome</h5>
 
-                        <p>
-                            Valor unitário:
-                            <strong>@item.Preco?.ToString("C")</strong>
-                        </p>
+                            <p>
+                                Quantidade:
+                                <strong>@item.Quantidade</strong>
+                            </p>
+
+                            <p>
+                                Valor unitário:
+                                <strong>@item.Preco?.ToString("C")</strong>
+                            </p>
+
+                        </div>
+
+                        <div class="produto-total">
+
+                            <span>Subtotal</span>
+
+                            <strong>
+                                @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
+                            </strong>
+
+                        </div>
 
                     </div>
 
-                    <div class="produto-total">
-
-                        <span>Subtotal</span>
-
-                        <strong>
-                            @(((item.Preco ?? 0) * item.Quantidade).ToString("C"))
-                        </strong>
-
-                    </div>
-
-                </div>
-           
                 }
 
                 <hr />
@@ -74,19 +76,26 @@
 
                             <p>
                                 Subtotal:
-                                <strong>@Model.Total.ToString("C")</strong>
+                                <strong id="subtotal">
+                                    @Model.Total.ToString("C")
+                                </strong>
                             </p>
 
                             <p>
-    Frete selecionado:
-    <strong>
-        @Model.FreteSelecionado.ToString("C")
-    </strong>
-</p>
+                                Frete selecionado:
+                                <strong id="valorFrete">
+                                    R$ 0,00
+                                </strong>
+                            </p>
 
                             <h3>
+
                                 Total Geral:
-                                @Model.TotalGeral.ToString("C")
+
+                                <span id="totalGeral">
+                                    @Model.Total.ToString("C")
+                                </span>
+
                             </h3>
 
                         </div>
@@ -101,30 +110,30 @@
 
                     <h3>Endereço de entrega</h3>
 
-                    @if(Model.EnderecoPrincipal != null)
-                {
+                    @if (Model.EnderecoPrincipal != null)
+                    {
                         <p>
                             <strong>
                                 @Model.EnderecoPrincipal.Logradouro,
-                            @Model.EnderecoPrincipal.Numero
+                                @Model.EnderecoPrincipal.Numero
                             </strong>
                         </p>
 
-                        @if(!string.IsNullOrWhiteSpace(Model.EnderecoPrincipal.Complemento))
-                {
-                <p>@Model.EnderecoPrincipal.Complemento</p>
-                   
+                        @if (!string.IsNullOrWhiteSpace(Model.EnderecoPrincipal.Complemento))
+                        {
+                            <p>@Model.EnderecoPrincipal.Complemento</p>
+
                         }
 
                         <p>@Model.EnderecoPrincipal.Bairro</p>
 
-<p>
+                        <p>
                             @Model.EnderecoPrincipal.Cidade -
                             @Model.EnderecoPrincipal.Estado
-</p>
+                        </p>
 
                         <p>CEP: @Model.EnderecoPrincipal.CEP</p>
-               
+
                     }
 
                 </div>
@@ -133,103 +142,190 @@
 
                 <div class="bloco">
 
-    <h3>Frete</h3>
+                    <h3>Frete</h3>
 
-    <p>
-        CEP destino:
-        <strong>@Model.EnderecoPrincipal?.CEP</strong>
-    </p>
+                    <p>
+                        CEP destino:
+                        <strong>@Model.EnderecoPrincipal?.CEP</strong>
+                    </p>
 
 
-    @if (Model.OpcoesFrete.Any())
-    {
-        @foreach (var frete in Model.OpcoesFrete)
-        {
-            <label class="forma">
+                    @if (Model.OpcoesFrete.Any())
+                    {
+                        @foreach (var frete in Model.OpcoesFrete.Select((x, i) => new { Frete = x, Index = i }))
+{
+    <label class="forma">
 
-                <input 
-                    type="radio"
-                    name="FreteSelecionado"
-                    value="@frete.Price"
-                    required />
+        <input
+            type="radio"
+            name="ServicoId"
+            value="@frete.Frete.Id"
+data-preco="@frete.Frete.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+            data-empresa="@frete.Frete.Company"
+            data-servico="@frete.Frete.Name"
+            @(frete.Index == 0 ? "checked" : "") />
 
-                <span>
-                    @frete.Name
-                    -
-                    @frete.Company
+        <span>
+            @frete.Frete.Name -
+            @frete.Frete.Company
 
-                    <br />
+            <br />
 
-                    R$ @frete.Price.ToString("C")
+            @frete.Frete.Price.ToString("C")
 
-                    <br />
+            <br />
 
-                    Prazo:
-                    @frete.DeliveryTime dias
-                </span>
+            Prazo:
+            @frete.Frete.DeliveryTime dias
+        </span>
 
-            </label>
-        }
-    }
-    else
-    {
-        <p>
-            Nenhuma opção de frete encontrada.
-        </p>
-    }
-
-</div>
-
-                <hr />
+    </label>
+}
+                    }
+                    else
+                    {
+                        <p>
+                            Nenhuma opção de frete encontrada.
+                        </p>
+                    }
 
                 </div>
 
-                <form method="post">
+                <input type="hidden" id="FreteSelecionado" name="FreteSelecionado" />
 
-                    <div class="bloco">
+                <input type="hidden" id="Transportadora" name="Transportadora" />
 
-                        <h3>Forma de pagamento</h3>
+                <input type="hidden" id="ServicoFrete" name="ServicoFrete" />
 
-                        <label class="forma">
-                            <input type="radio" name="FormaPagamento" value="Pix" checked />
+                <hr />
 
-                            <span>PIX</span>
-                        </label>
+                <div class="bloco">
 
-                        <label class="forma">
-                            <input type="radio" name="FormaPagamento" value="CartaoCredito" />
+                    <h3>Forma de pagamento</h3>
 
-                            <span>Cartão de Crédito</span>
-                        </label>
+                    <label class="forma">
+                        <input type="radio" name="FormaPagamento" value="Pix" checked />
 
-                        <label class="forma">
-                            <input type="radio" name="FormaPagamento" value="Boleto" />
+                        <span>PIX</span>
+                    </label>
 
-                            <span>Boleto Bancário</span>
-                        </label>
+                    <label class="forma">
+                        <input type="radio" name="FormaPagamento" value="CartaoCredito" />
 
-                    </div>
+                        <span>Cartão de Crédito</span>
+                    </label>
 
-                    <div class="acoes">
+                    <label class="forma">
+                        <input type="radio" name="FormaPagamento" value="Boleto" />
 
-                        <a asp-page="/Produto/Carrinho" class="btn-continuar">
+                        <span>Boleto Bancário</span>
+                    </label>
 
-                            Voltar ao carrinho
+                </div>
 
-                        </a>
+                <div class="acoes">
 
-                        <button type="submit" class="btn-finalizar">
+                    <a asp-page="/Produto/Carrinho" class="btn-continuar">
 
-                            Continuar
+                        Voltar ao carrinho
 
-                        </button>
+                    </a>
 
-                    </div>
+                    <button type="submit" class="btn-finalizar">
 
-                </form>
+                        Continuar
 
-            </div>
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
     </div>
+
+</div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+    const subtotal =
+        @Model.Total.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    const radios =
+        document.querySelectorAll("input[name='ServicoId']");
+
+    const lblFrete =
+        document.getElementById("valorFrete");
+
+    const lblTotal =
+        document.getElementById("totalGeral");
+
+    const hiddenFrete =
+        document.getElementById("FreteSelecionado");
+
+    const hiddenEmpresa =
+        document.getElementById("Transportadora");
+
+    const hiddenServico =
+        document.getElementById("ServicoFrete");
+
+    function atualizar(radio){
+
+        const frete =
+    parseFloat(radio.dataset.preco);
+
+        hiddenFrete.value = frete;
+        hiddenEmpresa.value = radio.dataset.empresa;
+        hiddenServico.value = radio.dataset.servico;
+
+        lblFrete.innerHTML =
+            frete.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                });
+
+        const total =
+            subtotal + frete;
+
+        lblTotal.innerHTML =
+            total.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                });
+    }
+
+    radios.forEach(radio => {
+
+        radio.addEventListener("change", function () {
+
+            atualizar(this);
+
+        });
+
+    });
+
+    const primeiro =
+        document.querySelector("input[name='ServicoId']:checked");
+
+    if(primeiro){
+
+        atualizar(primeiro);
+
+    }
+
+});
+
+    </script>
+
+}

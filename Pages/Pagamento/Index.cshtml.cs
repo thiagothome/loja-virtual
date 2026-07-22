@@ -8,6 +8,8 @@ using SiteAspas.Models;
 using SiteAspas.Models.Enums;
 using SiteAspas.Services;
 using SiteAspas.Models.MelhorEnvio;
+using System.Globalization;
+
 
 
 namespace SiteAspas.Pages.Pagamento;
@@ -88,8 +90,14 @@ public class IndexModel : PageModel
         }
     }
 
-    public async Task<IActionResult> OnPostAsync(string FormaPagamento)
+    public async Task<IActionResult> OnPostAsync(
+    string FormaPagamento,
+    int ServicoId,
+    string FreteSelecionado,
+    string Transportadora,
+    string ServicoFrete)
     {
+
         var usuario = await _userManager.GetUserAsync(User);
         if (usuario == null)
             return Challenge();
@@ -165,12 +173,21 @@ public class IndexModel : PageModel
             return Page();
         }
 
-        var pedidoId = await _pedidoService.CriarPedido(
-            usuario.Id,
-            endereco.Id,
-            metodo,
-            itens
-        );
+
+decimal frete = decimal.Parse(
+    FreteSelecionado,
+    CultureInfo.InvariantCulture);
+
+        var pedidoId =
+    await _pedidoService.CriarPedido(
+        usuario.Id,
+        endereco.Id,
+        metodo,
+        itens,
+        frete,
+        ServicoId,
+        Transportadora,
+        ServicoFrete);
 
         return RedirectToPage(
             paginaRedirecionamento,

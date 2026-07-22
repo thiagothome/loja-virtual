@@ -110,15 +110,8 @@ namespace SiteAspas.Pages.Conta
             : null;
             user.Telefone = Usuario.Telefone;
             user.CadastroCompleto = true;
-
-            Console.WriteLine(user.DataNascimento?.Kind);
-            Console.WriteLine($"Nascimento: {user.DataNascimento?.Kind}");
-            Console.WriteLine($"Cadastro: {user.DataCadastro.Kind}");
-            Console.WriteLine($"Token: {user.TokenExpiration?.Kind}");
-
+            
             var result = await _userManager.UpdateAsync(user);
-
-
 
             if (!result.Succeeded)
             {

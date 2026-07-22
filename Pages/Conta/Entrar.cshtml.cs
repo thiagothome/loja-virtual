@@ -38,11 +38,9 @@ namespace SiteAspas.Pages.Conta
             string? returnUrl = null,
             string? remoteError = null)
         {
-            Console.WriteLine("CALLBACK GOOGLE EXECUTADO");
 
             if (remoteError != null)
             {
-                Console.WriteLine($"ERRO GOOGLE: {remoteError}");
                 return RedirectToPage("/Conta/Entrar");
             }
 
@@ -50,18 +48,14 @@ namespace SiteAspas.Pages.Conta
 
             if (info == null)
             {
-                Console.WriteLine("INFO NULL");
                 return RedirectToPage("/Conta/Entrar");
             }
-
-            Console.WriteLine("INFO OK");
 
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var name = info.Principal.FindFirstValue(ClaimTypes.Name);
 
             if (string.IsNullOrEmpty(email))
             {
-                Console.WriteLine("EMAIL NÃO RETORNADO PELO GOOGLE");
                 return RedirectToPage("/Conta/Entrar");
             }
 
@@ -69,7 +63,6 @@ namespace SiteAspas.Pages.Conta
 
             if (usuario == null)
             {
-                Console.WriteLine($"CRIANDO USUÁRIO: {email}");
 
                 var nomes = (name ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
@@ -89,12 +82,6 @@ namespace SiteAspas.Pages.Conta
 
                 if (!result.Succeeded)
                 {
-                    foreach (var erro in result.Errors)
-                    {
-                        Console.WriteLine(
-                            $"ERRO IDENTITY: {erro.Code} - {erro.Description}");
-                    }
-
                     return RedirectToPage("/Conta/Entrar");
                 }
             }
@@ -102,8 +89,6 @@ namespace SiteAspas.Pages.Conta
             await _signInManager.SignInAsync(
                 usuario,
                 isPersistent: false);
-
-            Console.WriteLine($"LOGIN EFETUADO: {email}");
 
             return Redirect("/");
         }

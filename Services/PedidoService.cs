@@ -16,19 +16,47 @@ namespace SiteAspas.Services
         }
 
         public async Task<int> CriarPedido(
-        int usuarioId,
-        int enderecoId,
-        MetodoPagamento metodoPagamento,
-        List<CarrinhoItem> itens)
+    int usuarioId,
+    int enderecoId,
+    MetodoPagamento metodoPagamento,
+    List<CarrinhoItem> itens,
+    decimal frete,
+    int servicoId,
+    string transportadora,
+    string servicoFrete)
         {
+
+
+            var subtotal =
+    itens.Sum(i => (i.Preco ?? 0) * i.Quantidade);
+
+            var total =
+                subtotal + frete;
+
             var pedido = new Pedido
             {
                 UsuarioId = usuarioId,
+
                 EnderecoId = enderecoId,
+
                 MetodoPagamento = metodoPagamento,
+
                 Status = StatusPedido.AguardandoPagamento,
+
                 DataPedido = DateTime.UtcNow,
-                Total = itens.Sum(i => i.Preco * i.Quantidade),
+
+                Subtotal = subtotal,
+
+                Frete = frete,
+
+                MelhorEnvioServicoId = servicoId,
+
+                Transportadora = transportadora,
+
+                ServicoFrete = servicoFrete,
+
+                Total = total,
+
                 Itens = itens.Select(i => new PedidoItem
                 {
                     ProdutoId = i.ProdutoId,
@@ -37,7 +65,6 @@ namespace SiteAspas.Services
                     Quantidade = i.Quantidade
                 }).ToList()
             };
-
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
 
@@ -84,13 +111,9 @@ namespace SiteAspas.Services
             pedido.Status = StatusPedido.Pago;
             pedido.DataPagamento = DateTime.UtcNow;
 
-            Console.WriteLine($"Pedido UsuarioId: {pedido.UsuarioId}");
-
             var carrinho = await _context.CarrinhoItems
                 .Where(c => c.ClienteId == pedido.UsuarioId)
                 .ToListAsync();
-
-            Console.WriteLine($"Itens encontrados: {carrinho.Count}");
 
             _context.CarrinhoItems.RemoveRange(carrinho);
 

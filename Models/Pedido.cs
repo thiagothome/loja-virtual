@@ -17,6 +17,15 @@ namespace SiteAspas.Models
         public Endereco Endereco { get; set; }
 
         public decimal? Total { get; set; }
+        public decimal Frete { get; set; }
+
+        public int MelhorEnvioServicoId { get; set; }
+
+        public string? Transportadora { get; set; }
+
+        public string? ServicoFrete { get; set; }
+
+        public decimal Subtotal { get; set; }
 
         public List<PedidoItem> Itens { get; set; } = new();
 

@@ -6,11 +6,14 @@ namespace SiteAspas.Services
     public interface IPedidoService
     {
         Task<int> CriarPedido(
-            int usuarioId,
-            int enderecoId,
-            MetodoPagamento metodoPagamento,
-            List<CarrinhoItem> itens
-        );
+    int usuarioId,
+    int enderecoId,
+    MetodoPagamento metodoPagamento,
+    List<CarrinhoItem> itens,
+    decimal frete,
+    int servicoId,
+    string transportadora,
+    string servicoFrete);
 
 
         Task<Pedido?> ObterPedidoPorId(
